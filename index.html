@@ -48,14 +48,26 @@
       border:1px solid var(--border);
       background: rgba(0,0,0,0.25);
       color: var(--text);
-      padding:10px 12px;
+      padding:8px 10px;
       border-radius: 999px;
       font-size:13px;
       cursor:pointer;
       white-space:nowrap;
       box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
     .tab.active{ border-color: rgba(30,130,57,0.75); background: rgba(30,130,57,0.18); }
+
+    .avatar{
+      width:22px; height:22px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.25);
+      object-fit:cover;
+      flex:0 0 auto;
+    }
 
     .grid{ display:grid; grid-template-columns: 1fr; gap:12px; }
     @media (min-width: 900px){ .grid{ grid-template-columns: 1.05fr 0.95fr; } }
@@ -73,7 +85,7 @@
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     label{ font-size:13px; color: var(--muted); }
 
-    input[type="text"], input[type="number"], input[type="date"]{
+    input[type="text"], input[type="date"], select{
       width: 100%;
       padding: 10px 10px;
       border-radius: 12px;
@@ -82,16 +94,6 @@
       color: var(--text);
       outline:none;
     }
-    input[type="number"]{ text-align:center; }
-
-    .inputs{
-      display:grid;
-      grid-template-columns: 1fr 110px;
-      gap:10px;
-      align-items:center;
-      margin: 8px 0;
-    }
-    .inputs .pos{ color:var(--text); font-weight:700; }
 
     .btn{
       border: 1px solid rgba(255,255,255,0.14);
@@ -182,6 +184,43 @@
       white-space:nowrap;
     }
 
+    /* INPUT POS */
+    .posCard{
+      margin:10px 0;
+      padding:10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    .posTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .posTitle{
+      color:var(--text);
+      font-weight:900;
+    }
+    .posTitle span{
+      color:var(--muted);
+      font-weight:700;
+      margin-left:6px;
+      font-size:12px;
+    }
+    .posControl{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .posVal{
+      min-width:52px;
+      text-align:center;
+      font-weight:900;
+      font-size:18px;
+    }
+
     /* TIMER */
     .timerBox{
       border:1px solid rgba(255,255,255,0.10);
@@ -206,11 +245,6 @@
     .timerBtns{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
     .timerBtns .btn{ width:auto; }
 
-    .fileRow{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-    }
-    .fileRow .btn{ width:auto; }
-
     .toast{
       display:none;
       position:fixed;
@@ -224,31 +258,71 @@
       z-index:9999;
     }
     .toast.show{ display:block; }
+
+    .playerHeader{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .playerHeader .avatarBig{
+      width:42px; height:42px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.20);
+      object-fit:cover;
+      background: rgba(0,0,0,0.25);
+    }
+    .playerHeader .nameBig{
+      font-size:16px;
+      font-weight:900;
+    }
+    .playerHeader .meta{
+      font-size:12px;
+      color: var(--muted);
+      margin-top:2px;
+    }
   </style>
 </head>
 
 <body>
   <header>
     <h1>Virtus Shot Tracker</h1>
-    <div class="sub">Sessione = <b>10 tiri per posizione</b> • Timer <b>45 sec</b> a posizione • WhatsApp + JSON</div>
+    <div class="sub">Sessione = <b>10 tiri per posizione</b> • Timer preset <b>45/40/30</b> • WhatsApp + JSON</div>
   </header>
 
   <div class="wrap">
     <div class="tabs" id="tabs"></div>
 
     <div class="card" style="margin-bottom:12px;">
+      <div class="playerHeader">
+        <img id="playerAvatarBig" class="avatarBig" alt="Foto giocatore">
+        <div>
+          <div class="nameBig" id="playerNameBig">Giocatore</div>
+          <div class="meta">Foto e nome salvati sul telefono</div>
+        </div>
+      </div>
+
       <div class="row" style="justify-content:space-between;">
         <div style="flex:1; min-width:220px;">
           <label>Nome giocatore (pagina)</label>
           <input id="playerName" type="text" placeholder="Es. Marco" />
         </div>
-        <div style="display:flex; gap:10px; align-items:end;">
+
+        <div style="flex:1; min-width:220px;">
+          <label>Foto giocatore</label>
+          <input id="playerPhoto" type="file" accept="image/*" />
+          <div class="hint">Scegli una foto: verrà salvata nell’app (solo sul telefono).</div>
+        </div>
+
+        <div style="display:flex; gap:10px; align-items:end; flex-wrap:wrap;">
           <button class="btn small secondary" id="saveNameBtn">Salva nome</button>
+          <button class="btn small secondary" id="removePhotoBtn">Rimuovi foto</button>
           <button class="btn small danger" id="resetPlayerBtn">Reset giocatore</button>
         </div>
       </div>
+
       <div class="hint">
-        Ogni giocatore usa la sua app e invia la sessione su WhatsApp. Il JSON serve come backup / import dal coach.
+        WhatsApp invio automatico dopo “Salva sessione”. JSON: backup / import dal coach (automatico sul tab giusto).
       </div>
     </div>
 
@@ -268,19 +342,39 @@
         </div>
 
         <div class="hint" style="margin-top:10px;">
-          Inserisci solo i <b>canestri segnati</b> (0–10). Tentativi fissi = 10 per ogni posizione.
+          Inserisci i canestri segnati con slider o +/-. Valori bloccati 0–10.
         </div>
 
         <div id="inputsBox" style="margin-top:10px;"></div>
 
-        <button class="btn" id="addSessionBtn" style="margin-top:10px;">Aggiungi sessione</button>
+        <button class="btn" id="addSessionBtn" style="margin-top:10px;">Salva sessione</button>
 
         <!-- TIMER -->
         <div class="timerBox">
+          <div class="row" style="margin-bottom:8px;">
+            <div style="flex:1; min-width:200px;">
+              <label>Secondi per posizione</label>
+              <select id="timerPreset">
+                <option value="45">45 sec</option>
+                <option value="40">40 sec</option>
+                <option value="30">30 sec</option>
+              </select>
+            </div>
+
+            <div style="flex:1; min-width:200px; display:flex; align-items:end;">
+              <label style="display:flex;align-items:center;gap:8px; width:100%;">
+                <input type="checkbox" id="modeGara">
+                Modalità gara (blocca AVANTI a tempo finito)
+              </label>
+            </div>
+          </div>
+
           <div class="timerTop">
             <div>
-              <div class="step" id="timerStep">Step: <strong>Fondo sx</strong> (1/5) • 45 sec</div>
-              <div class="hint" style="margin:6px 0 0;">Start → fai 10 tiri. Beep → avanti posizione.</div>
+              <div class="step" id="timerStep">Step: <strong>Fondo sx</strong> (1/5)</div>
+              <div class="hint" style="margin:6px 0 0;">
+                Countdown C: beep -5/-3/-1. Finale B: 3 beep + vibra lunga. <b>No autostart</b>.
+              </div>
             </div>
             <div class="timerBig" id="timerClock">00:45</div>
           </div>
@@ -323,9 +417,7 @@
         </div>
 
         <div class="hint">
-          - WhatsApp: invia il testo dell’ultima sessione.<br>
-          - Esporta JSON: prova a condividere file; se non possibile lo salva in Download; se ancora no lo copia negli appunti.<br>
-          - Importa JSON: il coach importa i file ricevuti (merge senza duplicati).
+          Import automatico: playerId → nome → primo slot vuoto → tab corrente. Dopo import, ti porta sul tab corretto.
         </div>
 
         <h2 style="margin-top:16px;">Storico (per data)</h2>
@@ -349,10 +441,10 @@ const POSITIONS = [
 ];
 const ATTEMPTS_PER_POS = 10;
 const PLAYERS_COUNT = 8;
-const STORAGE_KEY = "virtus_shot_tracker_v5";
+const STORAGE_KEY = "virtus_shot_tracker_v7";
 
-/* TIMER */
-const TIMER_SECONDS = 45;
+/* TIMER (preset) */
+let TIMER_SECONDS = 45;
 
 /* =========================
    STATE
@@ -366,7 +458,8 @@ let timer = {
   running:false,
   remaining:TIMER_SECONDS,
   stepIndex:0,
-  intervalId:null
+  intervalId:null,
+  lockedAfterTimeUp:false // modalità gara: blocca AVANTI
 };
 
 /* =========================
@@ -375,28 +468,33 @@ let timer = {
 renderTabs();
 renderInputs();
 bindUI();
-syncPlayerNameInput();
+syncPlayerUI();
 setDefaultDate();
 renderAll();
 renderTimer();
 
 /* =========================
-   UI BUILDERS
+   UI
 ========================= */
 function renderTabs(){
   const tabs = document.getElementById("tabs");
   tabs.innerHTML = "";
   for(let i=0;i<PLAYERS_COUNT;i++){
-    const name = state.players[i]?.name || `Giocatore ${i+1}`;
+    const pl = state.players[i];
+    const name = pl?.name || `Giocatore ${i+1}`;
+    const imgSrc = pl?.photoDataUrl || "";
     const btn = document.createElement("button");
     btn.className = "tab" + (i===currentPlayer ? " active":"");
-    btn.textContent = name;
+    btn.innerHTML = `
+      <img class="avatar" src="${imgSrc ? imgSrc : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='100%25' height='100%25' fill='%23000000' fill-opacity='0.2'/%3E%3Ctext x='50%25' y='54%25' font-size='28' text-anchor='middle' fill='%23ecfff2' fill-opacity='0.8'%3E%F0%9F%8F%80%3C/text%3E%3C/svg%3E"}" alt="">
+      <span>${escapeHtml(name)}</span>
+    `;
     btn.onclick = () => {
       currentPlayer = i;
       state.ui.currentPlayer = i;
       saveState();
       renderTabs();
-      syncPlayerNameInput();
+      syncPlayerUI();
       renderAll();
     };
     tabs.appendChild(btn);
@@ -406,37 +504,102 @@ function renderTabs(){
 function renderInputs(){
   const box = document.getElementById("inputsBox");
   box.innerHTML = "";
-  POSITIONS.forEach(p=>{
-    const row = document.createElement("div");
-    row.className = "inputs";
-    row.innerHTML = `
-      <div class="pos">${p.label} <span style="color:var(--muted); font-weight:600;">(su ${ATTEMPTS_PER_POS})</span></div>
-      <input type="number" min="0" max="${ATTEMPTS_PER_POS}" step="1" value="0" data-pos="${p.key}">
+
+  POSITIONS.forEach((p, idx)=>{
+    const wrap = document.createElement("div");
+    wrap.className = "posCard";
+    wrap.innerHTML = `
+      <div class="posTop">
+        <div class="posTitle">${p.label}<span>(su ${ATTEMPTS_PER_POS})</span></div>
+        <div class="posControl">
+          <button class="btn small secondary" data-minus="${p.key}">-</button>
+          <div class="posVal" id="val_${p.key}">0</div>
+          <button class="btn small secondary" data-plus="${p.key}">+</button>
+        </div>
+      </div>
+
+      <input
+        type="range"
+        min="0"
+        max="${ATTEMPTS_PER_POS}"
+        step="1"
+        value="0"
+        data-pos="${p.key}"
+        style="width:100%; margin-top:10px;"
+      />
+      <div class="hint" style="margin-top:6px;">
+        Posizione ${idx+1}/5 • Valore bloccato 0–10
+      </div>
     `;
-    box.appendChild(row);
+    box.appendChild(wrap);
+  });
+
+  // bind slider + buttons
+  POSITIONS.forEach(p=>{
+    const slider = box.querySelector(`input[data-pos="${p.key}"]`);
+    const valEl = box.querySelector(`#val_${p.key}`);
+    const minus = box.querySelector(`button[data-minus="${p.key}"]`);
+    const plus  = box.querySelector(`button[data-plus="${p.key}"]`);
+
+    const setV = (v) => {
+      v = Math.max(0, Math.min(ATTEMPTS_PER_POS, Math.round(v)));
+      slider.value = String(v);
+      valEl.textContent = String(v);
+
+      // modalità gara: se sto inserendo i tiri della posizione corrente dopo timeup, sblocco AVANTI
+      if (timer.lockedAfterTimeUp && p.key === POSITIONS[timer.stepIndex].key) {
+        timer.lockedAfterTimeUp = false;
+        toast("OK, puoi premere AVANTI ✅");
+      }
+    };
+
+    slider.addEventListener("input", () => setV(slider.value));
+    minus.addEventListener("click", () => setV(Number(slider.value) - 1));
+    plus.addEventListener("click", () => setV(Number(slider.value) + 1));
   });
 }
 
 function bindUI(){
   document.getElementById("saveNameBtn").onclick = savePlayerName;
-  document.getElementById("addSessionBtn").onclick = addSession;
   document.getElementById("resetPlayerBtn").onclick = resetCurrentPlayer;
   document.getElementById("resetAllBtn").onclick = resetAllPlayers;
 
+  document.getElementById("addSessionBtn").onclick = addSession;
   document.getElementById("shareSessionBtn").onclick = shareLastSession;
   document.getElementById("exportJsonBtn").onclick = exportPlayerJson;
   document.getElementById("copyJsonBtn").onclick = copyPlayerJson;
-  document.getElementById("importJsonInput").addEventListener("change", (e) => importPlayerJsonFiles(e.target.files));
 
-  // timer
+  document.getElementById("importJsonInput").addEventListener("change", async (e) => {
+    await importPlayerJsonFiles(e.target.files);
+    e.target.value = "";
+  });
+
+  // foto
+  document.getElementById("playerPhoto").addEventListener("change", onPickPhoto);
+  document.getElementById("removePhotoBtn").onclick = removePhoto;
+
+  // timer preset
+  document.getElementById("timerPreset").addEventListener("change", (e) => {
+    TIMER_SECONDS = Number(e.target.value) || 45;
+    timerPause();
+    timer.remaining = TIMER_SECONDS;
+    renderTimer();
+    toast(`Timer: ${TIMER_SECONDS}s`);
+  });
+
+  // timer buttons
   document.getElementById("timerStartBtn").onclick = timerStart;
   document.getElementById("timerPauseBtn").onclick = timerPause;
   document.getElementById("timerResetBtn").onclick = timerReset;
   document.getElementById("timerNextBtn").onclick = () => timerNextStep(false);
 }
 
-function syncPlayerNameInput(){
-  document.getElementById("playerName").value = state.players[currentPlayer].name;
+function syncPlayerUI(){
+  const pl = state.players[currentPlayer];
+  document.getElementById("playerName").value = pl.name;
+  document.getElementById("playerNameBig").textContent = pl.name;
+  const big = document.getElementById("playerAvatarBig");
+  big.src = pl.photoDataUrl || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Crect width='100%25' height='100%25' fill='%23000000' fill-opacity='0.2'/%3E%3Ctext x='50%25' y='58%25' font-size='40' text-anchor='middle' fill='%23ecfff2' fill-opacity='0.8'%3E%F0%9F%8F%80%3C/text%3E%3C/svg%3E";
 }
 
 function setDefaultDate(){
@@ -445,7 +608,7 @@ function setDefaultDate(){
 }
 
 /* =========================
-   DATA MODEL
+   STORAGE
 ========================= */
 function defaultState(){
   return {
@@ -453,6 +616,7 @@ function defaultState(){
     players: Array.from({length: PLAYERS_COUNT}, (_,i)=>({
       playerId: uid(),
       name: `Giocatore ${i+1}`,
+      photoDataUrl: "",
       sessions: []
     }))
   };
@@ -468,6 +632,7 @@ function loadState(){
     parsed.players.forEach((pl,i)=>{
       pl.playerId = pl.playerId || uid();
       pl.name = pl.name || `Giocatore ${i+1}`;
+      pl.photoDataUrl = pl.photoDataUrl || "";
       pl.sessions = Array.isArray(pl.sessions) ? pl.sessions : [];
     });
     return parsed;
@@ -485,23 +650,61 @@ function uid(){
 }
 
 /* =========================
-   ACTIONS
+   FOTO GIOCATORE
 ========================= */
-function savePlayerName(){
-  const v = document.getElementById("playerName").value.trim();
-  if(!v) return alert("Inserisci un nome valido.");
-  state.players[currentPlayer].name = v;
+async function onPickPhoto(e){
+  const file = e.target.files?.[0];
+  if(!file) return;
+
+  // comprimi/ridimensiona per non esplodere localStorage
+  const dataUrl = await imageToDataUrl(file, 220, 0.72);
+  state.players[currentPlayer].photoDataUrl = dataUrl;
   saveState();
   renderTabs();
-  renderAll();
+  syncPlayerUI();
+  toast("Foto salvata ✅");
+  e.target.value = "";
 }
 
+function removePhoto(){
+  if(!confirm("Rimuovere la foto del giocatore?")) return;
+  state.players[currentPlayer].photoDataUrl = "";
+  saveState();
+  renderTabs();
+  syncPlayerUI();
+}
+
+function imageToDataUrl(file, maxSize, quality){
+  return new Promise((resolve) => {
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = () => { img.src = reader.result; };
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      let w = img.width, h = img.height;
+      const scale = Math.min(1, maxSize / Math.max(w,h));
+      w = Math.round(w * scale);
+      h = Math.round(h * scale);
+
+      canvas.width = w; canvas.height = h;
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* =========================
+   SESSIONE
+========================= */
 function addSession(){
   const date = document.getElementById("sessionDate").value;
   if(!date) return alert("Seleziona una data.");
   const note = document.getElementById("sessionNote").value.trim();
 
-  const inputs = [...document.querySelectorAll('#inputsBox input[type="number"]')];
+  const inputs = [...document.querySelectorAll('#inputsBox input[type="range"]')];
   const made = {};
   for(const inp of inputs){
     const k = inp.dataset.pos;
@@ -525,11 +728,29 @@ function addSession(){
 
   saveState();
 
-  document.getElementById("sessionNote").value = "";
+  // reset slider
   inputs.forEach(i=> i.value = "0");
+  POSITIONS.forEach(p=>{
+    const v = document.getElementById(`val_${p.key}`);
+    if(v) v.textContent = "0";
+  });
+  document.getElementById("sessionNote").value = "";
 
   renderAll();
   toast("Sessione salvata ✅");
+
+  // AUTO invio WhatsApp
+  shareLastSession();
+}
+
+function savePlayerName(){
+  const v = document.getElementById("playerName").value.trim();
+  if(!v) return alert("Inserisci un nome valido.");
+  state.players[currentPlayer].name = v;
+  saveState();
+  renderTabs();
+  syncPlayerUI();
+  renderAll();
 }
 
 function deleteSession(sessionId){
@@ -554,13 +775,13 @@ function resetAllPlayers(){
   currentPlayer = 0;
   saveState();
   renderTabs();
-  syncPlayerNameInput();
+  syncPlayerUI();
   renderAll();
   toast("Reset totale effettuato ✅");
 }
 
 /* =========================
-   CALCS
+   STATS
 ========================= */
 function calcTotals(player){
   const totals = {
@@ -584,8 +805,7 @@ function pct(made, att){
 }
 
 function sessionSummary(s){
-  let m=0;
-  let a=0;
+  let m=0, a=0;
   for(const p of POSITIONS){
     m += (s.made?.[p.key] ?? 0);
     a += (s.attempts ?? ATTEMPTS_PER_POS);
@@ -593,9 +813,6 @@ function sessionSummary(s){
   return { made:m, att:a, pct:pct(m,a) };
 }
 
-/* =========================
-   RENDER
-========================= */
 function renderAll(){
   const pl = state.players[currentPlayer];
   renderKPIs(pl);
@@ -619,14 +836,27 @@ function renderKPIs(pl){
     if(v > best.value) best = {label:p.label, value:v};
   });
 
-  const last = pl.sessions[0];
+  const sessions = pl.sessions || [];
+  const last = sessions[0];
   const lastPct = last ? sessionSummary(last).pct : 0;
+
+  const bestPct = sessions.length ? Math.max(...sessions.map(x => sessionSummary(x).pct)) : 0;
+
+  let improvement = null;
+  if (sessions.length >= 2) {
+    const lastV = sessionSummary(sessions[0]).pct;
+    const baseGroup = sessions.slice(-Math.min(3, sessions.length)).reverse(); // più vecchie
+    const base = Math.round(baseGroup.reduce((acc,s)=>acc+sessionSummary(s).pct,0)/baseGroup.length);
+    improvement = lastV - base;
+  }
 
   document.getElementById("kpiBox").innerHTML = `
     <div class="kpi"><div class="t">Sessioni</div><div class="v">${totals.sessions}</div></div>
     <div class="kpi"><div class="t">% Totale</div><div class="v">${overall}%</div></div>
     <div class="kpi"><div class="t">Miglior posizione</div><div class="v">${best.label} (${best.value<0?0:best.value}%)</div></div>
     <div class="kpi"><div class="t">Ultima sessione</div><div class="v">${last ? lastPct+"%" : "-"}</div></div>
+    <div class="kpi"><div class="t">Best session</div><div class="v">${sessions.length ? bestPct+"%" : "-"}</div></div>
+    <div class="kpi"><div class="t">Miglioramento</div><div class="v">${improvement===null ? "-" : (improvement>=0?"+":"") + improvement + "%"}</div></div>
   `;
 }
 
@@ -637,7 +867,7 @@ function renderHistory(pl){
   if(pl.sessions.length===0){
     const empty = document.createElement("div");
     empty.className = "hint";
-    empty.textContent = "Nessuna sessione salvata. Inserisci i canestri e premi “Aggiungi sessione”.";
+    empty.textContent = "Nessuna sessione salvata.";
     list.appendChild(empty);
     return;
   }
@@ -705,27 +935,26 @@ function renderCharts(pl){
 }
 
 /* =========================
-   WHATSAPP SHARE (ultima sessione)
+   WHATSAPP (compatto)
 ========================= */
 function shareLastSession(){
   const pl = state.players[currentPlayer];
   const s = pl.sessions[0];
-  if(!s) return alert("Nessuna sessione da inviare.");
+  if(!s) return;
 
   const sum = sessionSummary(s);
-  const lines = [];
-  lines.push(`🏀 Virtus Shot — ${pl.name}`);
-  lines.push(`📅 ${formatDateIT(s.date)}`);
-  if(s.note) lines.push(`📝 ${s.note}`);
-  lines.push(`✅ Totale: ${sum.made}/${sum.att} = ${sum.pct}%`);
-  lines.push(`Per posizione (su 10):`);
-  POSITIONS.forEach(p=>{
+  const posLine = POSITIONS.map(p=>{
     const m = s.made?.[p.key] ?? 0;
-    lines.push(`- ${p.label}: ${m}/10`);
-  });
+    return `${p.label}:${m}/10`;
+  }).join(" | ");
 
-  const text = lines.join("\n");
+  const text =
+`🏀 ${pl.name} — Virtus Shot
+📅 ${formatDateIT(s.date)}${s.note ? " — " + s.note : ""}
+✅ Tot: ${sum.made}/${sum.att} (${sum.pct}%)
+📌 ${posLine}`;
 
+  // Provo share; fallback WhatsApp URL
   if (navigator.share) {
     navigator.share({ text }).catch(()=> openWhatsApp(text));
   } else {
@@ -739,7 +968,7 @@ function openWhatsApp(text){
 }
 
 /* =========================
-   EXPORT / IMPORT JSON (ROBUSTO)
+   JSON EXPORT/IMPORT
 ========================= */
 function buildPlayerPayload(player){
   return {
@@ -762,7 +991,7 @@ async function exportPlayerJson(){
   const blob = new Blob([json], { type: "application/json" });
   const fileName = `${safeFile(pl.name)}_virtus_shot.json`;
 
-  // 1) Prova share come file (solo se supportato)
+  // 1) Share file se supportato
   try{
     if (navigator.canShare) {
       const file = new File([blob], fileName, { type: "application/json" });
@@ -774,7 +1003,7 @@ async function exportPlayerJson(){
     }
   } catch {}
 
-  // 2) Fallback: download (poi condividi da Download)
+  // 2) Download
   try{
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -789,9 +1018,9 @@ async function exportPlayerJson(){
     return;
   } catch {}
 
-  // 3) Ultimo fallback: copia negli appunti
+  // 3) Copy
   await copyText(json);
-  alert("JSON copiato negli appunti ✅\nIncollalo su WhatsApp (o salvalo in un file).");
+  alert("JSON copiato negli appunti ✅");
 }
 
 async function copyPlayerJson(){
@@ -799,7 +1028,7 @@ async function copyPlayerJson(){
   const payload = buildPlayerPayload(pl);
   const json = JSON.stringify(payload, null, 2);
   await copyText(json);
-  toast("JSON copiato negli appunti ✅");
+  toast("JSON copiato ✅");
 }
 
 async function importPlayerJsonFiles(fileList){
@@ -807,7 +1036,8 @@ async function importPlayerJsonFiles(fileList){
   if(!files.length) return;
 
   let importedSessions = 0;
-  let matchedPlayers = 0;
+  let updatedPlayers = 0;
+  let lastImportedPlayerIndex = null;
 
   for (const f of files) {
     try {
@@ -824,17 +1054,27 @@ async function importPlayerJsonFiles(fileList){
       const incomingName = (incoming.name || "").trim();
       const incSessions = Array.isArray(incoming.sessions) ? incoming.sessions : [];
 
-      // match per playerId, altrimenti per nome; altrimenti usa tab corrente
+      // 1) playerId
       let idx = -1;
       if (incomingId) idx = state.players.findIndex(p => p.playerId === incomingId);
-      if (idx === -1 && incomingName) idx = state.players.findIndex(p => (p.name||"").trim().toLowerCase() === incomingName.toLowerCase());
+
+      // 2) nome
+      if (idx === -1 && incomingName) {
+        idx = state.players.findIndex(p => (p.name||"").trim().toLowerCase() === incomingName.toLowerCase());
+      }
+
+      // 3) slot vuoto
+      if (idx === -1) {
+        idx = state.players.findIndex(p => Array.isArray(p.sessions) && p.sessions.length === 0);
+      }
+
+      // 4) tab corrente
       if (idx === -1) idx = currentPlayer;
 
       const target = state.players[idx];
 
-      // aggiorna identità (se era uno slot vuoto/placeholder)
-      if (incomingId && target.playerId !== incomingId) target.playerId = incomingId;
-      if (incomingName && target.name !== incomingName) target.name = incomingName;
+      if (incomingId) target.playerId = incomingId;
+      if (incomingName) target.name = incomingName;
 
       const existingIds = new Set((target.sessions || []).map(s => s.id));
       for (const s of incSessions) {
@@ -846,25 +1086,31 @@ async function importPlayerJsonFiles(fileList){
         }
       }
       target.sessions.sort((a,b)=> a.date===b.date ? 0 : (a.date < b.date ? 1 : -1));
-      matchedPlayers++;
+
+      updatedPlayers++;
+      lastImportedPlayerIndex = idx;
+
     } catch {
       alert(`Errore import su ${f.name}`);
     }
   }
 
   saveState();
+
+  if (lastImportedPlayerIndex !== null) {
+    currentPlayer = lastImportedPlayerIndex;
+    state.ui.currentPlayer = currentPlayer;
+  }
+
   renderTabs();
-  syncPlayerNameInput();
+  syncPlayerUI();
   renderAll();
 
-  alert(`Import completato ✅\nGiocatori aggiornati: ${matchedPlayers}\nSessioni importate: ${importedSessions}`);
+  alert(`Import completato ✅\nGiocatori aggiornati: ${updatedPlayers}\nSessioni importate: ${importedSessions}`);
 }
 
 function safeFile(s) {
-  return (s || "giocatore")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/gi, "_")
-    .replace(/^_+|_+$/g, "");
+  return (s || "giocatore").toLowerCase().replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "");
 }
 
 async function copyText(text){
@@ -883,12 +1129,12 @@ async function copyText(text){
 }
 
 /* =========================
-   TIMER 45 sec per posizione
+   TIMER (C + B) + GARA (blocco avanti)
 ========================= */
 function renderTimer(){
   const step = POSITIONS[timer.stepIndex];
   document.getElementById("timerStep").innerHTML =
-    `Step: <strong>${step.label}</strong> (${timer.stepIndex+1}/5) • ${TIMER_SECONDS} sec`;
+    `Step: <strong>${step.label}</strong> (${timer.stepIndex+1}/5)`;
   document.getElementById("timerClock").textContent = formatMMSS(timer.remaining);
 }
 
@@ -896,18 +1142,35 @@ function timerStart(){
   if(timer.running) return;
   timer.running = true;
 
-  // su alcuni telefoni l'audio richiede un "gesture": qui siamo dentro click -> ok
   timer.intervalId = setInterval(()=>{
     timer.remaining -= 1;
+
+    // Countdown C: beep + vibra a -5, -3, -1
+    if (timer.remaining === 5 || timer.remaining === 3 || timer.remaining === 1) {
+      beepShort();
+      vibrateShort();
+    }
+
     if(timer.remaining <= 0){
       timer.remaining = 0;
       renderTimer();
-      beep();
+
+      // Finale B: 3 beep + vibra lunga
+      beepDouble();
+      setTimeout(()=>beep(), 500);
       vibrate();
+
       timerPause();
-      setTimeout(()=> timerNextStep(true), 250);
+
+      if (document.getElementById("modeGara")?.checked) {
+        timer.lockedAfterTimeUp = true; // blocca avanti finché non inserisci i tiri del step corrente
+        alert("⏱️ Tempo finito! Inserisci i canestri della posizione e poi premi AVANTI.");
+      } else {
+        toast("Tempo finito ✅ Premi AVANTI");
+      }
       return;
     }
+
     renderTimer();
   }, 1000);
 }
@@ -924,14 +1187,26 @@ function timerReset(){
   timerPause();
   timer.stepIndex = 0;
   timer.remaining = TIMER_SECONDS;
+  timer.lockedAfterTimeUp = false;
   renderTimer();
 }
 
 function timerNextStep(fromAuto){
+  // NO AUTOSTART: qui non parte da solo
+  const gara = document.getElementById("modeGara")?.checked;
+
+  // blocco avanti in modalità gara se tempo finito e non hai inserito i tiri
+  if (gara && timer.lockedAfterTimeUp) {
+    alert("Modalità gara: prima inserisci i canestri della posizione corrente (muovi lo slider) ✅");
+    return;
+  }
+
   timerPause();
+
   if(timer.stepIndex < POSITIONS.length - 1){
     timer.stepIndex += 1;
     timer.remaining = TIMER_SECONDS;
+    timer.lockedAfterTimeUp = false;
     renderTimer();
     if(!fromAuto){
       beepShort();
@@ -939,6 +1214,7 @@ function timerNextStep(fromAuto){
     }
   }else{
     timer.remaining = 0;
+    timer.lockedAfterTimeUp = false;
     renderTimer();
     beepDouble();
     vibrate();
@@ -953,7 +1229,7 @@ function formatMMSS(sec){
 }
 
 function vibrate(){
-  if(navigator.vibrate) navigator.vibrate([120,80,120]);
+  if(navigator.vibrate) navigator.vibrate([140,90,140,90,180]);
 }
 function vibrateShort(){
   if(navigator.vibrate) navigator.vibrate(60);
@@ -962,7 +1238,7 @@ function beep(){
   tone(880, 0.18);
 }
 function beepShort(){
-  tone(660, 0.10);
+  tone(660, 0.11);
 }
 function beepDouble(){
   tone(880,0.12);
@@ -977,7 +1253,7 @@ function tone(freq, seconds){
     o.frequency.value = freq;
     o.connect(g);
     g.connect(ctx.destination);
-    g.gain.value = 0.08;
+    g.gain.value = 0.09;
     o.start();
     setTimeout(()=>{ o.stop(); ctx.close(); }, seconds*1000);
   }catch{}
@@ -1003,7 +1279,7 @@ function formatDateShortIT(iso){
   return dt.toLocaleDateString("it-IT", { day:"2-digit", month:"2-digit" });
 }
 function escapeHtml(s){
-  return s.replace(/[&<>"']/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));
+  return String(s).replace(/[&<>"']/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));
 }
 
 /* =========================
@@ -1016,13 +1292,6 @@ function toast(msg){
   el.classList.add("show");
   if(toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(()=> el.classList.remove("show"), 1600);
-}
-
-/* =========================
-   PWA SW (facoltativo)
-========================= */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js").catch(()=>{});
 }
 </script>
 </body>
