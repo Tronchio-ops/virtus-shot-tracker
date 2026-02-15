@@ -8,7 +8,6 @@
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#062714" />
 
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
@@ -21,8 +20,6 @@
       --muted: rgba(236,255,242,0.75);
       --accent:#1e8239;
       --danger:#c43b3b;
-      --btn:#0f3a1d;
-      --btn2:#155225;
       --shadow: 0 10px 30px rgba(0,0,0,0.35);
       --radius:16px;
     }
@@ -37,33 +34,14 @@
         linear-gradient(180deg, var(--bg1), var(--bg2));
       min-height:100vh;
     }
-    header{
-      padding:18px 16px 8px;
-      text-align:center;
-    }
-    header h1{
-      margin:0;
-      font-size:28px;
-      letter-spacing:0.5px;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.35);
-    }
-    header .sub{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:13px;
-    }
+    header{ padding:18px 16px 8px; text-align:center; }
+    header h1{ margin:0; font-size:28px; text-shadow: 0 2px 12px rgba(0,0,0,0.35); }
+    header .sub{ margin-top:6px; color:var(--muted); font-size:13px; }
 
-    .wrap{
-      max-width: 980px;
-      margin:0 auto;
-      padding: 10px 12px 80px;
-    }
+    .wrap{ max-width: 980px; margin:0 auto; padding: 10px 12px 90px; }
 
     .tabs{
-      display:flex;
-      gap:8px;
-      overflow-x:auto;
-      padding: 8px 4px 12px;
+      display:flex; gap:8px; overflow-x:auto; padding: 8px 4px 12px;
     }
     .tab{
       flex:0 0 auto;
@@ -74,22 +52,13 @@
       border-radius: 999px;
       font-size:13px;
       cursor:pointer;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
       white-space:nowrap;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
     }
-    .tab.active{
-      border-color: rgba(30,130,57,0.75);
-      background: rgba(30,130,57,0.18);
-    }
+    .tab.active{ border-color: rgba(30,130,57,0.75); background: rgba(30,130,57,0.18); }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:12px;
-    }
-    @media (min-width: 900px){
-      .grid{ grid-template-columns: 1.05fr 0.95fr; }
-    }
+    .grid{ display:grid; grid-template-columns: 1fr; gap:12px; }
+    @media (min-width: 900px){ .grid{ grid-template-columns: 1.05fr 0.95fr; } }
 
     .card{
       background: var(--card);
@@ -99,20 +68,11 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(6px);
     }
-    .card h2{
-      margin:0 0 10px;
-      font-size:18px;
-    }
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    label{
-      font-size:13px;
-      color: var(--muted);
-    }
+    .card h2{ margin:0 0 10px; font-size:18px; }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    label{ font-size:13px; color: var(--muted); }
+
     input[type="text"], input[type="number"], input[type="date"]{
       width: 100%;
       padding: 10px 10px;
@@ -123,6 +83,7 @@
       outline:none;
     }
     input[type="number"]{ text-align:center; }
+
     .inputs{
       display:grid;
       grid-template-columns: 1fr 110px;
@@ -134,7 +95,7 @@
 
     .btn{
       border: 1px solid rgba(255,255,255,0.14);
-      background: linear-gradient(180deg, var(--btn2), var(--btn));
+      background: rgba(30,130,57,0.22);
       color: var(--text);
       padding: 11px 12px;
       border-radius: 14px;
@@ -145,18 +106,13 @@
     }
     .btn.secondary{ background: rgba(0,0,0,0.25); }
     .btn.danger{
-      background: linear-gradient(180deg, rgba(196,59,59,0.9), rgba(130,18,18,0.8));
+      background: rgba(196,59,59,0.30);
       border-color: rgba(255,255,255,0.12);
     }
     .btn.small{ width:auto; padding:9px 10px; border-radius: 12px; font-size:13px; }
     .btn:active{ transform: translateY(1px); }
 
-    .hint{
-      margin-top:8px;
-      color: var(--muted);
-      font-size:12px;
-      line-height:1.35;
-    }
+    .hint{ margin-top:8px; color: var(--muted); font-size:12px; line-height:1.35; }
 
     .watermarkWrap{
       position:relative;
@@ -168,14 +124,12 @@
     }
     .watermarkWrap::before{
       content:"";
-      position:absolute;
-      inset:0;
+      position:absolute; inset:0;
       background-image: url("icon-512.png");
       background-repeat:no-repeat;
       background-position:center;
       background-size: 72%;
       opacity: 0.10;
-      filter: blur(0px);
       pointer-events:none;
     }
     canvas{ position:relative; z-index:1; }
@@ -214,24 +168,10 @@
       justify-content:space-between;
       align-items:center;
     }
-    .item .left{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-    .item .date{
-      font-weight:800;
-      font-size:13px;
-    }
-    .item .mini{
-      font-size:12px;
-      color:var(--muted);
-    }
-    .item .right{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
+    .item .left{ display:flex; flex-direction:column; gap:4px; }
+    .item .date{ font-weight:800; font-size:13px; }
+    .item .mini{ font-size:12px; color:var(--muted); }
+    .item .right{ display:flex; gap:8px; align-items:center; }
     .pill{
       font-size:12px;
       padding:6px 8px;
@@ -242,25 +182,36 @@
       white-space:nowrap;
     }
 
-    footer{
-      position:fixed;
-      left:0; right:0; bottom:0;
-      padding:10px 12px;
-      background: rgba(0,0,0,0.40);
-      border-top:1px solid rgba(255,255,255,0.10);
-      backdrop-filter: blur(8px);
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      z-index: 999;
+    /* TIMER */
+    .timerBox{
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 10px;
     }
-    footer button{ max-width: 420px; }
+    .timerTop{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    }
+    .timerBig{
+      font-size:34px; font-weight:900;
+      letter-spacing:1px;
+    }
+    .step{
+      color: var(--muted);
+      font-weight:800;
+      font-size:13px;
+    }
+    .step strong{ color: var(--text); }
+    .timerBtns{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .timerBtns .btn{ width:auto; }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Virtus Shot Tracker</h1>
-    <div class="sub">Sessione = <b>10 tiri per posizione</b> • 8 giocatori • dati salvati sul telefono</div>
+    <div class="sub">Sessione = <b>10 tiri per posizione</b> • Timer <b>45 sec</b> a posizione • Condivisione su WhatsApp</div>
   </header>
 
   <div class="wrap">
@@ -278,12 +229,12 @@
         </div>
       </div>
       <div class="hint">
-        Cambia nome e premi <b>Salva nome</b>. Il reset cancella tutte le sessioni del giocatore selezionato.
+        Ogni giocatore usa la sua app e a fine sessione invia il riepilogo su WhatsApp (oppure esporta JSON).
       </div>
     </div>
 
     <div class="grid">
-      <!-- LEFT: insert -->
+      <!-- LEFT: insert + timer -->
       <div class="card">
         <h2>Nuova sessione</h2>
         <div class="row">
@@ -304,9 +255,27 @@
         <div id="inputsBox" style="margin-top:10px;"></div>
 
         <button class="btn" id="addSessionBtn" style="margin-top:10px;">Aggiungi sessione</button>
+
+        <!-- TIMER -->
+        <div class="timerBox">
+          <div class="timerTop">
+            <div>
+              <div class="step" id="timerStep">Step: <strong>Fondo sx</strong> (1/5) • 45 sec</div>
+              <div class="hint" style="margin:6px 0 0;">Consiglio: avvia timer e fai i 10 tiri. A fine beep → passa alla posizione successiva.</div>
+            </div>
+            <div class="timerBig" id="timerClock">00:45</div>
+          </div>
+
+          <div class="timerBtns">
+            <button class="btn small secondary" id="timerStartBtn">Start</button>
+            <button class="btn small secondary" id="timerPauseBtn">Pausa</button>
+            <button class="btn small secondary" id="timerNextBtn">Avanti</button>
+            <button class="btn small danger" id="timerResetBtn">Reset timer</button>
+          </div>
+        </div>
       </div>
 
-      <!-- RIGHT: charts + stats + history -->
+      <!-- RIGHT: stats + charts + share/import/export + history -->
       <div class="card">
         <h2>Statistiche & Calendario</h2>
 
@@ -321,12 +290,21 @@
         </div>
 
         <div class="row" style="margin-top:12px;">
-          <button class="btn small secondary" id="exportBtn">Condividi riepilogo</button>
+          <button class="btn small secondary" id="shareSessionBtn">Invia ultima sessione (WhatsApp)</button>
+          <button class="btn small secondary" id="exportJsonBtn">Esporta JSON</button>
+
+          <label class="btn small secondary" style="cursor:pointer;">
+            Importa JSON
+            <input id="importJsonInput" type="file" accept="application/json" multiple style="display:none;">
+          </label>
+
           <button class="btn small danger" id="resetAllBtn">RESET TUTTO</button>
         </div>
 
         <div class="hint">
-          “RESET TUTTO” cancella i dati di tutti gli 8 giocatori (azione irreversibile).
+          - <b>Invia ultima sessione</b>: manda il testo su WhatsApp.<br>
+          - <b>Esporta JSON</b>: manda il file completo al coach (backup).<br>
+          - <b>Importa JSON</b>: il coach importa i file ricevuti per avere lo storico in app.
         </div>
 
         <h2 style="margin-top:16px;">Storico (per data)</h2>
@@ -334,10 +312,6 @@
       </div>
     </div>
   </div>
-
-  <footer>
-    <button class="btn secondary" id="forceRefreshBtn">Aggiorna app (ricarica)</button>
-  </footer>
 
 <script>
 /* =========================
@@ -352,7 +326,10 @@ const POSITIONS = [
 ];
 const ATTEMPTS_PER_POS = 10;
 const PLAYERS_COUNT = 8;
-const STORAGE_KEY = "virtus_shot_tracker_v3";
+const STORAGE_KEY = "virtus_shot_tracker_v4";
+
+/* TIMER */
+const TIMER_SECONDS = 45;
 
 /* =========================
    STATE
@@ -360,6 +337,14 @@ const STORAGE_KEY = "virtus_shot_tracker_v3";
 let state = loadState();
 let currentPlayer = state.ui?.currentPlayer ?? 0;
 let barChart, lineChart;
+
+/* TIMER STATE */
+let timer = {
+  running:false,
+  remaining:TIMER_SECONDS,
+  stepIndex:0,       // 0..4
+  intervalId:null
+};
 
 /* =========================
    INIT
@@ -370,6 +355,7 @@ bindUI();
 syncPlayerNameInput();
 setDefaultDate();
 renderAll();
+renderTimer();
 
 /* =========================
    UI BUILDERS
@@ -413,8 +399,16 @@ function bindUI(){
   document.getElementById("addSessionBtn").onclick = addSession;
   document.getElementById("resetPlayerBtn").onclick = resetCurrentPlayer;
   document.getElementById("resetAllBtn").onclick = resetAllPlayers;
-  document.getElementById("exportBtn").onclick = shareSummary;
-  document.getElementById("forceRefreshBtn").onclick = () => location.reload();
+
+  document.getElementById("shareSessionBtn").onclick = shareLastSession;
+  document.getElementById("exportJsonBtn").onclick = exportPlayerJson;
+  document.getElementById("importJsonInput").addEventListener("change", (e) => importPlayerJsonFiles(e.target.files));
+
+  // timer
+  document.getElementById("timerStartBtn").onclick = timerStart;
+  document.getElementById("timerPauseBtn").onclick = timerPause;
+  document.getElementById("timerResetBtn").onclick = timerReset;
+  document.getElementById("timerNextBtn").onclick = timerNextStep;
 }
 
 function syncPlayerNameInput(){
@@ -422,8 +416,7 @@ function syncPlayerNameInput(){
 }
 
 function setDefaultDate(){
-  const d = new Date();
-  const iso = d.toISOString().slice(0,10);
+  const iso = new Date().toISOString().slice(0,10);
   document.getElementById("sessionDate").value = iso;
 }
 
@@ -434,8 +427,9 @@ function defaultState(){
   return {
     ui:{ currentPlayer: 0 },
     players: Array.from({length: PLAYERS_COUNT}, (_,i)=>({
+      playerId: uid(),
       name: `Giocatore ${i+1}`,
-      sessions: [] // {id,date,note, made:{...}, attempts:10}
+      sessions: [] // {id,date,note, attempts, made:{...}}
     }))
   };
 }
@@ -445,10 +439,10 @@ function loadState(){
     const raw = localStorage.getItem(STORAGE_KEY);
     if(!raw) return defaultState();
     const parsed = JSON.parse(raw);
-    // harden
     if(!parsed.players || parsed.players.length !== PLAYERS_COUNT) return defaultState();
     parsed.ui = parsed.ui || { currentPlayer:0 };
     parsed.players.forEach((pl,i)=>{
+      pl.playerId = pl.playerId || uid();
       pl.name = pl.name || `Giocatore ${i+1}`;
       pl.sessions = Array.isArray(pl.sessions) ? pl.sessions : [];
     });
@@ -491,7 +485,7 @@ function addSession(){
     if(Number.isNaN(n)) n = 0;
     if(n < 0) n = 0;
     if(n > ATTEMPTS_PER_POS) n = ATTEMPTS_PER_POS;
-    made[k] = n;
+    made[k] = Math.round(n);
   }
 
   const session = {
@@ -503,13 +497,10 @@ function addSession(){
   };
 
   state.players[currentPlayer].sessions.push(session);
-  // sort by date desc then by insertion
-  state.players[currentPlayer].sessions.sort((a,b)=>{
-    if(a.date===b.date) return 0;
-    return a.date < b.date ? 1 : -1;
-  });
+  state.players[currentPlayer].sessions.sort((a,b)=> a.date===b.date ? 0 : (a.date < b.date ? 1 : -1));
 
   saveState();
+
   // reset inputs
   document.getElementById("sessionNote").value = "";
   inputs.forEach(i=> i.value = "0");
@@ -567,7 +558,6 @@ function pct(made, att){
 }
 
 function sessionSummary(s){
-  // total made out of (attempts*positions)
   let m=0;
   let a=0;
   for(const p of POSITIONS){
@@ -595,22 +585,18 @@ function renderKPIs(pl){
     madeAll += totals.madeByPos[p.key];
     attAll += totals.attByPos[p.key];
   }
-
-  const kpiBox = document.getElementById("kpiBox");
   const overall = pct(madeAll, attAll);
 
-  // best position
   let best = {label:"-", value:-1};
   POSITIONS.forEach(p=>{
     const v = pct(totals.madeByPos[p.key], totals.attByPos[p.key]);
     if(v > best.value) best = {label:p.label, value:v};
   });
 
-  // last session
   const last = pl.sessions[0];
   const lastPct = last ? sessionSummary(last).pct : 0;
 
-  kpiBox.innerHTML = `
+  document.getElementById("kpiBox").innerHTML = `
     <div class="kpi"><div class="t">Sessioni</div><div class="v">${totals.sessions}</div></div>
     <div class="kpi"><div class="t">% Totale</div><div class="v">${overall}%</div></div>
     <div class="kpi"><div class="t">Miglior posizione</div><div class="v">${best.label} (${best.value<0?0:best.value}%)</div></div>
@@ -654,7 +640,6 @@ function renderHistory(pl){
 function renderCharts(pl){
   const totals = calcTotals(pl);
 
-  // BAR: overall % per posizione (0-100)
   const labels = POSITIONS.map(p=>p.label);
   const values = POSITIONS.map(p=> pct(totals.madeByPos[p.key], totals.attByPos[p.key]));
 
@@ -662,33 +647,18 @@ function renderCharts(pl){
   if(barChart) barChart.destroy();
   barChart = new Chart(barCtx, {
     type: "bar",
-    data: {
-      labels,
-      datasets: [{
-        label: "% per posizione (totale)",
-        data: values
-      }]
-    },
+    data: { labels, datasets: [{ label: "% per posizione (totale)", data: values }] },
     options: {
       responsive:true,
-      plugins:{
-        legend:{ labels:{ color:"#ecfff2"} },
-        tooltip:{ enabled:true }
-      },
+      plugins:{ legend:{ labels:{ color:"#ecfff2"} } },
       scales:{
         x:{ ticks:{ color:"#ecfff2" }, grid:{ color:"rgba(255,255,255,0.08)" } },
-        y:{
-          min:0,
-          max:100,
-          ticks:{ color:"#ecfff2", callback:(v)=> v+"%" },
-          grid:{ color:"rgba(255,255,255,0.08)" }
-        }
+        y:{ min:0, max:100, ticks:{ color:"#ecfff2", callback:(v)=> v+"%" }, grid:{ color:"rgba(255,255,255,0.08)" } }
       }
     }
   });
 
-  // LINE: andamento % totale ultime 10 sessioni (0-100)
-  const last10 = pl.sessions.slice(0,10).slice().reverse(); // chronological
+  const last10 = pl.sessions.slice(0,10).slice().reverse();
   const lineLabels = last10.map(s => formatDateShortIT(s.date));
   const lineValues = last10.map(s => sessionSummary(s).pct);
 
@@ -696,79 +666,257 @@ function renderCharts(pl){
   if(lineChart) lineChart.destroy();
   lineChart = new Chart(lineCtx, {
     type:"line",
-    data:{
-      labels: lineLabels,
-      datasets:[{
-        label:"Andamento % (ultime 10)",
-        data: lineValues,
-        tension: 0.25,
-        pointRadius: 3
-      }]
-    },
+    data:{ labels: lineLabels, datasets:[{ label:"Andamento % (ultime 10)", data: lineValues, tension:0.25, pointRadius:3 }] },
     options:{
       responsive:true,
-      plugins:{
-        legend:{ labels:{ color:"#ecfff2"} }
-      },
+      plugins:{ legend:{ labels:{ color:"#ecfff2"} } },
       scales:{
         x:{ ticks:{ color:"#ecfff2" }, grid:{ color:"rgba(255,255,255,0.08)" } },
-        y:{
-          min:0,
-          max:100,
-          ticks:{ color:"#ecfff2", callback:(v)=> v+"%" },
-          grid:{ color:"rgba(255,255,255,0.08)" }
-        }
+        y:{ min:0, max:100, ticks:{ color:"#ecfff2", callback:(v)=> v+"%" }, grid:{ color:"rgba(255,255,255,0.08)" } }
       }
     }
   });
 }
 
 /* =========================
-   SHARE
+   WHATSAPP SHARE (ultima sessione)
 ========================= */
-function shareSummary(){
+function shareLastSession(){
   const pl = state.players[currentPlayer];
-  const totals = calcTotals(pl);
+  const s = pl.sessions[0];
+  if(!s) return alert("Nessuna sessione da inviare.");
 
-  let madeAll=0, attAll=0;
-  POSITIONS.forEach(p=>{
-    madeAll += totals.madeByPos[p.key];
-    attAll += totals.attByPos[p.key];
-  });
-
-  const overall = pct(madeAll, attAll);
+  const sum = sessionSummary(s);
   const lines = [];
-  lines.push(`🏀 ${pl.name} — Virtus Shot Tracker`);
-  lines.push(`Sessioni: ${pl.sessions.length}`);
-  lines.push(`Totale: ${madeAll}/${attAll} = ${overall}%`);
-  lines.push(`Per posizione (su ${ATTEMPTS_PER_POS}):`);
+  lines.push(`🏀 Virtus Shot — ${pl.name}`);
+  lines.push(`📅 ${formatDateIT(s.date)}`);
+  if(s.note) lines.push(`📝 ${s.note}`);
+  lines.push(`✅ Totale: ${sum.made}/${sum.att} = ${sum.pct}%`);
+  lines.push(`Per posizione (su 10):`);
   POSITIONS.forEach(p=>{
-    const m = totals.madeByPos[p.key];
-    const a = totals.attByPos[p.key];
-    lines.push(`- ${p.label}: ${m}/${a} (${pct(m,a)}%)`);
+    const m = s.made?.[p.key] ?? 0;
+    lines.push(`- ${p.label}: ${m}/10`);
   });
-
-  const last = pl.sessions[0];
-  if(last){
-    const s = sessionSummary(last);
-    lines.push(`Ultima: ${formatDateIT(last.date)} — ${s.made}/${s.att} (${s.pct}%)`);
-  }
 
   const text = lines.join("\n");
 
-  if(navigator.share){
-    navigator.share({ text }).catch(()=> copyToClipboard(text));
-  }else{
-    copyToClipboard(text);
+  // Prova share nativo
+  if (navigator.share) {
+    navigator.share({ text }).catch(()=> openWhatsApp(text));
+  } else {
+    openWhatsApp(text);
   }
 }
 
-function copyToClipboard(text){
-  navigator.clipboard?.writeText(text)
-    .then(()=> alert("Copiato negli appunti ✅"))
-    .catch(()=> {
-      prompt("Copia manualmente:", text);
-    });
+function openWhatsApp(text){
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
+}
+
+/* =========================
+   EXPORT / IMPORT JSON
+========================= */
+async function exportPlayerJson(){
+  const pl = state.players[currentPlayer];
+  const payload = {
+    app: "virtus-shot-tracker",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    player: {
+      playerId: pl.playerId,
+      name: pl.name,
+      sessions: pl.sessions
+    }
+  };
+
+  const json = JSON.stringify(payload, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const fileName = `${safeFile(pl.name)}_virtus_shot.json`;
+  const file = new File([blob], fileName, { type: "application/json" });
+
+  // Web Share file (se supportato)
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: "Virtus Shot - Dati giocatore" });
+      return;
+    } catch {}
+  }
+
+  // fallback download
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function safeFile(s) {
+  return (s || "giocatore").toLowerCase().replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "");
+}
+
+async function importPlayerJsonFiles(fileList){
+  const files = Array.from(fileList || []);
+  if(!files.length) return;
+
+  let importedPlayers = 0;
+  let importedSessions = 0;
+
+  for (const f of files) {
+    try {
+      const text = await f.text();
+      const data = JSON.parse(text);
+
+      if (!data || data.app !== "virtus-shot-tracker" || !data.player) {
+        alert(`File non valido: ${f.name}`);
+        continue;
+      }
+
+      const incoming = data.player;
+      const incomingId = incoming.playerId || null;
+      const incomingName = (incoming.name || "").trim();
+      const incSessions = Array.isArray(incoming.sessions) ? incoming.sessions : [];
+
+      // match per playerId, altrimenti per nome
+      let idx = -1;
+      if (incomingId) idx = state.players.findIndex(p => p.playerId === incomingId);
+      if (idx === -1 && incomingName) idx = state.players.findIndex(p => (p.name||"").trim().toLowerCase() === incomingName.toLowerCase());
+
+      // se non trovato, usa lo slot corrente (coach può scegliere tab prima di importare)
+      if (idx === -1) {
+        idx = currentPlayer;
+        // setta id/nome se era "vuoto"
+        state.players[idx].playerId = incomingId || state.players[idx].playerId || uid();
+        state.players[idx].name = incomingName || state.players[idx].name;
+        importedPlayers++;
+      }
+
+      const target = state.players[idx];
+      const existingIds = new Set((target.sessions || []).map(s => s.id));
+      for (const s of incSessions) {
+        if (!s || !s.id) continue;
+        if (!existingIds.has(s.id)) {
+          target.sessions.push(s);
+          existingIds.add(s.id);
+          importedSessions++;
+        }
+      }
+      target.sessions.sort((a,b)=> a.date===b.date ? 0 : (a.date < b.date ? 1 : -1));
+
+    } catch {
+      alert(`Errore import su ${f.name}`);
+    }
+  }
+
+  saveState();
+  renderTabs();
+  syncPlayerNameInput();
+  renderAll();
+  alert(`Import completato ✅\nGiocatori aggiornati: ${importedPlayers}\nSessioni importate: ${importedSessions}`);
+}
+
+/* =========================
+   TIMER 45 sec per posizione
+========================= */
+function renderTimer(){
+  const step = POSITIONS[timer.stepIndex];
+  document.getElementById("timerStep").innerHTML =
+    `Step: <strong>${step.label}</strong> (${timer.stepIndex+1}/5) • ${TIMER_SECONDS} sec`;
+
+  document.getElementById("timerClock").textContent = formatMMSS(timer.remaining);
+}
+
+function timerStart(){
+  if(timer.running) return;
+  timer.running = true;
+
+  timer.intervalId = setInterval(()=>{
+    timer.remaining -= 1;
+    if(timer.remaining <= 0){
+      timer.remaining = 0;
+      renderTimer();
+      beep();
+      vibrate();
+      timerPause();
+      // auto avanti
+      setTimeout(()=> timerNextStep(true), 250);
+      return;
+    }
+    renderTimer();
+  }, 1000);
+}
+
+function timerPause(){
+  timer.running = false;
+  if(timer.intervalId){
+    clearInterval(timer.intervalId);
+    timer.intervalId = null;
+  }
+}
+
+function timerReset(){
+  timerPause();
+  timer.stepIndex = 0;
+  timer.remaining = TIMER_SECONDS;
+  renderTimer();
+}
+
+function timerNextStep(fromAuto=false){
+  timerPause();
+  if(timer.stepIndex < POSITIONS.length - 1){
+    timer.stepIndex += 1;
+    timer.remaining = TIMER_SECONDS;
+    renderTimer();
+    if(!fromAuto){
+      beepShort();
+      vibrateShort();
+    }
+  }else{
+    // fine sessione
+    timer.remaining = 0;
+    renderTimer();
+    beepDouble();
+    vibrate();
+  }
+}
+
+function formatMMSS(sec){
+  const m = Math.floor(sec/60);
+  const s = sec%60;
+  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+
+function vibrate(){
+  if(navigator.vibrate) navigator.vibrate([120,80,120]);
+}
+function vibrateShort(){
+  if(navigator.vibrate) navigator.vibrate(60);
+}
+function beep(){
+  tone(880, 0.18);
+}
+function beepShort(){
+  tone(660, 0.10);
+}
+function beepDouble(){
+  tone(880,0.12);
+  setTimeout(()=>tone(880,0.12), 220);
+}
+function tone(freq, seconds){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.value = freq;
+    o.connect(g);
+    g.connect(ctx.destination);
+    g.gain.value = 0.08;
+    o.start();
+    setTimeout(()=>{ o.stop(); ctx.close(); }, seconds*1000);
+  }catch{}
 }
 
 /* =========================
@@ -781,7 +929,6 @@ function positionsMini(s){
   }).join(" • ");
 }
 function formatDateIT(iso){
-  // iso YYYY-MM-DD
   const [y,m,d] = iso.split("-").map(Number);
   const dt = new Date(y, m-1, d);
   return dt.toLocaleDateString("it-IT", { weekday:"short", day:"2-digit", month:"2-digit", year:"numeric" });
@@ -792,13 +939,11 @@ function formatDateShortIT(iso){
   return dt.toLocaleDateString("it-IT", { day:"2-digit", month:"2-digit" });
 }
 function escapeHtml(s){
-  return s.replace(/[&<>"']/g, (c)=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[c]));
+  return s.replace(/[&<>"']/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));
 }
 
 /* =========================
-   PWA: Service Worker
+   PWA SW
 ========================= */
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(()=>{});
