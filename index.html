@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtus Shot Tracker</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  color:white;
+  background: radial-gradient(circle at center, #0a4d2b, #000);
+}
+.container {
+  padding:20px;
+}
+h1 {
+  text-align:center;
+}
+.card {
+  background:rgba(0,0,0,0.4);
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+input {
+  width:60px;
+  padding:5px;
+}
+button {
+  padding:10px;
+  margin-top:10px;
+  width:100%;
+  background:#0a4d2b;
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Virtus Shot Tracker</h1>
+
+<div class="card">
+<h3>Inserisci canestri segnati</h3>
+<div>Fondo sx: <input id="p1" type="number"></div>
+<div>45° sx: <input id="p2" type="number"></div>
+<div>Frontale: <input id="p3" type="number"></div>
+<div>45° dx: <input id="p4" type="number"></div>
+<div>Fondo dx: <input id="p5" type="number"></div>
+<button onclick="addSession()">Aggiungi sessione</button>
+</div>
+
+<div class="card">
+<canvas id="chart"></canvas>
+</div>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("virtusData")) || [];
+
+function save() {
+  localStorage.setItem("virtusData", JSON.stringify(data));
+}
+
+function addSession() {
+  let total = 0;
+  for (let i=1;i<=5;i++) {
+    total += Number(document.getElementById("p"+i).value || 0);
+  }
+  let percent = total;
+  data.push(percent);
+  save();
+  drawChart();
+}
+
+function drawChart() {
+  let ctx = document.getElementById("chart");
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.map((_,i)=>"Test "+(i+1)),
+      datasets: [{
+        label: '% Media distanza',
+        data: data,
+        borderColor: 'lime',
+        tension: 0.3
+      }]
+    },
+    options: {
+      scales: {
+        y: {min:0, max:100}
+      }
+    }
+  });
+}
+
+drawChart();
+</
