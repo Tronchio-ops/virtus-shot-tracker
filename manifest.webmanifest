@@ -1,7 +1,7 @@
 {
-  "name": "Virtus Shot",
+  "name": "Virtus Shot Tracker",
   "short_name": "Virtus Shot",
-  "description": "Statistiche tiro media distanza",
+  "description": "Statistiche tiro Virtus (10 tiri per posizione) - 8 giocatori",
   "start_url": "/virtus-shot-tracker/",
   "scope": "/virtus-shot-tracker/",
   "display": "standalone",
@@ -9,15 +9,7 @@
   "theme_color": "#062714",
   "lang": "it",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
