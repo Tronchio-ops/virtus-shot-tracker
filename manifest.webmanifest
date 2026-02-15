@@ -1,0 +1,12 @@
+{
+  "name": "Virtus Shot Tracker",
+  "short_name": "Virtus Shot",
+  "start_url": "/virtus-shot-tracker/",
+  "scope": "/virtus-shot-tracker/",
+  "display": "standalone",
+  "background_color": "#062714",
+  "theme_color": "#062714",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
