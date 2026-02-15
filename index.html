@@ -2,642 +2,615 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Virtus Shot Tracker</title>
 
+  <!-- PWA -->
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#062714" />
 
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
     :root{
       --bg1:#041b0d;
       --bg2:#062714;
-      --card: rgba(0,0,0,0.35);
-      --border: rgba(255,255,255,0.12);
-      --text:#ecfff2;
-      --muted: rgba(236,255,242,0.75);
-      --accent:#1e8239;
-      --danger:#c43b3b;
-      --shadow: 0 10px 30px rgba(0,0,0,0.35);
-      --radius:16px;
+      --panel: rgba(0,0,0,.40);
+      --panel2: rgba(0,0,0,.25);
+      --text:#eaf7ee;
+      --muted: rgba(234,247,238,.72);
+      --accent:#20c25e;
+      --accent2:#0ea54a;
+      --danger:#ff4d4d;
+      --warn:#ffcc00;
+      --border: rgba(255,255,255,.10);
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --radius: 16px;
+      --radius2: 22px;
     }
-    *{box-sizing:border-box;}
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      font-family: Arial, sans-serif;
       color:var(--text);
-      background:
-        radial-gradient(circle at 20% 10%, rgba(30,130,57,0.20), transparent 55%),
-        radial-gradient(circle at 80% 30%, rgba(30,130,57,0.14), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      min-height:100vh;
-    }
-    header{ padding:18px 16px 8px; text-align:center; }
-    header h1{ margin:0; font-size:28px; text-shadow: 0 2px 12px rgba(0,0,0,0.35); }
-    header .sub{ margin-top:6px; color:var(--muted); font-size:13px; }
-
-    .wrap{ max-width: 980px; margin:0 auto; padding: 10px 12px 24px; }
-
-    .tabs{
-      display:flex; gap:8px; overflow-x:auto; padding: 8px 4px 12px;
-    }
-    .tab{
-      flex:0 0 auto;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,0.25);
-      color: var(--text);
-      padding:8px 10px;
-      border-radius: 999px;
-      font-size:13px;
-      cursor:pointer;
-      white-space:nowrap;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .tab.active{ border-color: rgba(30,130,57,0.75); background: rgba(30,130,57,0.18); }
-
-    .avatar{
-      width:22px; height:22px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.25);
-      object-fit:cover;
-      flex:0 0 auto;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at 20% 10%, #0b3a1d 0%, var(--bg2) 35%, var(--bg1) 100%);
+      overflow-x:hidden;
     }
 
-    .grid{ display:grid; grid-template-columns: 1fr; gap:12px; }
-    @media (min-width: 900px){ .grid{ grid-template-columns: 1.05fr 0.95fr; } }
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 14px 110px;
+    }
+
+    .title{
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      margin: 10px 0 6px;
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+    }
+    .subtitle{
+      margin:0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
 
     .card{
-      background: var(--card);
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(6px);
-    }
-    .card h2{ margin:0 0 10px; font-size:18px; }
-
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    label{ font-size:13px; color: var(--muted); }
-
-    input[type="text"], input[type="date"], select{
-      width: 100%;
-      padding: 10px 10px;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,0.16);
-      background: rgba(0,0,0,0.25);
-      color: var(--text);
-      outline:none;
+      padding: 16px;
+      margin: 14px 0;
     }
 
-    .btn{
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(30,130,57,0.22);
-      color: var(--text);
-      padding: 11px 12px;
-      border-radius: 14px;
-      font-weight:700;
-      cursor:pointer;
-      width:100%;
-      box-shadow: 0 10px 18px rgba(0,0,0,0.18);
-    }
-    .btn.secondary{ background: rgba(0,0,0,0.25); }
-    .btn.danger{
-      background: rgba(196,59,59,0.30);
-      border-color: rgba(255,255,255,0.12);
-    }
-    .btn.small{ width:auto; padding:9px 10px; border-radius: 12px; font-size:13px; }
-    .btn:active{ transform: translateY(1px); }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; }
+    .col{ flex:1 1 260px; min-width: 260px; }
 
-    .hint{ margin-top:8px; color: var(--muted); font-size:12px; line-height:1.35; }
-
-    .watermarkWrap{
-      position:relative;
-      border-radius: var(--radius);
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
-      padding: 10px;
-    }
-    .watermarkWrap::before{
-      content:"";
-      position:absolute; inset:0;
-      background-image: url("icon-512.png");
-      background-repeat:no-repeat;
-      background-position:center;
-      background-size: 72%;
-      opacity: 0.10;
-      pointer-events:none;
-    }
-    canvas{ position:relative; z-index:1; }
-
-    .stats{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-    .kpi{
-      padding:10px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
-    }
-    .kpi .t{ font-size:12px; color:var(--muted); }
-    .kpi .v{ font-size:18px; font-weight:800; margin-top:4px; }
-
-    .list{
-      margin-top:10px;
+    .section-title{
+      font-size: 16px;
+      font-weight: 800;
+      margin: 0 0 10px;
       display:flex;
-      flex-direction:column;
-      gap:8px;
-      max-height: 360px;
-      overflow:auto;
-      padding-right: 4px;
-    }
-    .item{
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
-      border-radius: 14px;
-      padding: 10px;
-      display:flex;
-      gap:10px;
-      justify-content:space-between;
       align-items:center;
+      gap:10px;
     }
-    .item .left{ display:flex; flex-direction:column; gap:4px; }
-    .item .date{ font-weight:800; font-size:13px; }
-    .item .mini{ font-size:12px; color:var(--muted); }
-    .item .right{ display:flex; gap:8px; align-items:center; }
-    .pill{
-      font-size:12px;
-      padding:6px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.12);
-      background: rgba(30,130,57,0.16);
-      font-weight:800;
-      white-space:nowrap;
+    .badge{
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(32,194,94,.15);
+      border: 1px solid rgba(32,194,94,.35);
+      color: #bff2cf;
     }
 
-    /* INPUT POS */
-    .posCard{
-      margin:10px 0;
-      padding:10px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
-    }
-    .posTop{
+    /* Player tabs */
+    .tabs{
       display:flex;
-      justify-content:space-between;
-      align-items:center;
       gap:10px;
       flex-wrap:wrap;
     }
-    .posTitle{
-      color:var(--text);
+    .tab{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor:pointer;
+      transition: .15s transform, .15s background, .15s border;
+      user-select:none;
+      touch-action: manipulation;
+    }
+    .tab:hover{ transform: translateY(-1px); }
+    .tab.active{
+      background: linear-gradient(180deg, rgba(32,194,94,.30), rgba(32,194,94,.12));
+      border-color: rgba(32,194,94,.55);
+    }
+
+    .player-head{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-top: 12px;
+    }
+    .avatar{
+      width: 56px; height:56px;
+      border-radius: 14px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.25);
+      display:flex;
+      align-items:center;
+      justify-content:center;
       font-weight:900;
+      color: rgba(255,255,255,.85);
     }
-    .posTitle span{
-      color:var(--muted);
-      font-weight:700;
-      margin-left:6px;
-      font-size:12px;
+    .avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .player-meta .name{
+      font-size: 18px;
+      font-weight: 900;
+      margin:0;
     }
-    .posControl{
+    .player-meta .small{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 10px 0 6px;
+      font-weight: 700;
+    }
+    input[type="text"], input[type="date"], textarea, select{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{ min-height: 72px; resize: vertical; }
+
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-weight: 900;
+      cursor:pointer;
+      transition:.15s transform, .15s background, .15s border;
+      user-select:none;
+      touch-action: manipulation;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(32,194,94,.35), rgba(32,194,94,.18));
+      border-color: rgba(32,194,94,.55);
+    }
+    .btn.danger{
+      background: rgba(255,77,77,.15);
+      border-color: rgba(255,77,77,.45);
+      color:#ffd7d7;
+    }
+    .btn.small{ padding: 8px 10px; border-radius: 12px; font-weight: 900; }
+
+    .muted{ color: var(--muted); font-size: 13px; }
+
+    /* Shot inputs (classic) */
+    .shots-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 760px){
+      .shots-grid{ grid-template-columns: 1fr 1fr; }
+    }
+    .shot-line{
+      background: var(--panel2);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      padding: 10px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .shot-label{
+      font-weight: 900;
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .shot-label span{ font-size: 12px; color: var(--muted); font-weight: 700; }
+
+    .stepper{
       display:flex;
       align-items:center;
       gap:8px;
     }
-    .posVal{
-      min-width:52px;
+    .stepper button{
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 900;
+      cursor:pointer;
+      touch-action: manipulation;
+    }
+    .stepper input{
+      width: 70px;
       text-align:center;
-      font-weight:900;
-      font-size:18px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 900;
+      outline:none;
+      /* important: evita cambi con rotella */
+    }
+    .stepper input::-webkit-outer-spin-button,
+    .stepper input::-webkit-inner-spin-button{
+      -webkit-appearance: none;
+      margin: 0;
     }
 
-    /* TIMER */
+    .pillrow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+    /* Timer */
     .timerBox{
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
-      border-radius: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
       padding: 12px;
-      margin-top: 10px;
     }
     .timerTop{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
-    }
-    .timerBig{
-      font-size:34px; font-weight:900;
-      letter-spacing:1px;
-    }
-    .step{
-      color: var(--muted);
-      font-weight:800;
-      font-size:13px;
-    }
-    .step strong{ color: var(--text); }
-    .timerBtns{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .timerBtns .btn{ width:auto; }
-
-    .toast{
-      display:none;
-      position:fixed;
-      left:12px; right:12px; bottom:12px;
-      padding:12px 14px;
-      border-radius: 14px;
-      background: rgba(0,0,0,0.85);
-      border: 1px solid rgba(255,255,255,0.14);
-      color: var(--text);
-      box-shadow: var(--shadow);
-      z-index:9999;
-    }
-    .toast.show{ display:block; }
-
-    .playerHeader{
       display:flex;
       align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .timerBig{
+      font-size: 42px;
+      font-weight: 1000;
+      letter-spacing: 1px;
+      text-shadow: 0 10px 25px rgba(0,0,0,.55);
+    }
+    .timerState{ color: var(--muted); font-size: 13px; font-weight: 700; }
+
+    .hr{ height:1px; background: rgba(255,255,255,.10); margin: 12px 0; border-radius: 999px; }
+
+    /* Chart watermark */
+    .chartWrap{
+      position:relative;
+      border-radius: 18px;
+      background: rgba(0,0,0,.16);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 12px;
+      overflow:hidden;
+    }
+    .watermark{
+      position:absolute;
+      inset:0;
+      background-repeat:no-repeat;
+      background-position:center;
+      background-size: 70%;
+      opacity:.10;
+      pointer-events:none;
+      filter: saturate(1.1);
+    }
+    canvas{ position:relative; z-index:2; }
+
+    /* Sessions list */
+    .list{
+      display:flex;
+      flex-direction:column;
       gap:10px;
-      margin-bottom:8px;
     }
-    .playerHeader .avatarBig{
-      width:42px; height:42px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.20);
-      object-fit:cover;
-      background: rgba(0,0,0,0.25);
+    .item{
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      border-radius: 14px;
+      padding: 10px;
     }
-    .playerHeader .nameBig{
-      font-size:16px;
-      font-weight:900;
+    .itemTop{
+      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
     }
-    .playerHeader .meta{
-      font-size:12px;
-      color: var(--muted);
-      margin-top:2px;
+    .itemTitle{ font-weight: 900; }
+    .itemSmall{ color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .itemGrid{
+      margin-top: 10px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:8px;
     }
+    @media (min-width: 760px){
+      .itemGrid{ grid-template-columns: repeat(5, minmax(0,1fr)); }
+    }
+    .kpi{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 12px;
+      padding: 8px;
+    }
+    .kpi b{ display:block; font-size: 12px; }
+    .kpi span{ display:block; color: var(--muted); font-size: 12px; margin-top:2px; }
+
+    /* Footer fixed actions (mobile) */
+    .footerBar{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding: 10px 12px;
+      background: rgba(0,0,0,.55);
+      border-top: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
+    }
+    .footerBar .inner{
+      max-width: 980px;
+      margin: 0 auto;
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .hint{ font-size: 12px; color: var(--muted); }
+
+    a.link{ color:#bff2cf; text-decoration:none; border-bottom:1px dashed rgba(191,242,207,.45); }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>Virtus Shot Tracker</h1>
-    <div class="sub">Sessione = <b>10 tiri per posizione</b> • Timer preset <b>45/40/30</b> • WhatsApp + JSON</div>
-  </header>
-
   <div class="wrap">
-    <div class="tabs" id="tabs"></div>
+    <div class="title">Virtus Shot Tracker</div>
+    <p class="subtitle">Sessione: <b>10 tiri per posizione</b> • Dati separati per ogni giocatore • Export/Import per WhatsApp</p>
 
-    <div class="card" style="margin-bottom:12px;">
-      <div class="playerHeader">
-        <img id="playerAvatarBig" class="avatarBig" alt="Foto giocatore">
-        <div>
-          <div class="nameBig" id="playerNameBig">Giocatore</div>
-          <div class="meta">Foto e nome salvati sul telefono</div>
+    <!-- Players -->
+    <div class="card">
+      <div class="section-title">Giocatori <span class="badge">8 profili</span></div>
+      <div id="tabs" class="tabs"></div>
+
+      <div class="player-head">
+        <div class="avatar" id="avatarBox">VP</div>
+        <div class="player-meta">
+          <p class="name" id="playerNameTop">Giocatore 1</p>
+          <p class="small" id="playerInfoTop">0 sessioni salvate</p>
         </div>
       </div>
 
-      <div class="row" style="justify-content:space-between;">
-        <div style="flex:1; min-width:220px;">
-          <label>Nome giocatore (pagina)</label>
-          <input id="playerName" type="text" placeholder="Es. Marco" />
+      <div class="row" style="margin-top:10px;">
+        <div class="col">
+          <label>Nome giocatore</label>
+          <div class="row" style="gap:10px;">
+            <div class="col" style="min-width:220px;">
+              <input id="nameInput" type="text" placeholder="Es. Marco" />
+            </div>
+            <div class="col" style="min-width:220px;">
+              <button class="btn primary" id="saveNameBtn">Salva nome</button>
+            </div>
+          </div>
+
+          <label>Foto giocatore (opzionale)</label>
+          <div class="pillrow">
+            <input id="photoInput" type="file" accept="image/*" />
+            <button class="btn small" id="removePhotoBtn">Rimuovi foto</button>
+          </div>
+          <p class="muted">La foto resta salvata solo sul tuo telefono (localStorage).</p>
+
+          <div class="hr"></div>
+          <div class="pillrow">
+            <button class="btn danger" id="resetPlayerBtn">Reset dati di questo giocatore</button>
+          </div>
         </div>
 
-        <div style="flex:1; min-width:220px;">
-          <label>Foto giocatore</label>
-          <input id="playerPhoto" type="file" accept="image/*" />
-          <div class="hint">Scegli una foto: verrà salvata nell’app (solo sul telefono).</div>
-        </div>
+        <div class="col">
+          <div class="section-title">Condivisione dati <span class="badge">Export / Import</span></div>
 
-        <div style="display:flex; gap:10px; align-items:end; flex-wrap:wrap;">
-          <button class="btn small secondary" id="saveNameBtn">Salva nome</button>
-          <button class="btn small secondary" id="removePhotoBtn">Rimuovi foto</button>
-          <button class="btn small danger" id="resetPlayerBtn">Reset giocatore</button>
-        </div>
-      </div>
+          <div class="pillrow">
+            <button class="btn primary" id="exportBtn">Esporta JSON giocatore</button>
+            <button class="btn" id="copyJsonBtn">Copia JSON</button>
+            <button class="btn" id="waSummaryBtn">Invia riepilogo su WhatsApp</button>
+          </div>
 
-      <div class="hint">
-        WhatsApp invio automatico dopo “Salva sessione”. JSON: backup / import dal coach (automatico sul tab giusto).
+          <label>Importa (incolla qui o scegli file)</label>
+          <textarea id="importArea" placeholder="Incolla qui il JSON esportato..."></textarea>
+          <div class="pillrow" style="margin-top:10px;">
+            <input id="importFile" type="file" accept=".json,application/json" />
+            <button class="btn primary" id="importBtn">Importa automaticamente</button>
+          </div>
+          <p class="muted">
+            Suggerimento: su WhatsApp invii il file <b>.json</b> (o incolli il JSON qui) e poi premi Importa.
+          </p>
+        </div>
       </div>
     </div>
 
-    <div class="grid">
-      <!-- LEFT -->
-      <div class="card">
-        <h2>Nuova sessione</h2>
-        <div class="row">
-          <div style="flex:1; min-width:170px;">
-            <label>Data</label>
-            <input id="sessionDate" type="date" />
-          </div>
-          <div style="flex:1; min-width:170px;">
-            <label>Note (opzionale)</label>
-            <input id="sessionNote" type="text" placeholder="Es. dopo allenamento / gara..." />
-          </div>
-        </div>
+    <!-- New session + timer -->
+    <div class="card">
+      <div class="row">
+        <div class="col">
+          <div class="section-title">Nuova sessione <span class="badge">10 tiri/posizione</span></div>
 
-        <div class="hint" style="margin-top:10px;">
-          Inserisci i canestri segnati con slider o +/-. Valori bloccati 0–10.
-        </div>
-
-        <div id="inputsBox" style="margin-top:10px;"></div>
-
-        <button class="btn" id="addSessionBtn" style="margin-top:10px;">Salva sessione</button>
-
-        <!-- TIMER -->
-        <div class="timerBox">
-          <div class="row" style="margin-bottom:8px;">
-            <div style="flex:1; min-width:200px;">
-              <label>Secondi per posizione</label>
-              <select id="timerPreset">
-                <option value="45">45 sec</option>
-                <option value="40">40 sec</option>
-                <option value="30">30 sec</option>
-              </select>
+          <div class="row">
+            <div class="col">
+              <label>Data</label>
+              <input id="dateInput" type="date" />
             </div>
-
-            <div style="flex:1; min-width:200px; display:flex; align-items:end;">
-              <label style="display:flex;align-items:center;gap:8px; width:100%;">
-                <input type="checkbox" id="modeGara">
-                Modalità gara (blocca AVANTI a tempo finito)
-              </label>
+            <div class="col">
+              <label>Note (opzionale)</label>
+              <input id="noteInput" type="text" placeholder="Es. dopo allenamento / pre-partita..." />
             </div>
           </div>
 
-          <div class="timerTop">
-            <div>
-              <div class="step" id="timerStep">Step: <strong>Fondo sx</strong> (1/5)</div>
-              <div class="hint" style="margin:6px 0 0;">
-                Countdown C: beep -5/-3/-1. Finale B: 3 beep + vibra lunga. <b>No autostart</b>.
+          <div style="margin-top:10px;" class="shots-grid" id="shotsGrid"></div>
+
+          <div class="pillrow" style="margin-top:12px;">
+            <button class="btn primary" id="saveSessionBtn">Salva sessione</button>
+            <button class="btn" id="clearDraftBtn">Azzera inserimento</button>
+          </div>
+
+          <p class="muted" style="margin-top:10px;">
+            Inserisci i <b>canestri segnati</b> (0–10) per ogni posizione.
+          </p>
+        </div>
+
+        <div class="col">
+          <div class="section-title">Modalità gara (timer unico) <span class="badge">45 / 40 / 35</span></div>
+
+          <div class="timerBox">
+            <div class="timerTop">
+              <div>
+                <div class="timerBig" id="timerDisplay">00:45</div>
+                <div class="timerState" id="timerState">Seleziona durata e premi Start.</div>
+              </div>
+
+              <div style="min-width: 240px;">
+                <label>Durata per lato</label>
+                <select id="timerPreset">
+                  <option value="45">45 secondi</option>
+                  <option value="40">40 secondi</option>
+                  <option value="35">35 secondi</option>
+                </select>
+
+                <label>Suono fine tempo</label>
+                <select id="soundPreset">
+                  <option value="C" selected>Suono C (beep)</option>
+                  <option value="B">Suono B (beep alternativo)</option>
+                  <option value="OFF">Nessun suono</option>
+                </select>
+
+                <div class="pillrow" style="margin-top:10px;">
+                  <button class="btn primary" id="startTimerBtn">Start</button>
+                  <button class="btn" id="pauseTimerBtn">Pausa</button>
+                  <button class="btn danger" id="resetTimerBtn">Reset</button>
+                </div>
               </div>
             </div>
-            <div class="timerBig" id="timerClock">00:45</div>
-          </div>
 
-          <div class="timerBtns">
-            <button class="btn small secondary" id="timerStartBtn">Start</button>
-            <button class="btn small secondary" id="timerPauseBtn">Pausa</button>
-            <button class="btn small secondary" id="timerNextBtn">Avanti</button>
-            <button class="btn small danger" id="timerResetBtn">Reset timer</button>
+            <div class="hr"></div>
+            <p class="muted" style="margin:0;">
+              A fine tempo: <b>beep + vibrazione</b>. (Se il telefono è in silenzioso/vibrazione può cambiare.)
+            </p>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- RIGHT -->
-      <div class="card">
-        <h2>Statistiche & Calendario</h2>
+    <!-- Stats -->
+    <div class="card">
+      <div class="section-title">Statistiche <span class="badge">grafico 0–100%</span></div>
 
-        <div class="stats" id="kpiBox"></div>
-
-        <div class="watermarkWrap" style="margin-top:12px;">
-          <canvas id="barChart" height="220"></canvas>
+      <div class="row">
+        <div class="col">
+          <div class="chartWrap">
+            <div class="watermark" id="wm"></div>
+            <canvas id="chart" height="220"></canvas>
+          </div>
+          <p class="muted" id="statsLine" style="margin-top:10px;">Nessuna sessione ancora salvata.</p>
         </div>
 
-        <div class="watermarkWrap" style="margin-top:12px;">
-          <canvas id="lineChart" height="220"></canvas>
+        <div class="col">
+          <div class="section-title">Dashboard</div>
+          <div class="pillrow">
+            <div class="kpi" style="flex:1 1 140px;">
+              <b>Miglior sessione</b>
+              <span id="bestSession">—</span>
+            </div>
+            <div class="kpi" style="flex:1 1 140px;">
+              <b>Totale sessioni</b>
+              <span id="totalSessions">0</span>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="section-title">Storico (ultime 10)</div>
+          <div class="list" id="sessionsList"></div>
         </div>
-
-        <div class="row" style="margin-top:12px;">
-          <button class="btn small secondary" id="shareSessionBtn">Invia ultima sessione (WhatsApp)</button>
-
-          <button class="btn small secondary" id="exportJsonBtn">Esporta JSON</button>
-          <button class="btn small secondary" id="copyJsonBtn">Copia JSON</button>
-
-          <label class="btn small secondary" style="cursor:pointer;">
-            Importa JSON
-            <input id="importJsonInput" type="file" accept="application/json" multiple style="display:none;">
-          </label>
-
-          <button class="btn small danger" id="resetAllBtn">RESET TUTTO</button>
-        </div>
-
-        <div class="hint">
-          Import automatico: playerId → nome → primo slot vuoto → tab corrente. Dopo import, ti porta sul tab corretto.
-        </div>
-
-        <h2 style="margin-top:16px;">Storico (per data)</h2>
-        <div class="list" id="historyList"></div>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Aggiornamenti app</div>
+      <p class="muted" style="margin:0;">
+        Per aggiornare l’app installata: aggiorna <b>index.html</b> su GitHub → apri il sito → fai <b>refresh</b> (o chiudi e riapri l’app).
+        Se non cambia subito: Impostazioni Android → App → Chrome → <b>Cancella cache</b> (non “dati”) e riapri.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="footerBar">
+    <div class="inner">
+      <div class="hint">Consiglio: fai Export JSON dopo l’allenamento e invialo al coach su WhatsApp.</div>
+      <button class="btn primary" id="scrollTopBtn">↑ Su</button>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
-
 <script>
 /* =========================
-   CONFIG
+   STORAGE + STATE
 ========================= */
-const POSITIONS = [
-  { key:"fondo_sx", label:"Fondo sx" },
-  { key:"45_sx",    label:"45° sx" },
-  { key:"frontale", label:"Frontale" },
-  { key:"45_dx",    label:"45° dx" },
-  { key:"fondo_dx", label:"Fondo dx" }
+
+const STORAGE_KEY = "virtus_shot_tracker_v3";
+const POS = [
+  { key:"fondo_sx", label:"Fondo sx", note:"su 10" },
+  { key:"angolo_sx", label:"45° sx", note:"su 10" },
+  { key:"frontale", label:"Frontale", note:"su 10" },
+  { key:"angolo_dx", label:"45° dx", note:"su 10" },
+  { key:"fondo_dx", label:"Fondo dx", note:"su 10" },
 ];
-const ATTEMPTS_PER_POS = 10;
-const PLAYERS_COUNT = 8;
-const STORAGE_KEY = "virtus_shot_tracker_v7";
 
-/* TIMER (preset) */
-let TIMER_SECONDS = 45;
-
-/* =========================
-   STATE
-========================= */
-let state = loadState();
-let currentPlayer = state.ui?.currentPlayer ?? 0;
-let barChart, lineChart;
-
-/* TIMER STATE */
-let timer = {
-  running:false,
-  remaining:TIMER_SECONDS,
-  stepIndex:0,
-  intervalId:null,
-  lockedAfterTimeUp:false // modalità gara: blocca AVANTI
-};
-
-/* =========================
-   INIT
-========================= */
-renderTabs();
-renderInputs();
-bindUI();
-syncPlayerUI();
-setDefaultDate();
-renderAll();
-renderTimer();
-
-/* =========================
-   UI
-========================= */
-function renderTabs(){
-  const tabs = document.getElementById("tabs");
-  tabs.innerHTML = "";
-  for(let i=0;i<PLAYERS_COUNT;i++){
-    const pl = state.players[i];
-    const name = pl?.name || `Giocatore ${i+1}`;
-    const imgSrc = pl?.photoDataUrl || "";
-    const btn = document.createElement("button");
-    btn.className = "tab" + (i===currentPlayer ? " active":"");
-    btn.innerHTML = `
-      <img class="avatar" src="${imgSrc ? imgSrc : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='100%25' height='100%25' fill='%23000000' fill-opacity='0.2'/%3E%3Ctext x='50%25' y='54%25' font-size='28' text-anchor='middle' fill='%23ecfff2' fill-opacity='0.8'%3E%F0%9F%8F%80%3C/text%3E%3C/svg%3E"}" alt="">
-      <span>${escapeHtml(name)}</span>
-    `;
-    btn.onclick = () => {
-      currentPlayer = i;
-      state.ui.currentPlayer = i;
-      saveState();
-      renderTabs();
-      syncPlayerUI();
-      renderAll();
-    };
-    tabs.appendChild(btn);
-  }
+function todayISO(){
+  const d = new Date();
+  const tz = d.getTimezoneOffset() * 60000;
+  return new Date(Date.now() - tz).toISOString().slice(0,10);
 }
 
-function renderInputs(){
-  const box = document.getElementById("inputsBox");
-  box.innerHTML = "";
-
-  POSITIONS.forEach((p, idx)=>{
-    const wrap = document.createElement("div");
-    wrap.className = "posCard";
-    wrap.innerHTML = `
-      <div class="posTop">
-        <div class="posTitle">${p.label}<span>(su ${ATTEMPTS_PER_POS})</span></div>
-        <div class="posControl">
-          <button class="btn small secondary" data-minus="${p.key}">-</button>
-          <div class="posVal" id="val_${p.key}">0</div>
-          <button class="btn small secondary" data-plus="${p.key}">+</button>
-        </div>
-      </div>
-
-      <input
-        type="range"
-        min="0"
-        max="${ATTEMPTS_PER_POS}"
-        step="1"
-        value="0"
-        data-pos="${p.key}"
-        style="width:100%; margin-top:10px;"
-      />
-      <div class="hint" style="margin-top:6px;">
-        Posizione ${idx+1}/5 • Valore bloccato 0–10
-      </div>
-    `;
-    box.appendChild(wrap);
-  });
-
-  // bind slider + buttons
-  POSITIONS.forEach(p=>{
-    const slider = box.querySelector(`input[data-pos="${p.key}"]`);
-    const valEl = box.querySelector(`#val_${p.key}`);
-    const minus = box.querySelector(`button[data-minus="${p.key}"]`);
-    const plus  = box.querySelector(`button[data-plus="${p.key}"]`);
-
-    const setV = (v) => {
-      v = Math.max(0, Math.min(ATTEMPTS_PER_POS, Math.round(v)));
-      slider.value = String(v);
-      valEl.textContent = String(v);
-
-      // modalità gara: se sto inserendo i tiri della posizione corrente dopo timeup, sblocco AVANTI
-      if (timer.lockedAfterTimeUp && p.key === POSITIONS[timer.stepIndex].key) {
-        timer.lockedAfterTimeUp = false;
-        toast("OK, puoi premere AVANTI ✅");
-      }
-    };
-
-    slider.addEventListener("input", () => setV(slider.value));
-    minus.addEventListener("click", () => setV(Number(slider.value) - 1));
-    plus.addEventListener("click", () => setV(Number(slider.value) + 1));
-  });
-}
-
-function bindUI(){
-  document.getElementById("saveNameBtn").onclick = savePlayerName;
-  document.getElementById("resetPlayerBtn").onclick = resetCurrentPlayer;
-  document.getElementById("resetAllBtn").onclick = resetAllPlayers;
-
-  document.getElementById("addSessionBtn").onclick = addSession;
-  document.getElementById("shareSessionBtn").onclick = shareLastSession;
-  document.getElementById("exportJsonBtn").onclick = exportPlayerJson;
-  document.getElementById("copyJsonBtn").onclick = copyPlayerJson;
-
-  document.getElementById("importJsonInput").addEventListener("change", async (e) => {
-    await importPlayerJsonFiles(e.target.files);
-    e.target.value = "";
-  });
-
-  // foto
-  document.getElementById("playerPhoto").addEventListener("change", onPickPhoto);
-  document.getElementById("removePhotoBtn").onclick = removePhoto;
-
-  // timer preset
-  document.getElementById("timerPreset").addEventListener("change", (e) => {
-    TIMER_SECONDS = Number(e.target.value) || 45;
-    timerPause();
-    timer.remaining = TIMER_SECONDS;
-    renderTimer();
-    toast(`Timer: ${TIMER_SECONDS}s`);
-  });
-
-  // timer buttons
-  document.getElementById("timerStartBtn").onclick = timerStart;
-  document.getElementById("timerPauseBtn").onclick = timerPause;
-  document.getElementById("timerResetBtn").onclick = timerReset;
-  document.getElementById("timerNextBtn").onclick = () => timerNextStep(false);
-}
-
-function syncPlayerUI(){
-  const pl = state.players[currentPlayer];
-  document.getElementById("playerName").value = pl.name;
-  document.getElementById("playerNameBig").textContent = pl.name;
-  const big = document.getElementById("playerAvatarBig");
-  big.src = pl.photoDataUrl || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Crect width='100%25' height='100%25' fill='%23000000' fill-opacity='0.2'/%3E%3Ctext x='50%25' y='58%25' font-size='40' text-anchor='middle' fill='%23ecfff2' fill-opacity='0.8'%3E%F0%9F%8F%80%3C/text%3E%3C/svg%3E";
-}
-
-function setDefaultDate(){
-  const iso = new Date().toISOString().slice(0,10);
-  document.getElementById("sessionDate").value = iso;
-}
-
-/* =========================
-   STORAGE
-========================= */
-function defaultState(){
+function defaultDraft(){
   return {
-    ui:{ currentPlayer: 0 },
-    players: Array.from({length: PLAYERS_COUNT}, (_,i)=>({
-      playerId: uid(),
-      name: `Giocatore ${i+1}`,
-      photoDataUrl: "",
-      sessions: []
-    }))
+    date: todayISO(),
+    note: "",
+    shots: {
+      fondo_sx: 0,
+      angolo_sx: 0,
+      frontale: 0,
+      angolo_dx: 0,
+      fondo_dx: 0
+    }
+  };
+}
+
+function defaultPlayer(i){
+  return {
+    id: i,
+    name: `Giocatore ${i+1}`,
+    photoDataUrl: "",
+    sessions: [],
+    draft: defaultDraft()
   };
 }
 
 function loadState(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return defaultState();
-    const parsed = JSON.parse(raw);
-    if(!parsed.players || parsed.players.length !== PLAYERS_COUNT) return defaultState();
-    parsed.ui = parsed.ui || { currentPlayer:0 };
-    parsed.players.forEach((pl,i)=>{
-      pl.playerId = pl.playerId || uid();
-      pl.name = pl.name || `Giocatore ${i+1}`;
-      pl.photoDataUrl = pl.photoDataUrl || "";
-      pl.sessions = Array.isArray(pl.sessions) ? pl.sessions : [];
-    });
-    return parsed;
+    if(!raw){
+      return { selected:0, players: Array.from({length:8}, (_,i)=>defaultPlayer(i)) };
+    }
+    const s = JSON.parse(raw);
+    // harden
+    if(!s.players || s.players.length !== 8){
+      return { selected:0, players: Array.from({length:8}, (_,i)=>defaultPlayer(i)) };
+    }
+    // ensure drafts exist
+    s.players = s.players.map((p, i) => ({
+      ...defaultPlayer(i),
+      ...p,
+      draft: { ...defaultDraft(), ...(p.draft||{}) ,
+        shots: { ...defaultDraft().shots, ...((p.draft && p.draft.shots) ? p.draft.shots : {}) }
+      },
+      sessions: Array.isArray(p.sessions) ? p.sessions : []
+    }));
+    s.selected = Math.max(0, Math.min(7, s.selected ?? 0));
+    return s;
   }catch(e){
-    return defaultState();
+    return { selected:0, players: Array.from({length:8}, (_,i)=>defaultPlayer(i)) };
   }
 }
 
@@ -645,654 +618,671 @@ function saveState(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-function uid(){
-  return Math.random().toString(16).slice(2) + Date.now().toString(16);
-}
+let state = loadState();
 
 /* =========================
-   FOTO GIOCATORE
+   UI HELPERS
 ========================= */
-async function onPickPhoto(e){
-  const file = e.target.files?.[0];
-  if(!file) return;
 
-  // comprimi/ridimensiona per non esplodere localStorage
-  const dataUrl = await imageToDataUrl(file, 220, 0.72);
-  state.players[currentPlayer].photoDataUrl = dataUrl;
-  saveState();
-  renderTabs();
-  syncPlayerUI();
-  toast("Foto salvata ✅");
-  e.target.value = "";
-}
+const el = (id)=>document.getElementById(id);
 
-function removePhoto(){
-  if(!confirm("Rimuovere la foto del giocatore?")) return;
-  state.players[currentPlayer].photoDataUrl = "";
-  saveState();
-  renderTabs();
-  syncPlayerUI();
-}
-
-function imageToDataUrl(file, maxSize, quality){
-  return new Promise((resolve) => {
-    const img = new Image();
-    const reader = new FileReader();
-    reader.onload = () => { img.src = reader.result; };
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-
-      let w = img.width, h = img.height;
-      const scale = Math.min(1, maxSize / Math.max(w,h));
-      w = Math.round(w * scale);
-      h = Math.round(h * scale);
-
-      canvas.width = w; canvas.height = h;
-      ctx.drawImage(img, 0, 0, w, h);
-      resolve(canvas.toDataURL("image/jpeg", quality));
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-/* =========================
-   SESSIONE
-========================= */
-function addSession(){
-  const date = document.getElementById("sessionDate").value;
-  if(!date) return alert("Seleziona una data.");
-  const note = document.getElementById("sessionNote").value.trim();
-
-  const inputs = [...document.querySelectorAll('#inputsBox input[type="range"]')];
-  const made = {};
-  for(const inp of inputs){
-    const k = inp.dataset.pos;
-    let n = Number(inp.value);
-    if(Number.isNaN(n)) n = 0;
-    if(n < 0) n = 0;
-    if(n > ATTEMPTS_PER_POS) n = ATTEMPTS_PER_POS;
-    made[k] = Math.round(n);
-  }
-
-  const session = {
-    id: uid(),
-    date,
-    note,
-    attempts: ATTEMPTS_PER_POS,
-    made
-  };
-
-  state.players[currentPlayer].sessions.push(session);
-  state.players[currentPlayer].sessions.sort((a,b)=> a.date===b.date ? 0 : (a.date < b.date ? 1 : -1));
-
-  saveState();
-
-  // reset slider
-  inputs.forEach(i=> i.value = "0");
-  POSITIONS.forEach(p=>{
-    const v = document.getElementById(`val_${p.key}`);
-    if(v) v.textContent = "0";
-  });
-  document.getElementById("sessionNote").value = "";
-
-  renderAll();
-  toast("Sessione salvata ✅");
-
-  // AUTO invio WhatsApp
-  shareLastSession();
-}
-
-function savePlayerName(){
-  const v = document.getElementById("playerName").value.trim();
-  if(!v) return alert("Inserisci un nome valido.");
-  state.players[currentPlayer].name = v;
-  saveState();
-  renderTabs();
-  syncPlayerUI();
-  renderAll();
-}
-
-function deleteSession(sessionId){
-  const pl = state.players[currentPlayer];
-  pl.sessions = pl.sessions.filter(s => s.id !== sessionId);
-  saveState();
-  renderAll();
-}
-
-function resetCurrentPlayer(){
-  const name = state.players[currentPlayer].name;
-  if(!confirm(`Reset totale del giocatore "${name}"?`)) return;
-  state.players[currentPlayer].sessions = [];
-  saveState();
-  renderAll();
-  toast("Dati giocatore azzerati ✅");
-}
-
-function resetAllPlayers(){
-  if(!confirm("RESET TUTTO? Cancella dati di tutti i giocatori.")) return;
-  state = defaultState();
-  currentPlayer = 0;
-  saveState();
-  renderTabs();
-  syncPlayerUI();
-  renderAll();
-  toast("Reset totale effettuato ✅");
-}
-
-/* =========================
-   STATS
-========================= */
-function calcTotals(player){
-  const totals = {
-    sessions: player.sessions.length,
-    madeByPos: Object.fromEntries(POSITIONS.map(p=>[p.key,0])),
-    attByPos: Object.fromEntries(POSITIONS.map(p=>[p.key,0])),
-  };
-
-  for(const s of player.sessions){
-    for(const p of POSITIONS){
-      totals.madeByPos[p.key] += (s.made?.[p.key] ?? 0);
-      totals.attByPos[p.key] += (s.attempts ?? ATTEMPTS_PER_POS);
-    }
-  }
-  return totals;
-}
-
-function pct(made, att){
-  if(!att) return 0;
-  return Math.round((made/att)*100);
-}
-
-function sessionSummary(s){
-  let m=0, a=0;
-  for(const p of POSITIONS){
-    m += (s.made?.[p.key] ?? 0);
-    a += (s.attempts ?? ATTEMPTS_PER_POS);
-  }
-  return { made:m, att:a, pct:pct(m,a) };
-}
-
-function renderAll(){
-  const pl = state.players[currentPlayer];
-  renderKPIs(pl);
-  renderHistory(pl);
-  renderCharts(pl);
-}
-
-function renderKPIs(pl){
-  const totals = calcTotals(pl);
-  let madeAll = 0, attAll = 0;
-
-  for(const p of POSITIONS){
-    madeAll += totals.madeByPos[p.key];
-    attAll += totals.attByPos[p.key];
-  }
-  const overall = pct(madeAll, attAll);
-
-  let best = {label:"-", value:-1};
-  POSITIONS.forEach(p=>{
-    const v = pct(totals.madeByPos[p.key], totals.attByPos[p.key]);
-    if(v > best.value) best = {label:p.label, value:v};
-  });
-
-  const sessions = pl.sessions || [];
-  const last = sessions[0];
-  const lastPct = last ? sessionSummary(last).pct : 0;
-
-  const bestPct = sessions.length ? Math.max(...sessions.map(x => sessionSummary(x).pct)) : 0;
-
-  let improvement = null;
-  if (sessions.length >= 2) {
-    const lastV = sessionSummary(sessions[0]).pct;
-    const baseGroup = sessions.slice(-Math.min(3, sessions.length)).reverse(); // più vecchie
-    const base = Math.round(baseGroup.reduce((acc,s)=>acc+sessionSummary(s).pct,0)/baseGroup.length);
-    improvement = lastV - base;
-  }
-
-  document.getElementById("kpiBox").innerHTML = `
-    <div class="kpi"><div class="t">Sessioni</div><div class="v">${totals.sessions}</div></div>
-    <div class="kpi"><div class="t">% Totale</div><div class="v">${overall}%</div></div>
-    <div class="kpi"><div class="t">Miglior posizione</div><div class="v">${best.label} (${best.value<0?0:best.value}%)</div></div>
-    <div class="kpi"><div class="t">Ultima sessione</div><div class="v">${last ? lastPct+"%" : "-"}</div></div>
-    <div class="kpi"><div class="t">Best session</div><div class="v">${sessions.length ? bestPct+"%" : "-"}</div></div>
-    <div class="kpi"><div class="t">Miglioramento</div><div class="v">${improvement===null ? "-" : (improvement>=0?"+":"") + improvement + "%"}</div></div>
-  `;
-}
-
-function renderHistory(pl){
-  const list = document.getElementById("historyList");
-  list.innerHTML = "";
-
-  if(pl.sessions.length===0){
-    const empty = document.createElement("div");
-    empty.className = "hint";
-    empty.textContent = "Nessuna sessione salvata.";
-    list.appendChild(empty);
-    return;
-  }
-
-  for(const s of pl.sessions){
-    const sum = sessionSummary(s);
-    const item = document.createElement("div");
-    item.className = "item";
-    item.innerHTML = `
-      <div class="left">
-        <div class="date">${formatDateIT(s.date)} ${s.note ? " • " + escapeHtml(s.note) : ""}</div>
-        <div class="mini">${sum.made}/${sum.att} totali • ${positionsMini(s)}</div>
-      </div>
-      <div class="right">
-        <div class="pill">${sum.pct}%</div>
-        <button class="btn small danger" title="Cancella">X</button>
-      </div>
-    `;
-    item.querySelector("button").onclick = () => {
-      if(confirm("Cancellare questa sessione?")) deleteSession(s.id);
-    };
-    list.appendChild(item);
-  }
-}
-
-function renderCharts(pl){
-  const totals = calcTotals(pl);
-
-  const labels = POSITIONS.map(p=>p.label);
-  const values = POSITIONS.map(p=> pct(totals.madeByPos[p.key], totals.attByPos[p.key]));
-
-  const barCtx = document.getElementById("barChart");
-  if(barChart) barChart.destroy();
-  barChart = new Chart(barCtx, {
-    type: "bar",
-    data: { labels, datasets: [{ label: "% per posizione (totale)", data: values }] },
-    options: {
-      responsive:true,
-      plugins:{ legend:{ labels:{ color:"#ecfff2"} } },
-      scales:{
-        x:{ ticks:{ color:"#ecfff2" }, grid:{ color:"rgba(255,255,255,0.08)" } },
-        y:{ min:0, max:100, ticks:{ color:"#ecfff2", callback:(v)=> v+"%" }, grid:{ color:"rgba(255,255,255,0.08)" } }
-      }
-    }
-  });
-
-  const last10 = pl.sessions.slice(0,10).slice().reverse();
-  const lineLabels = last10.map(s => formatDateShortIT(s.date));
-  const lineValues = last10.map(s => sessionSummary(s).pct);
-
-  const lineCtx = document.getElementById("lineChart");
-  if(lineChart) lineChart.destroy();
-  lineChart = new Chart(lineCtx, {
-    type:"line",
-    data:{ labels: lineLabels, datasets:[{ label:"Andamento % (ultime 10)", data: lineValues, tension:0.25, pointRadius:3 }] },
-    options:{
-      responsive:true,
-      plugins:{ legend:{ labels:{ color:"#ecfff2"} } },
-      scales:{
-        x:{ ticks:{ color:"#ecfff2" }, grid:{ color:"rgba(255,255,255,0.08)" } },
-        y:{ min:0, max:100, ticks:{ color:"#ecfff2", callback:(v)=> v+"%" }, grid:{ color:"rgba(255,255,255,0.08)" } }
-      }
-    }
-  });
-}
-
-/* =========================
-   WHATSAPP (compatto)
-========================= */
-function shareLastSession(){
-  const pl = state.players[currentPlayer];
-  const s = pl.sessions[0];
-  if(!s) return;
-
-  const sum = sessionSummary(s);
-  const posLine = POSITIONS.map(p=>{
-    const m = s.made?.[p.key] ?? 0;
-    return `${p.label}:${m}/10`;
-  }).join(" | ");
-
-  const text =
-`🏀 ${pl.name} — Virtus Shot
-📅 ${formatDateIT(s.date)}${s.note ? " — " + s.note : ""}
-✅ Tot: ${sum.made}/${sum.att} (${sum.pct}%)
-📌 ${posLine}`;
-
-  // Provo share; fallback WhatsApp URL
-  if (navigator.share) {
-    navigator.share({ text }).catch(()=> openWhatsApp(text));
-  } else {
-    openWhatsApp(text);
-  }
-}
-
-function openWhatsApp(text){
-  const url = "https://wa.me/?text=" + encodeURIComponent(text);
-  window.open(url, "_blank");
-}
-
-/* =========================
-   JSON EXPORT/IMPORT
-========================= */
-function buildPlayerPayload(player){
-  return {
-    app: "virtus-shot-tracker",
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    player: {
-      playerId: player.playerId,
-      name: player.name,
-      sessions: player.sessions
-    }
-  };
-}
-
-async function exportPlayerJson(){
-  const pl = state.players[currentPlayer];
-  const payload = buildPlayerPayload(pl);
-
-  const json = JSON.stringify(payload, null, 2);
-  const blob = new Blob([json], { type: "application/json" });
-  const fileName = `${safeFile(pl.name)}_virtus_shot.json`;
-
-  // 1) Share file se supportato
-  try{
-    if (navigator.canShare) {
-      const file = new File([blob], fileName, { type: "application/json" });
-      if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: "Virtus Shot - Dati giocatore" });
-        toast("Condiviso ✅");
-        return;
-      }
-    }
-  } catch {}
-
-  // 2) Download
-  try{
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url), 2000);
-
-    alert("File JSON salvato in Download ✅\nApri File/Download e condividilo su WhatsApp come documento.");
-    return;
-  } catch {}
-
-  // 3) Copy
-  await copyText(json);
-  alert("JSON copiato negli appunti ✅");
-}
-
-async function copyPlayerJson(){
-  const pl = state.players[currentPlayer];
-  const payload = buildPlayerPayload(pl);
-  const json = JSON.stringify(payload, null, 2);
-  await copyText(json);
-  toast("JSON copiato ✅");
-}
-
-async function importPlayerJsonFiles(fileList){
-  const files = Array.from(fileList || []);
-  if(!files.length) return;
-
-  let importedSessions = 0;
-  let updatedPlayers = 0;
-  let lastImportedPlayerIndex = null;
-
-  for (const f of files) {
-    try {
-      const text = await f.text();
-      const data = JSON.parse(text);
-
-      if (!data || data.app !== "virtus-shot-tracker" || !data.player) {
-        alert(`File non valido: ${f.name}`);
-        continue;
-      }
-
-      const incoming = data.player;
-      const incomingId = incoming.playerId || null;
-      const incomingName = (incoming.name || "").trim();
-      const incSessions = Array.isArray(incoming.sessions) ? incoming.sessions : [];
-
-      // 1) playerId
-      let idx = -1;
-      if (incomingId) idx = state.players.findIndex(p => p.playerId === incomingId);
-
-      // 2) nome
-      if (idx === -1 && incomingName) {
-        idx = state.players.findIndex(p => (p.name||"").trim().toLowerCase() === incomingName.toLowerCase());
-      }
-
-      // 3) slot vuoto
-      if (idx === -1) {
-        idx = state.players.findIndex(p => Array.isArray(p.sessions) && p.sessions.length === 0);
-      }
-
-      // 4) tab corrente
-      if (idx === -1) idx = currentPlayer;
-
-      const target = state.players[idx];
-
-      if (incomingId) target.playerId = incomingId;
-      if (incomingName) target.name = incomingName;
-
-      const existingIds = new Set((target.sessions || []).map(s => s.id));
-      for (const s of incSessions) {
-        if (!s || !s.id) continue;
-        if (!existingIds.has(s.id)) {
-          target.sessions.push(s);
-          existingIds.add(s.id);
-          importedSessions++;
-        }
-      }
-      target.sessions.sort((a,b)=> a.date===b.date ? 0 : (a.date < b.date ? 1 : -1));
-
-      updatedPlayers++;
-      lastImportedPlayerIndex = idx;
-
-    } catch {
-      alert(`Errore import su ${f.name}`);
-    }
-  }
-
-  saveState();
-
-  if (lastImportedPlayerIndex !== null) {
-    currentPlayer = lastImportedPlayerIndex;
-    state.ui.currentPlayer = currentPlayer;
-  }
-
-  renderTabs();
-  syncPlayerUI();
-  renderAll();
-
-  alert(`Import completato ✅\nGiocatori aggiornati: ${updatedPlayers}\nSessioni importate: ${importedSessions}`);
-}
-
-function safeFile(s) {
-  return (s || "giocatore").toLowerCase().replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "");
-}
-
-async function copyText(text){
-  try{
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    ta.remove();
-    return true;
-  }
-}
-
-/* =========================
-   TIMER (C + B) + GARA (blocco avanti)
-========================= */
-function renderTimer(){
-  const step = POSITIONS[timer.stepIndex];
-  document.getElementById("timerStep").innerHTML =
-    `Step: <strong>${step.label}</strong> (${timer.stepIndex+1}/5)`;
-  document.getElementById("timerClock").textContent = formatMMSS(timer.remaining);
-}
-
-function timerStart(){
-  if(timer.running) return;
-  timer.running = true;
-
-  timer.intervalId = setInterval(()=>{
-    timer.remaining -= 1;
-
-    // Countdown C: beep + vibra a -5, -3, -1
-    if (timer.remaining === 5 || timer.remaining === 3 || timer.remaining === 1) {
-      beepShort();
-      vibrateShort();
-    }
-
-    if(timer.remaining <= 0){
-      timer.remaining = 0;
-      renderTimer();
-
-      // Finale B: 3 beep + vibra lunga
-      beepDouble();
-      setTimeout(()=>beep(), 500);
-      vibrate();
-
-      timerPause();
-
-      if (document.getElementById("modeGara")?.checked) {
-        timer.lockedAfterTimeUp = true; // blocca avanti finché non inserisci i tiri del step corrente
-        alert("⏱️ Tempo finito! Inserisci i canestri della posizione e poi premi AVANTI.");
-      } else {
-        toast("Tempo finito ✅ Premi AVANTI");
-      }
-      return;
-    }
-
-    renderTimer();
-  }, 1000);
-}
-
-function timerPause(){
-  timer.running = false;
-  if(timer.intervalId){
-    clearInterval(timer.intervalId);
-    timer.intervalId = null;
-  }
-}
-
-function timerReset(){
-  timerPause();
-  timer.stepIndex = 0;
-  timer.remaining = TIMER_SECONDS;
-  timer.lockedAfterTimeUp = false;
-  renderTimer();
-}
-
-function timerNextStep(fromAuto){
-  // NO AUTOSTART: qui non parte da solo
-  const gara = document.getElementById("modeGara")?.checked;
-
-  // blocco avanti in modalità gara se tempo finito e non hai inserito i tiri
-  if (gara && timer.lockedAfterTimeUp) {
-    alert("Modalità gara: prima inserisci i canestri della posizione corrente (muovi lo slider) ✅");
-    return;
-  }
-
-  timerPause();
-
-  if(timer.stepIndex < POSITIONS.length - 1){
-    timer.stepIndex += 1;
-    timer.remaining = TIMER_SECONDS;
-    timer.lockedAfterTimeUp = false;
-    renderTimer();
-    if(!fromAuto){
-      beepShort();
-      vibrateShort();
-    }
-  }else{
-    timer.remaining = 0;
-    timer.lockedAfterTimeUp = false;
-    renderTimer();
-    beepDouble();
-    vibrate();
-    toast("Timer completato ✅");
-  }
+function clamp(n, min, max){
+  n = Number.isFinite(n) ? n : 0;
+  return Math.max(min, Math.min(max, n));
 }
 
 function formatMMSS(sec){
-  const m = Math.floor(sec/60);
-  const s = sec%60;
-  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+  sec = Math.max(0, Math.floor(sec));
+  const m = String(Math.floor(sec/60)).padStart(2,"0");
+  const s = String(sec%60).padStart(2,"0");
+  return `${m}:${s}`;
 }
 
-function vibrate(){
-  if(navigator.vibrate) navigator.vibrate([140,90,140,90,180]);
+function initials(name){
+  const parts = (name||"").trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return "VP";
+  const a = parts[0][0] || "V";
+  const b = (parts[1]?.[0]) || (parts[0][1] || "P");
+  return (a+b).toUpperCase();
 }
-function vibrateShort(){
-  if(navigator.vibrate) navigator.vibrate(60);
+
+/* =========================
+   RENDER TABS + PLAYER
+========================= */
+
+function renderTabs(){
+  const tabs = el("tabs");
+  tabs.innerHTML = "";
+  state.players.forEach((p, i)=>{
+    const b = document.createElement("button");
+    b.className = "tab" + (i===state.selected ? " active" : "");
+    b.textContent = p.name;
+    b.addEventListener("click", ()=>{
+      // salva eventuali campi già scritti (sono in draft, ma assicurati)
+      state.selected = i;
+      saveState();
+      renderAll();
+    });
+    tabs.appendChild(b);
+  });
 }
-function beep(){
-  tone(880, 0.18);
+
+function setAvatar(p){
+  const box = el("avatarBox");
+  box.innerHTML = "";
+  if(p.photoDataUrl){
+    const img = document.createElement("img");
+    img.src = p.photoDataUrl;
+    box.appendChild(img);
+  }else{
+    box.textContent = initials(p.name);
+  }
+
+  // watermark chart
+  const wm = el("wm");
+  if(p.photoDataUrl){
+    wm.style.backgroundImage = `url('${p.photoDataUrl}')`;
+  }else{
+    // usa l'icona di repo se presente
+    wm.style.backgroundImage = `url('icon-512.png')`;
+  }
 }
-function beepShort(){
-  tone(660, 0.11);
+
+function renderPlayerHeader(){
+  const p = state.players[state.selected];
+  el("playerNameTop").textContent = p.name;
+  el("playerInfoTop").textContent = `${p.sessions.length} sessioni salvate`;
+  setAvatar(p);
 }
-function beepDouble(){
-  tone(880,0.12);
-  setTimeout(()=>tone(880,0.12), 220);
+
+function renderProfileInputs(){
+  const p = state.players[state.selected];
+  el("nameInput").value = p.name || "";
+  // date/note/shots vengono renderizzati nella sezione draft
 }
-function tone(freq, seconds){
+
+function renderShotsGrid(){
+  const p = state.players[state.selected];
+  const grid = el("shotsGrid");
+  grid.innerHTML = "";
+
+  POS.forEach(pos=>{
+    const line = document.createElement("div");
+    line.className = "shot-line";
+
+    const left = document.createElement("div");
+    left.className = "shot-label";
+    left.innerHTML = `<div>${pos.label}</div><span>${pos.note}</span>`;
+
+    const step = document.createElement("div");
+    step.className = "stepper";
+
+    const minus = document.createElement("button");
+    minus.type = "button";
+    minus.textContent = "–";
+    minus.addEventListener("click", ()=>{
+      p.draft.shots[pos.key] = clamp((p.draft.shots[pos.key]||0) - 1, 0, 10);
+      saveState();
+      renderAll(); // semplice e sicuro
+    });
+
+    const inp = document.createElement("input");
+    inp.type = "number";
+    inp.inputMode = "numeric";
+    inp.min = "0";
+    inp.max = "10";
+    inp.step = "1";
+    inp.value = clamp(Number(p.draft.shots[pos.key] ?? 0), 0, 10);
+
+    // blocca rotellina / scroll che cambia valore
+    inp.addEventListener("wheel", (e)=>{ e.preventDefault(); }, { passive:false });
+
+    inp.addEventListener("change", ()=>{
+      p.draft.shots[pos.key] = clamp(parseInt(inp.value,10), 0, 10);
+      saveState();
+      renderAll();
+    });
+
+    const plus = document.createElement("button");
+    plus.type = "button";
+    plus.textContent = "+";
+    plus.addEventListener("click", ()=>{
+      p.draft.shots[pos.key] = clamp((p.draft.shots[pos.key]||0) + 1, 0, 10);
+      saveState();
+      renderAll();
+    });
+
+    step.appendChild(minus);
+    step.appendChild(inp);
+    step.appendChild(plus);
+
+    line.appendChild(left);
+    line.appendChild(step);
+    grid.appendChild(line);
+  });
+}
+
+function renderDraft(){
+  const p = state.players[state.selected];
+  el("dateInput").value = p.draft.date || todayISO();
+  el("noteInput").value = p.draft.note || "";
+  renderShotsGrid();
+}
+
+function renderSessions(){
+  const p = state.players[state.selected];
+  const list = el("sessionsList");
+  list.innerHTML = "";
+
+  const recent = [...p.sessions].slice(-10).reverse();
+  if(recent.length === 0){
+    list.innerHTML = `<p class="muted" style="margin:0;">Nessuna sessione salvata.</p>`;
+    return;
+  }
+
+  recent.forEach((s, idx)=>{
+    const div = document.createElement("div");
+    div.className = "item";
+
+    const total = POS.reduce((acc, pos)=>acc + (s.shots?.[pos.key]||0), 0);
+    const max = POS.length * 10;
+    const pct = Math.round((total/max)*100);
+
+    div.innerHTML = `
+      <div class="itemTop">
+        <div>
+          <div class="itemTitle">${s.date || "—"} • <b>${pct}%</b></div>
+          <div class="itemSmall">${s.note ? s.note : "—"}</div>
+        </div>
+        <button class="btn small danger" data-del="${p.sessions.length - 1 - idx}">Elimina</button>
+      </div>
+      <div class="itemGrid">
+        ${POS.map(pos=>{
+          const v = s.shots?.[pos.key] ?? 0;
+          return `<div class="kpi"><b>${pos.label}</b><span>${v}/10</span></div>`;
+        }).join("")}
+      </div>
+    `;
+
+    div.querySelector("[data-del]").addEventListener("click", (e)=>{
+      const realIndex = parseInt(e.currentTarget.getAttribute("data-del"),10);
+      if(Number.isFinite(realIndex)){
+        p.sessions.splice(realIndex,1);
+        saveState();
+        renderAll();
+      }
+    });
+
+    list.appendChild(div);
+  });
+}
+
+/* =========================
+   STATS + CHART
+========================= */
+
+let chart;
+
+function calcStats(p){
+  const n = p.sessions.length;
+  if(n === 0) return null;
+
+  const sums = Object.fromEntries(POS.map(pos=>[pos.key,0]));
+  let totalMade = 0;
+  const maxPerSession = POS.length * 10;
+
+  let best = { pct:-1, date:"—", total:0 };
+
+  p.sessions.forEach(s=>{
+    let sessionTotal = 0;
+    POS.forEach(pos=>{
+      const v = clamp(parseInt(s.shots?.[pos.key] ?? 0,10), 0, 10);
+      sums[pos.key] += v;
+      sessionTotal += v;
+    });
+    totalMade += sessionTotal;
+
+    const pct = (sessionTotal / maxPerSession) * 100;
+    if(pct > best.pct){
+      best = { pct, date: s.date || "—", total: sessionTotal };
+    }
+  });
+
+  const avgsPct = POS.map(pos=>{
+    const avgMade = sums[pos.key] / n;          // su 10
+    const pct = (avgMade / 10) * 100;           // 0-100
+    return { key: pos.key, label: pos.label, pct: Math.round(pct) };
+  });
+
+  const overallPct = Math.round((totalMade / (n*maxPerSession)) * 100);
+
+  return { avgsPct, overallPct, best };
+}
+
+function renderChart(){
+  const p = state.players[state.selected];
+  const st = calcStats(p);
+
+  const ctx = el("chart").getContext("2d");
+  const labels = POS.map(x=>x.label);
+  const data = st ? st.avgsPct.map(x=>x.pct) : [0,0,0,0,0];
+
+  if(chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "% medio",
+        data
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          ticks: { callback: (v)=> v + "%" }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: (c)=> `${c.raw}%` }
+        }
+      }
+    }
+  });
+
+  if(!st){
+    el("statsLine").textContent = "Nessuna sessione ancora salvata.";
+    el("bestSession").textContent = "—";
+    el("totalSessions").textContent = "0";
+    return;
+  }
+
+  el("statsLine").textContent =
+    `Media totale: ${st.overallPct}% • (calcolata su ${p.sessions.length} sessioni)`;
+  el("bestSession").textContent = `${Math.round(st.best.pct)}% • ${st.best.date}`;
+  el("totalSessions").textContent = String(p.sessions.length);
+}
+
+/* =========================
+   TIMER (GARA ONLY)
+========================= */
+
+let timerLeft = 45;
+let timerRunning = false;
+let timerInterval = null;
+
+function applyPreset(){
+  const preset = parseInt(el("timerPreset").value,10);
+  timerLeft = Number.isFinite(preset) ? preset : 45;
+  el("timerDisplay").textContent = formatMMSS(timerLeft);
+  el("timerState").textContent = "Seleziona durata e premi Start.";
+}
+
+function stopTimer(){
+  timerRunning = false;
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function playEndSignal(){
+  // vibrazione
   try{
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.type = "sine";
-    o.frequency.value = freq;
-    o.connect(g);
-    g.connect(ctx.destination);
-    g.gain.value = 0.09;
-    o.start();
-    setTimeout(()=>{ o.stop(); ctx.close(); }, seconds*1000);
-  }catch{}
+    if(navigator.vibrate) navigator.vibrate([250,120,250,120,400]);
+  }catch(e){}
+
+  // suono
+  const mode = el("soundPreset").value;
+  if(mode === "OFF") return;
+
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+
+  // "C" = beep più acuto, "B" = più basso/alternato
+  const seq = (mode === "B")
+    ? [{f:650, t:0.12},{f:0,t:0.06},{f:520,t:0.12},{f:0,t:0.06},{f:650,t:0.18}]
+    : [{f:880, t:0.12},{f:0,t:0.06},{f:880,t:0.12},{f:0,t:0.06},{f:1040,t:0.18}];
+
+  let at = ctx.currentTime;
+  g.gain.setValueAtTime(0.0001, at);
+  seq.forEach(step=>{
+    if(step.f === 0){
+      g.gain.setValueAtTime(0.0001, at);
+      at += step.t;
+      return;
+    }
+    o.frequency.setValueAtTime(step.f, at);
+    g.gain.setValueAtTime(0.18, at);
+    at += step.t;
+    g.gain.setValueAtTime(0.0001, at);
+  });
+
+  o.start();
+  o.stop(at + 0.02);
+}
+
+function startTimer(){
+  if(timerRunning) return;
+
+  timerRunning = true;
+  el("timerState").textContent = "In corso…";
+  timerInterval = setInterval(()=>{
+    timerLeft -= 1;
+    el("timerDisplay").textContent = formatMMSS(timerLeft);
+
+    if(timerLeft <= 0){
+      stopTimer();
+      el("timerDisplay").textContent = "00:00";
+      el("timerState").textContent = "Tempo! (Reset per ripartire)";
+      playEndSignal();
+    }
+  }, 1000);
 }
 
 /* =========================
-   HELPERS
+   EXPORT / IMPORT
 ========================= */
-function positionsMini(s){
-  return POSITIONS.map(p=>{
-    const m = s.made?.[p.key] ?? 0;
-    return `${p.label}:${m}/10`;
-  }).join(" • ");
+
+function buildPlayerExport(p){
+  return {
+    app: "VirtusShotTracker",
+    version: 3,
+    exportedAt: new Date().toISOString(),
+    player: {
+      id: p.id,
+      name: p.name,
+      photoDataUrl: p.photoDataUrl || "",
+      sessions: p.sessions || []
+    }
+  };
 }
-function formatDateIT(iso){
-  const [y,m,d] = iso.split("-").map(Number);
-  const dt = new Date(y, m-1, d);
-  return dt.toLocaleDateString("it-IT", { weekday:"short", day:"2-digit", month:"2-digit", year:"numeric" });
+
+function downloadJSON(obj, filename){
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type:"application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
-function formatDateShortIT(iso){
-  const [y,m,d] = iso.split("-").map(Number);
-  const dt = new Date(y, m-1, d);
-  return dt.toLocaleDateString("it-IT", { day:"2-digit", month:"2-digit" });
-}
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));
+
+function importPayload(payload){
+  if(!payload) throw new Error("JSON vuoto");
+  const pl = payload.player || payload;
+  if(!pl || !Array.isArray(pl.sessions)) throw new Error("Formato non valido (manca sessions)");
+
+  const p = state.players[state.selected];
+  // import = sostituisci il profilo selezionato (più semplice e pulito)
+  p.name = pl.name || p.name;
+  p.photoDataUrl = pl.photoDataUrl || "";
+  p.sessions = pl.sessions.map(s=>({
+    date: s.date || todayISO(),
+    note: s.note || "",
+    shots: {
+      fondo_sx: clamp(parseInt(s.shots?.fondo_sx ?? 0,10),0,10),
+      angolo_sx: clamp(parseInt(s.shots?.angolo_sx ?? 0,10),0,10),
+      frontale: clamp(parseInt(s.shots?.frontale ?? 0,10),0,10),
+      angolo_dx: clamp(parseInt(s.shots?.angolo_dx ?? 0,10),0,10),
+      fondo_dx: clamp(parseInt(s.shots?.fondo_dx ?? 0,10),0,10),
+    }
+  }));
+
+  // draft sicuro
+  p.draft = defaultDraft();
+
+  saveState();
+  renderAll();
 }
 
 /* =========================
-   TOAST
+   EVENTS
 ========================= */
-let toastTimer = null;
-function toast(msg){
-  const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.classList.add("show");
-  if(toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=> el.classList.remove("show"), 1600);
+
+function hookEvents(){
+  // Tabs render done in renderTabs
+
+  el("saveNameBtn").addEventListener("click", ()=>{
+    const p = state.players[state.selected];
+    p.name = (el("nameInput").value || p.name).trim() || p.name;
+    saveState();
+    renderAll();
+  });
+
+  el("photoInput").addEventListener("change", async (e)=>{
+    const file = e.target.files?.[0];
+    if(!file) return;
+    const p = state.players[state.selected];
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      p.photoDataUrl = String(reader.result || "");
+      saveState();
+      renderAll();
+      el("photoInput").value = "";
+    };
+    reader.readAsDataURL(file);
+  });
+
+  el("removePhotoBtn").addEventListener("click", ()=>{
+    const p = state.players[state.selected];
+    p.photoDataUrl = "";
+    saveState();
+    renderAll();
+  });
+
+  el("resetPlayerBtn").addEventListener("click", ()=>{
+    const ok = confirm("Resetto TUTTI i dati di questo giocatore? (non si può annullare)");
+    if(!ok) return;
+    state.players[state.selected] = defaultPlayer(state.selected);
+    saveState();
+    renderAll();
+  });
+
+  // Draft fields
+  el("dateInput").addEventListener("change", ()=>{
+    const p = state.players[state.selected];
+    p.draft.date = el("dateInput").value || todayISO();
+    saveState();
+  });
+  el("noteInput").addEventListener("input", ()=>{
+    const p = state.players[state.selected];
+    p.draft.note = el("noteInput").value || "";
+    saveState();
+  });
+
+  el("clearDraftBtn").addEventListener("click", ()=>{
+    const p = state.players[state.selected];
+    p.draft = defaultDraft();
+    saveState();
+    renderAll();
+  });
+
+  el("saveSessionBtn").addEventListener("click", ()=>{
+    const p = state.players[state.selected];
+
+    const s = {
+      date: p.draft.date || todayISO(),
+      note: (p.draft.note || "").trim(),
+      shots: { ...p.draft.shots }
+    };
+
+    // valida 0-10
+    POS.forEach(pos=>{
+      s.shots[pos.key] = clamp(parseInt(s.shots[pos.key] ?? 0,10), 0, 10);
+    });
+
+    p.sessions.push(s);
+    // reset draft solo per quel giocatore (IMPORTANTISSIMO)
+    p.draft = defaultDraft();
+    saveState();
+    renderAll();
+    alert("Sessione salvata ✅");
+  });
+
+  // Timer
+  el("timerPreset").addEventListener("change", ()=>{
+    stopTimer();
+    applyPreset();
+  });
+  el("soundPreset").addEventListener("change", ()=>{
+    // niente auto-start
+  });
+  el("startTimerBtn").addEventListener("click", async ()=>{
+    // su android spesso serve un gesto per sbloccare l'audio
+    // quindi facciamo un resume audio context "soft" quando si preme start
+    try{
+      if(window.AudioContext || window.webkitAudioContext){
+        const c = new (window.AudioContext || window.webkitAudioContext)();
+        await c.resume();
+        c.close();
+      }
+    }catch(e){}
+    startTimer();
+  });
+  el("pauseTimerBtn").addEventListener("click", ()=>{
+    if(!timerRunning) return;
+    stopTimer();
+    el("timerState").textContent = "In pausa.";
+  });
+  el("resetTimerBtn").addEventListener("click", ()=>{
+    stopTimer();
+    applyPreset();
+  });
+
+  // Export
+  el("exportBtn").addEventListener("click", ()=>{
+    const p = state.players[state.selected];
+    const obj = buildPlayerExport(p);
+    const safeName = (p.name || "giocatore").replace(/[^\w\-]+/g,"_");
+    downloadJSON(obj, `virtus_${safeName}.json`);
+  });
+
+  el("copyJsonBtn").addEventListener("click", async ()=>{
+    const p = state.players[state.selected];
+    const obj = buildPlayerExport(p);
+    const txt = JSON.stringify(obj);
+    try{
+      await navigator.clipboard.writeText(txt);
+      alert("JSON copiato ✅ (ora puoi incollarlo su WhatsApp o qui)");
+    }catch(e){
+      // fallback
+      el("importArea").value = txt;
+      alert("Non posso copiare automaticamente: ho messo il JSON nel box Importa. Tieni premuto e copia.");
+    }
+  });
+
+  el("waSummaryBtn").addEventListener("click", ()=>{
+    const p = state.players[state.selected];
+    const st = calcStats(p);
+
+    let msg = `🏀 *Virtus Shot* - ${p.name}\n`;
+    if(!st){
+      msg += `Nessuna sessione salvata ancora.\n`;
+    }else{
+      msg += `Sessioni: ${p.sessions.length}\n`;
+      msg += `Media totale: ${st.overallPct}%\n`;
+      msg += `Miglior sessione: ${Math.round(st.best.pct)}% (${st.best.date})\n\n`;
+      msg += `Medie per posizione:\n`;
+      st.avgsPct.forEach(x=>{
+        msg += `- ${x.label}: ${x.pct}%\n`;
+      });
+      msg += `\n📎 Per i dati completi: usa "Esporta JSON giocatore" e invia il file.`;
+    }
+
+    const url = "https://wa.me/?text=" + encodeURIComponent(msg);
+    window.open(url, "_blank");
+  });
+
+  // Import: incolla -> prova auto
+  el("importArea").addEventListener("paste", ()=>{
+    setTimeout(()=>{ tryAutoImport(); }, 50);
+  });
+
+  el("importBtn").addEventListener("click", ()=>{
+    tryAutoImport(true);
+  });
+
+  el("importFile").addEventListener("change", async (e)=>{
+    const file = e.target.files?.[0];
+    if(!file) return;
+    const text = await file.text();
+    el("importArea").value = text;
+    tryAutoImport(true);
+    el("importFile").value = "";
+  });
+
+  // Scroll top
+  el("scrollTopBtn").addEventListener("click", ()=>{
+    window.scrollTo({ top:0, behavior:"smooth" });
+  });
 }
+
+function tryAutoImport(showAlerts=false){
+  const raw = (el("importArea").value || "").trim();
+  if(!raw){
+    if(showAlerts) alert("Incolla prima il JSON oppure scegli un file.");
+    return;
+  }
+  try{
+    const obj = JSON.parse(raw);
+    importPayload(obj);
+    el("importArea").value = "";
+    alert("Import riuscito ✅");
+  }catch(err){
+    if(showAlerts) alert("Import fallito: " + (err?.message || err));
+  }
+}
+
+/* =========================
+   MAIN RENDER
+========================= */
+
+function renderAll(){
+  renderTabs();
+  renderPlayerHeader();
+  renderProfileInputs();
+  renderDraft();
+  renderSessions();
+  renderChart();
+
+  // timer display keep consistent
+  if(!timerRunning){
+    el("timerDisplay").textContent = formatMMSS(timerLeft);
+  }
+}
+
+(function init(){
+  // init timer preset to 45
+  applyPreset();
+
+  // ensure each player has its own draft date
+  state.players.forEach(p=>{
+    if(!p.draft) p.draft = defaultDraft();
+    if(!p.draft.date) p.draft.date = todayISO();
+  });
+  saveState();
+
+  hookEvents();
+  renderAll();
+})();
 </script>
+
+<!-- Optional: basic service worker register if you later add sw.js -->
+<script>
+  // Se in futuro aggiungi sw.js, puoi sbloccare questa parte.
+  // if ("serviceWorker" in navigator) {
+  //   navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  // }
+</script>
+
 </body>
 </html>
