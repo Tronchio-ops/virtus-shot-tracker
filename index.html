@@ -9,9 +9,6 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#062714" />
 
-  <!-- Chart.js (stabile) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
   <style>
     :root{
       --bg1:#041b10;
@@ -21,20 +18,20 @@
       --stroke: rgba(255,255,255,.08);
       --text: #eafff3;
       --muted: rgba(234,255,243,.72);
-      --accent:#0f7a3a;
-      --accent2:#0aa85a;
+      --accent:#0aa85a;
       --danger:#8b2b2b;
-      --btn:#0a5f33;
-      --btn2:#0b6f3a;
       --shadow: 0 18px 50px rgba(0,0,0,.35);
       --radius: 22px;
     }
-
     *{box-sizing:border-box;}
-    html,body{height:100%; margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); background: radial-gradient(1200px 600px at 20% 0%, #0e4a29 0%, var(--bg2) 35%, var(--bg1) 100%);}
-
+    html,body{
+      height:100%; margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 0%, #0e4a29 0%, var(--bg2) 35%, var(--bg1) 100%);
+    }
     .wrap{max-width:920px; margin:0 auto; padding:22px 14px 36px;}
-
     .hero{
       padding:22px 18px;
       border-radius: 28px;
@@ -52,14 +49,10 @@
       transform: rotate(18deg);
       pointer-events:none;
     }
-
     h1{margin:0; font-size:46px; letter-spacing:.2px; line-height:1.02;}
     .sub{margin-top:8px; color:var(--muted); font-size:15px;}
 
-    .tabs{
-      display:flex; gap:10px; flex-wrap:wrap;
-      margin-top:16px;
-    }
+    .tabs{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;}
     .tab{
       border:1px solid var(--stroke);
       background: rgba(0,0,0,.22);
@@ -86,9 +79,7 @@
     .tab.active .dot{background: rgba(10,168,90,.95); box-shadow: 0 0 0 3px rgba(10,168,90,.18);}
 
     .grid{display:grid; grid-template-columns: 1fr; gap:14px; margin-top:14px;}
-    @media(min-width:860px){
-      .grid{grid-template-columns: 1.1fr .9fr;}
-    }
+    @media(min-width:860px){ .grid{grid-template-columns: 1.1fr .9fr;} }
 
     .card{
       background: var(--card);
@@ -106,7 +97,7 @@
     .row .tight{flex:0 0 auto;}
 
     label{display:block; font-size:13px; color:var(--muted); margin:8px 0 6px;}
-    input[type="text"], input[type="date"], select, textarea{
+    input[type="text"], input[type="date"], select, textarea, input[type="file"]{
       width:100%;
       background: rgba(0,0,0,.22);
       border: 1px solid rgba(255,255,255,.10);
@@ -119,24 +110,20 @@
     textarea{min-height:72px; resize:vertical;}
 
     .btn{
-      background: linear-gradient(135deg, rgba(11,111,58,.95), rgba(8,86,46,.95));
+      background: linear-gradient(135deg, rgba(10,168,90,.38), rgba(0,0,0,.18));
       border: 1px solid rgba(10,168,90,.25);
       color: var(--text);
       padding:12px 14px;
       border-radius: 16px;
       cursor:pointer;
       font-size:16px;
-      font-weight:700;
+      font-weight:800;
       transition:.15s transform ease, .15s filter ease;
       box-shadow: 0 10px 26px rgba(0,0,0,.25);
       user-select:none;
     }
     .btn:hover{transform: translateY(-1px); filter: brightness(1.05);}
-    .btn.secondary{
-      background: rgba(0,0,0,.22);
-      border: 1px solid rgba(255,255,255,.12);
-      font-weight:700;
-    }
+    .btn.secondary{background: rgba(0,0,0,.22); border: 1px solid rgba(255,255,255,.12);}
     .btn.danger{
       background: linear-gradient(135deg, rgba(139,43,43,.92), rgba(84,18,18,.92));
       border-color: rgba(255,120,120,.20);
@@ -175,11 +162,9 @@
       border:1px solid rgba(255,255,255,.08);
       align-items:center;
     }
-    .posTitle{font-size:22px; font-weight:800; line-height:1.1;}
+    .posTitle{font-size:22px; font-weight:900; line-height:1.1;}
     .posSub{font-size:13px; color:var(--muted); margin-top:2px;}
-    .counter{
-      display:flex; align-items:center; gap:10px;
-    }
+    .counter{display:flex; align-items:center; gap:10px;}
     .cbtn{
       width:52px; height:52px;
       border-radius: 16px;
@@ -197,7 +182,7 @@
       border:1px solid rgba(255,255,255,.08);
       background: rgba(0,0,0,.14);
       display:flex; align-items:center; justify-content:center;
-      font-size:22px; font-weight:900;
+      font-size:22px; font-weight:1000;
     }
 
     .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:14px;}
@@ -223,10 +208,7 @@
       cursor:pointer;
       user-select:none;
     }
-    .miniBtn.primary{
-      background: linear-gradient(135deg, rgba(10,168,90,.38), rgba(0,0,0,.18));
-      border-color: rgba(10,168,90,.25);
-    }
+    .miniBtn.primary{background: linear-gradient(135deg, rgba(10,168,90,.38), rgba(0,0,0,.18)); border-color: rgba(10,168,90,.25);}
 
     .toggleRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
     .toggle{
@@ -249,7 +231,6 @@
       border:1px solid rgba(255,255,255,.08);
       position:relative;
       overflow:hidden;
-      min-height: 360px;
     }
     .watermark{
       position:absolute;
@@ -260,13 +241,14 @@
       opacity:.09;
       pointer-events:none;
       transform: translateY(10px);
+      z-index:1;
     }
     .watermark img{
       width:min(520px, 85%);
       height:auto;
       filter: saturate(1.05) contrast(1.05);
     }
-    canvas{position:relative; z-index:2; width:100% !important; height: 320px !important;}
+    canvas{position:relative; z-index:2; width:100%; height:320px; display:block; border-radius:14px; background: rgba(255,255,255,.03);}
 
     .small{font-size:12px; color:var(--muted); margin-top:8px; line-height:1.35;}
     .sep{height:1px; background: rgba(255,255,255,.08); margin:14px 0;}
@@ -283,7 +265,7 @@
       color: var(--text);
       border-radius: 14px;
       box-shadow: 0 18px 50px rgba(0,0,0,.35);
-      font-weight:800;
+      font-weight:900;
       opacity:0;
       pointer-events:none;
       transition:.18s opacity ease, .18s transform ease;
@@ -302,7 +284,6 @@
       <div class="sub">
         Sessione = <b>10 tiri per posizione</b> • Timer gara <b>45 / 40 / 35 sec</b> • Statistiche <b>0–100%</b>
       </div>
-
       <div class="tabs" id="tabs"></div>
     </div>
 
@@ -331,7 +312,7 @@
 
         <div class="row">
           <div>
-            <label>Timer gara</label>
+            <label>Timer gara (solo 45/40/35)</label>
             <select id="timerSelect">
               <option value="45">45 sec</option>
               <option value="40">40 sec</option>
@@ -352,27 +333,13 @@
           </div>
 
           <div class="toggleRow">
-            <label class="toggle">
-              <input id="beepC" type="checkbox" checked />
-              Suono (C)
-            </label>
-            <label class="toggle">
-              <input id="beepB" type="checkbox" />
-              Suono (B)
-            </label>
-            <label class="toggle">
-              <input id="vibrateEnd" type="checkbox" checked />
-              Vibrazione fine tempo
-            </label>
-            <label class="toggle">
-              <input id="autoSendWA" type="checkbox" checked />
-              WhatsApp automatico dopo “Salva sessione”
-            </label>
+            <label class="toggle"><input id="beepC" type="checkbox" checked /> Suono (C)</label>
+            <label class="toggle"><input id="beepB" type="checkbox" /> Suono (B)</label>
+            <label class="toggle"><input id="vibrateEnd" type="checkbox" checked /> Vibrazione fine tempo</label>
+            <label class="toggle"><input id="autoSendWA" type="checkbox" checked /> WhatsApp automatico dopo “Salva sessione”</label>
           </div>
 
-          <div class="small">
-            Nota: su alcuni telefoni il suono/vibrazione può richiedere che tu abbia premuto almeno una volta “Start”.
-          </div>
+          <div class="small">Su alcuni telefoni il suono/vibrazione può richiedere che tu abbia premuto almeno una volta “Start”.</div>
         </div>
 
         <div class="sep"></div>
@@ -390,9 +357,7 @@
           </div>
         </div>
 
-        <div class="hint" style="margin-top:8px;">
-          Inserisci i canestri segnati (0–10) per ogni posizione. Nessuno slider: solo + / –.
-        </div>
+        <div class="hint" style="margin-top:8px;">Inserisci i canestri segnati (0–10) per ogni posizione. Nessuno slider: solo + / –.</div>
 
         <div class="scoreList" id="scoreList"></div>
 
@@ -401,15 +366,12 @@
           <button class="btn" id="saveSessionBtn" type="button">Salva sessione</button>
         </div>
 
-        <div class="small">
-          Dopo “Salva sessione” puoi condividere su WhatsApp. Il JSON serve per backup / invio al coach.
-        </div>
+        <div class="small">Dopo “Salva sessione” puoi condividere su WhatsApp. Il JSON serve per backup / invio al coach.</div>
       </div>
 
       <div class="rightCard">
         <div class="card">
           <h2>Backup / Coach</h2>
-
           <label>Import JSON (auto sul giocatore giusto)</label>
           <input id="importFile" type="file" accept="application/json" />
 
@@ -418,9 +380,7 @@
             <button class="btn" id="shareBtn" type="button">Condividi su WhatsApp</button>
           </div>
 
-          <div class="small">
-            Se importi il JSON di un giocatore, l’app lo riconosce e lo mette nel tab corretto.
-          </div>
+          <div class="small">Se importi il JSON di un giocatore, l’app lo riconosce e lo mette nel tab corretto.</div>
         </div>
 
         <div class="card">
@@ -429,7 +389,7 @@
 
           <div class="chartWrap">
             <div class="watermark" id="wmBox"></div>
-            <canvas id="chart"></canvas>
+            <canvas id="chart" width="900" height="320"></canvas>
           </div>
 
           <div class="small" id="statsText"></div>
@@ -441,9 +401,6 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    /***********************
-     * CONFIG
-     ***********************/
     const POSITIONS = [
       { key: "fondo_sx", label: "Fondo sx" },
       { key: "angolo_sx", label: "45° sx" },
@@ -454,11 +411,7 @@
     const SHOTS_PER_POS = 10;
     const PLAYER_COUNT = 12;
 
-    /***********************
-     * STATE
-     ***********************/
     let activePlayerId = 1;
-    let chartInstance = null;
 
     // Timer
     let timerSeconds = 45;
@@ -466,9 +419,15 @@
     let timerRunning = false;
     let timerHandle = null;
 
-    /***********************
-     * STORAGE
-     ***********************/
+    function $(id){ return document.getElementById(id); }
+
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1400);
+    }
+
     function keyForPlayer(pid){ return `virtus_player_${pid}`; }
 
     function defaultPlayer(pid){
@@ -476,7 +435,7 @@
         id: pid,
         name: `Giocatore ${pid}`,
         photoDataUrl: null,
-        sessions: [], // {date, note, made:{...}, shotsPerPos:10, ts}
+        sessions: [],
         settings: {
           timerSeconds: 45,
           beepC: true,
@@ -492,7 +451,6 @@
       if(!raw) return defaultPlayer(pid);
       try{
         const obj = JSON.parse(raw);
-        // Migrazione minima
         if(!obj || typeof obj !== 'object') return defaultPlayer(pid);
         if(!obj.id) obj.id = pid;
         if(!obj.name) obj.name = `Giocatore ${pid}`;
@@ -513,18 +471,6 @@
       localStorage.removeItem(keyForPlayer(pid));
     }
 
-    /***********************
-     * UI HELPERS
-     ***********************/
-    const $ = (id)=>document.getElementById(id);
-
-    function toast(msg){
-      const t = $("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1400);
-    }
-
     function pad2(n){ return String(n).padStart(2,'0'); }
     function fmtTimer(sec){
       const m = Math.floor(sec/60);
@@ -539,9 +485,11 @@
       return local.toISOString().slice(0,10);
     }
 
-    /***********************
-     * TABS
-     ***********************/
+    function escapeHtml(s){
+      return String(s||"").replace(/[&<>"']/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+    }
+
+    // -------- Tabs ----------
     function renderTabs(){
       const tabs = $("tabs");
       tabs.innerHTML = "";
@@ -550,7 +498,7 @@
         const btn = document.createElement("div");
         btn.className = "tab" + (i===activePlayerId ? " active":"");
         btn.innerHTML = `<span class="dot"></span><span>${escapeHtml(p.name)}</span>`;
-        btn.onclick = ()=>{ setActivePlayer(i); };
+        btn.onclick = ()=> setActivePlayer(i);
         tabs.appendChild(btn);
       }
     }
@@ -562,42 +510,7 @@
       updateStats();
     }
 
-    /***********************
-     * PLAYER PANEL
-     ***********************/
-    function renderPlayerPanel(){
-      const p = loadPlayer(activePlayerId);
-
-      $("playerName").value = p.name || `Giocatore ${activePlayerId}`;
-
-      // Foto
-      renderAvatar(p.photoDataUrl);
-
-      // Settings -> UI
-      const t = Number(p.settings?.timerSeconds || 45);
-      setTimerSelect(t);
-
-      $("beepC").checked = !!(p.settings?.beepC);
-      $("beepB").checked = !!(p.settings?.beepB);
-      $("vibrateEnd").checked = !!(p.settings?.vibrateEnd);
-      $("autoSendWA").checked = !!(p.settings?.autoSendWA);
-
-      // Timer init
-      timerSeconds = t;
-      timerRemaining = t;
-      $("timerLabel").textContent = `${t} sec`;
-      $("timerBig").textContent = fmtTimer(timerRemaining);
-
-      // Session defaults
-      if(!$("sessionDate").value) $("sessionDate").value = todayISO();
-      $("sessionNote").value = "";
-
-      // Inputs list
-      renderScoreInputs();
-      // Watermark chart (logo se disponibile)
-      renderWatermark(p.photoDataUrl);
-    }
-
+    // -------- Player panel ----------
     function renderAvatar(dataUrl){
       const box = $("avatarBox");
       box.innerHTML = "";
@@ -615,27 +528,51 @@
     function renderWatermark(dataUrl){
       const wm = $("wmBox");
       wm.innerHTML = "";
-      // Se hai un logo file nel repo, qui puoi usare icon-512.png come watermark base.
-      // Se invece vuoi la foto giocatore dietro, usiamo dataUrl.
       const src = dataUrl || "icon-512.png";
       const img = document.createElement("img");
       img.src = src;
       img.alt = "watermark";
+      img.onerror = () => { img.style.display = "none"; };
       wm.appendChild(img);
     }
 
     function setTimerSelect(val){
       const sel = $("timerSelect");
       sel.value = String(val);
-      if(sel.value !== String(val)){
-        sel.value = "45";
-      }
+      if(sel.value !== String(val)) sel.value = "45";
     }
 
-    /***********************
-     * SCORE INPUTS (NO SLIDER)
-     ***********************/
-    let currentMade = {}; // temp inputs for active player session
+    function renderPlayerPanel(){
+      const p = loadPlayer(activePlayerId);
+
+      $("playerName").value = p.name || `Giocatore ${activePlayerId}`;
+
+      renderAvatar(p.photoDataUrl);
+      renderWatermark(p.photoDataUrl);
+
+      const t = Number(p.settings?.timerSeconds || 45);
+      setTimerSelect(t);
+
+      $("beepC").checked = !!(p.settings?.beepC);
+      $("beepB").checked = !!(p.settings?.beepB);
+      $("vibrateEnd").checked = !!(p.settings?.vibrateEnd);
+      $("autoSendWA").checked = !!(p.settings?.autoSendWA);
+
+      timerSeconds = t;
+      timerRemaining = t;
+      $("timerLabel").textContent = `${t} sec`;
+      $("timerBig").textContent = fmtTimer(timerRemaining);
+
+      if(!$("sessionDate").value) $("sessionDate").value = todayISO();
+      $("sessionNote").value = "";
+
+      renderScoreInputs();
+    }
+
+    // -------- Inputs (+/-) ----------
+    let currentMade = {};
+
+    function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
     function renderScoreInputs(){
       currentMade = {};
@@ -649,7 +586,7 @@
         item.className = "scoreItem";
         item.innerHTML = `
           <div>
-            <div class="posTitle">${pos.label} <span style="font-size:14px; font-weight:800; color:rgba(234,255,243,.70);">(su ${SHOTS_PER_POS})</span></div>
+            <div class="posTitle">${pos.label} <span style="font-size:14px; font-weight:900; color:rgba(234,255,243,.70);">(su ${SHOTS_PER_POS})</span></div>
             <div class="posSub">Posizione ${idx+1}/${POSITIONS.length}</div>
           </div>
           <div class="counter">
@@ -661,7 +598,6 @@
         list.appendChild(item);
       });
 
-      // Bind +/-
       list.querySelectorAll(".cbtn").forEach(btn=>{
         btn.addEventListener("click", ()=>{
           const k = btn.getAttribute("data-k");
@@ -673,11 +609,16 @@
       });
     }
 
-    function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+    function clearInputs(){
+      POSITIONS.forEach(pos=>{
+        currentMade[pos.key] = 0;
+        $("val_"+pos.key).textContent = "0";
+      });
+      $("sessionNote").value = "";
+      toast("Inserimento azzerato");
+    }
 
-    /***********************
-     * SAVE SESSION
-     ***********************/
+    // -------- Save session ----------
     function saveSession(){
       const p = loadPlayer(activePlayerId);
 
@@ -701,26 +642,13 @@
       toast("Sessione salvata ✅");
       updateStats();
 
-      // WhatsApp auto
       if($("autoSendWA").checked){
         shareWhatsApp(true);
       }
     }
 
-    function clearInputs(){
-      POSITIONS.forEach(pos=>{
-        currentMade[pos.key] = 0;
-        $("val_"+pos.key).textContent = "0";
-      });
-      $("sessionNote").value = "";
-      toast("Inserimento azzerato");
-    }
-
-    /***********************
-     * STATS + CHART
-     ***********************/
+    // -------- Stats calc ----------
     function calcStats(player){
-      // Totali su tutte le sessioni
       const totals = {};
       POSITIONS.forEach(p=> totals[p.key] = { made:0, att:0 });
 
@@ -746,6 +674,133 @@
       return { perc, overallPerc, totals, overallMade, overallAtt };
     }
 
+    // -------- Custom Canvas Chart (NO Chart.js) ----------
+    function drawBarChart(canvas, labels, values, opts){
+      const ctx = canvas.getContext("2d");
+      const W = canvas.width;
+      const H = canvas.height;
+
+      // retina-friendly
+      const ratio = window.devicePixelRatio || 1;
+      if(canvas._ratio !== ratio){
+        canvas._ratio = ratio;
+        const cssH = 320;
+        const cssW = canvas.parentElement ? canvas.parentElement.clientWidth : 900;
+        canvas.style.height = cssH + "px";
+        canvas.style.width = "100%";
+        canvas.width = Math.floor(cssW * ratio);
+        canvas.height = Math.floor(cssH * ratio);
+      }
+
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0,0,w,h);
+
+      // bg
+      ctx.fillStyle = "rgba(255,255,255,0.02)";
+      ctx.fillRect(0,0,w,h);
+
+      const padL = 70*ratio;
+      const padR = 18*ratio;
+      const padT = 18*ratio;
+      const padB = 56*ratio;
+
+      const plotW = w - padL - padR;
+      const plotH = h - padT - padB;
+
+      // grid + y labels 0..100
+      ctx.strokeStyle = "rgba(255,255,255,0.10)";
+      ctx.lineWidth = 1*ratio;
+      ctx.fillStyle = "rgba(234,255,243,0.75)";
+      ctx.font = `${12*ratio}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
+
+      for(let p=0;p<=100;p+=20){
+        const y = padT + plotH - (p/100)*plotH;
+        ctx.beginPath();
+        ctx.moveTo(padL, y);
+        ctx.lineTo(padL+plotW, y);
+        ctx.stroke();
+        ctx.fillText(p+"%", 12*ratio, y + 4*ratio);
+      }
+
+      // axes
+      ctx.strokeStyle = "rgba(255,255,255,0.18)";
+      ctx.beginPath();
+      ctx.moveTo(padL, padT);
+      ctx.lineTo(padL, padT+plotH);
+      ctx.lineTo(padL+plotW, padT+plotH);
+      ctx.stroke();
+
+      // bars
+      const n = values.length;
+      const gap = 14*ratio;
+      const barW = (plotW - gap*(n+1)) / n;
+
+      for(let i=0;i<n;i++){
+        const v = Math.max(0, Math.min(100, Number(values[i])||0));
+        const barH = (v/100)*plotH;
+
+        const x = padL + gap + i*(barW+gap);
+        const y = padT + plotH - barH;
+
+        // bar
+        const grad = ctx.createLinearGradient(0, y, 0, y+barH);
+        grad.addColorStop(0, "rgba(10,168,90,0.95)");
+        grad.addColorStop(1, "rgba(10,168,90,0.45)");
+        ctx.fillStyle = grad;
+        roundRect(ctx, x, y, barW, barH, 12*ratio);
+        ctx.fill();
+
+        // value on top
+        ctx.fillStyle = "rgba(234,255,243,0.92)";
+        ctx.font = `${13*ratio}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
+        const txt = (Math.round(v*10)/10).toString() + "%";
+        const tw = ctx.measureText(txt).width;
+        ctx.fillText(txt, x + (barW - tw)/2, y - 8*ratio);
+
+        // label bottom
+        ctx.fillStyle = "rgba(234,255,243,0.75)";
+        ctx.font = `${12*ratio}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
+        const lab = labels[i] || "";
+        const maxLabW = barW + gap;
+        drawWrapCenter(ctx, lab, x + barW/2, padT+plotH + 18*ratio, maxLabW, 2, 12*ratio);
+      }
+    }
+
+    function roundRect(ctx, x, y, w, h, r){
+      const rr = Math.min(r, w/2, h/2);
+      ctx.beginPath();
+      ctx.moveTo(x+rr, y);
+      ctx.arcTo(x+w, y, x+w, y+h, rr);
+      ctx.arcTo(x+w, y+h, x, y+h, rr);
+      ctx.arcTo(x, y+h, x, y, rr);
+      ctx.arcTo(x, y, x+w, y, rr);
+      ctx.closePath();
+    }
+
+    function drawWrapCenter(ctx, text, cx, y, maxW, maxLines, fontSize){
+      const words = String(text).split(" ");
+      const lines = [];
+      let line = "";
+      for(const w of words){
+        const test = line ? (line + " " + w) : w;
+        if(ctx.measureText(test).width <= maxW || !line){
+          line = test;
+        }else{
+          lines.push(line);
+          line = w;
+        }
+      }
+      if(line) lines.push(line);
+      const used = lines.slice(0, maxLines);
+      for(let i=0;i<used.length;i++){
+        const t = used[i];
+        const tw = ctx.measureText(t).width;
+        ctx.fillText(t, cx - tw/2, y + i*(fontSize+4));
+      }
+    }
+
     function updateStats(){
       const p = loadPlayer(activePlayerId);
       renderWatermark(p.photoDataUrl);
@@ -755,74 +810,25 @@
       $("statsText").textContent =
         `Media totale: ${overallPerc}% (${overallMade} / ${overallAtt}) • Sessioni: ${p.sessions.length}`;
 
-      // Chart render (sempre 0–100)
-      const ctx = $("chart").getContext("2d");
+      // draw
+      const canvas = $("chart");
       const labels = POSITIONS.map(x=>x.label);
-
-      // Se Chart.js non è caricato, non rompiamo l’app
-      if(typeof Chart === "undefined"){
-        $("statsText").textContent += " • (Chart non disponibile offline)";
-        return;
-      }
-
-      if(chartInstance){
-        chartInstance.destroy();
-        chartInstance = null;
-      }
-
-      chartInstance = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [{
-            label: "Percentuale",
-            data: perc,
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display:false },
-            tooltip: {
-              callbacks: {
-                label: (c)=> `${c.raw}%`
-              }
-            }
-          },
-          scales: {
-            y: {
-              min: 0,
-              max: 100,
-              ticks: { callback: (v)=> v + "%" },
-              grid: { color: "rgba(255,255,255,.08)" }
-            },
-            x: {
-              grid: { display:false }
-            }
-          }
-        }
-      });
+      drawBarChart(canvas, labels, perc, {});
     }
 
-    /***********************
-     * EXPORT / IMPORT JSON
-     ***********************/
+    // -------- Export / Import ----------
+    function safeFile(name){
+      return String(name || "giocatore").trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g,"").slice(0,40) || "giocatore";
+    }
+
     function exportJSON(){
       const p = loadPlayer(activePlayerId);
       const payload = {
         app: "VirtusShotTracker",
-        version: 7,
+        version: 8,
         exportedAt: new Date().toISOString(),
-        player: {
-          id: p.id,
-          name: p.name,
-          // NON esportiamo foto per privacy/peso: se vuoi esportarla, dimmelo e la metto.
-          sessions: p.sessions
-        }
+        player: { id: p.id, name: p.name, sessions: p.sessions }
       };
-
       const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -835,20 +841,27 @@
       toast("JSON esportato");
     }
 
+    function sessionSig(s){
+      const m = s?.made || {};
+      return [
+        s?.ts || "",
+        s?.date || "",
+        m.fondo_sx ?? "",
+        m.angolo_sx ?? "",
+        m.frontale ?? "",
+        m.angolo_dx ?? "",
+        m.fondo_dx ?? ""
+      ].join("|");
+    }
+
     function importJSON(file){
       const reader = new FileReader();
       reader.onload = ()=>{
         try{
           const obj = JSON.parse(reader.result);
           const pl = obj?.player;
-          if(!pl || !Array.isArray(pl.sessions)){
-            toast("JSON non valido");
-            return;
-          }
+          if(!pl || !Array.isArray(pl.sessions)){ toast("JSON non valido"); return; }
 
-          // Auto-detect giocatore:
-          // se id tra 1..12 -> usalo
-          // altrimenti prova a matchare per nome su tabs
           let targetId = null;
           if(Number(pl.id) >=1 && Number(pl.id) <= PLAYER_COUNT){
             targetId = Number(pl.id);
@@ -863,7 +876,6 @@
           if(!targetId) targetId = activePlayerId;
 
           const target = loadPlayer(targetId);
-          // Unione: aggiungiamo sessioni importate (evita duplicati per ts+date+made)
           const existingKey = new Set(target.sessions.map(s=> sessionSig(s)));
           let added = 0;
           for(const s of pl.sessions){
@@ -874,17 +886,12 @@
               added++;
             }
           }
-
-          // aggiorna nome se importato e diverso
-          if(pl.name && pl.name.trim()){
-            target.name = pl.name.trim();
-          }
+          if(pl.name && pl.name.trim()) target.name = pl.name.trim();
 
           savePlayer(target);
           renderTabs();
           setActivePlayer(targetId);
-          toast(`Import ok (+${added} sessioni)`);
-
+          toast(`Import ok (+${added})`);
         }catch(e){
           toast("Errore import JSON");
         }finally{
@@ -894,50 +901,19 @@
       reader.readAsText(file);
     }
 
-    function sessionSig(s){
-      // Firma robusta ma semplice
-      const m = s?.made || {};
-      return [
-        s?.ts || "",
-        s?.date || "",
-        m.fondo_sx ?? "",
-        m.angolo_sx ?? "",
-        m.frontale ?? "",
-        m.angolo_dx ?? "",
-        m.fondo_dx ?? ""
-      ].join("|");
-    }
-
-    function safeFile(name){
-      return String(name || "giocatore")
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "_")
-        .replace(/^_+|_+$/g,"")
-        .slice(0,40) || "giocatore";
-    }
-
-    /***********************
-     * WHATSAPP SHARE
-     ***********************/
+    // -------- WhatsApp ----------
     function buildReportText(player){
       const { perc, overallPerc } = calcStats(player);
-
-      // ultima sessione
       const last = player.sessions[player.sessions.length-1];
       let lastLine = "";
       if(last){
-        const made = last.made || {};
+        const m = last.made || {};
         lastLine =
-          `\nUltima sessione (${last.date}): ` +
-          `FSX ${made.fondo_sx||0}/10, 45SX ${made.angolo_sx||0}/10, FRO ${made.frontale||0}/10, 45DX ${made.angolo_dx||0}/10, FDX ${made.fondo_dx||0}/10` +
+          `\nUltima sessione (${last.date}): FSX ${m.fondo_sx||0}/10, 45SX ${m.angolo_sx||0}/10, FRO ${m.frontale||0}/10, 45DX ${m.angolo_dx||0}/10, FDX ${m.fondo_dx||0}/10` +
           (last.note ? `\nNote: ${last.note}` : "");
       }
-
       const posLine =
-        `\nMedie posizioni: ` +
-        `FSX ${perc[0]}% • 45SX ${perc[1]}% • FRO ${perc[2]}% • 45DX ${perc[3]}% • FDX ${perc[4]}%`;
-
+        `\nMedie posizioni: FSX ${perc[0]}% • 45SX ${perc[1]}% • FRO ${perc[2]}% • 45DX ${perc[3]}% • FDX ${perc[4]}%`;
       return (
         `🏀 Virtus Shot Tracker\n` +
         `Giocatore: ${player.name}\n` +
@@ -950,22 +926,12 @@
     function shareWhatsApp(auto=false){
       const p = loadPlayer(activePlayerId);
       const text = buildReportText(p);
-
-      // Se c’è Web Share API -> apri share sheet (migliore)
-      if(navigator.share && !auto){
-        navigator.share({ text }).catch(()=>{});
-        return;
-      }
-
-      // WhatsApp deep link
       const url = "https://wa.me/?text=" + encodeURIComponent(text);
       window.open(url, "_blank");
       if(!auto) toast("Aperto WhatsApp");
     }
 
-    /***********************
-     * PHOTO HANDLING
-     ***********************/
+    // -------- Foto ----------
     function savePhoto(file){
       const reader = new FileReader();
       reader.onload = ()=>{
@@ -988,9 +954,7 @@
       toast("Foto rimossa");
     }
 
-    /***********************
-     * TIMER (45/40/35 only)
-     ***********************/
+    // -------- Timer (45/40/35 only) ----------
     function applyTimerFromUI(){
       const p = loadPlayer(activePlayerId);
       const v = Number($("timerSelect").value || 45);
@@ -1011,14 +975,11 @@
     function timerStart(){
       if(timerRunning) return;
       timerRunning = true;
-
-      // Aggiorna settings su start (così restano)
       applyTimerFromUI();
 
       timerHandle = setInterval(()=>{
         timerRemaining = Math.max(0, timerRemaining - 1);
         $("timerBig").textContent = fmtTimer(timerRemaining);
-
         if(timerRemaining <= 0){
           timerStop(true);
           onTimerEnd();
@@ -1036,12 +997,11 @@
 
     function timerReset(){
       timerStop(true);
-      applyTimerFromUI(); // ripristina a timerSeconds
+      applyTimerFromUI();
       toast("Timer resettato");
     }
 
     function onTimerEnd(){
-      // suono + vibrazione
       const useC = $("beepC").checked;
       const useB = $("beepB").checked;
       const vib = $("vibrateEnd").checked;
@@ -1050,66 +1010,45 @@
         navigator.vibrate([140,60,140,60,220]);
       }
 
-      // WebAudio beep (più affidabile di audio file)
       try{
+        if(!useC && !useB){ toast("Tempo finito"); return; }
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const o = ctx.createOscillator();
         const g = ctx.createGain();
         o.connect(g);
         g.connect(ctx.destination);
 
-        // C o B (frequenze indicative)
-        const freq = useB ? 494 : 523; // B4 ~494, C5 ~523
-        if(!useC && !useB){
-          ctx.close();
-          return;
-        }
-
+        const freq = useB ? 494 : 523; // B4 / C5
         o.frequency.value = freq;
         o.type = "sine";
         g.gain.value = 0.0001;
         o.start();
 
-        // attacco rapido
         g.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.02);
-        // durata
         g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.45);
 
-        setTimeout(()=>{
-          o.stop();
-          ctx.close();
-        }, 520);
-      }catch(e){
-        // se audio non disponibile, pazienza
-      }
+        setTimeout(()=>{ o.stop(); ctx.close(); }, 520);
+      }catch(e){}
 
       toast("Tempo finito ⏱️");
     }
 
-    /***********************
-     * EVENTS
-     ***********************/
-    function escapeHtml(s){
-      return String(s||"").replace(/[&<>"']/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-    }
-
+    // -------- Events ----------
     function bindEvents(){
       $("saveNameBtn").addEventListener("click", ()=>{
         const p = loadPlayer(activePlayerId);
         const name = ($("playerName").value || "").trim();
         if(!name){ toast("Inserisci un nome"); return; }
         p.name = name;
-        // salva settings correnti
+        p.settings.timerSeconds = Number($("timerSelect").value || 45);
         p.settings.beepC = $("beepC").checked;
         p.settings.beepB = $("beepB").checked;
         p.settings.vibrateEnd = $("vibrateEnd").checked;
         p.settings.autoSendWA = $("autoSendWA").checked;
-        p.settings.timerSeconds = Number($("timerSelect").value || 45);
-
         savePlayer(p);
         renderTabs();
         toast("Nome salvato");
-      }, {passive:true});
+      });
 
       $("resetPlayerBtn").addEventListener("click", ()=>{
         if(!confirm("Reset totale del giocatore selezionato? (sessioni e impostazioni)")) return;
@@ -1127,18 +1066,13 @@
         $("photoInput").value = "";
       });
 
-      $("removePhotoBtn").addEventListener("click", ()=>{
-        removePhoto();
-      });
+      $("removePhotoBtn").addEventListener("click", removePhoto);
 
-      $("timerSelect").addEventListener("change", ()=>{
-        applyTimerFromUI();
-      });
-
-      $("beepC").addEventListener("change", ()=>applyTimerFromUI());
-      $("beepB").addEventListener("change", ()=>applyTimerFromUI());
-      $("vibrateEnd").addEventListener("change", ()=>applyTimerFromUI());
-      $("autoSendWA").addEventListener("change", ()=>applyTimerFromUI());
+      $("timerSelect").addEventListener("change", applyTimerFromUI);
+      $("beepC").addEventListener("change", applyTimerFromUI);
+      $("beepB").addEventListener("change", applyTimerFromUI);
+      $("vibrateEnd").addEventListener("change", applyTimerFromUI);
+      $("autoSendWA").addEventListener("change", applyTimerFromUI);
 
       $("startTimerBtn").addEventListener("click", timerStart);
       $("stopTimerBtn").addEventListener("click", ()=>timerStop(false));
@@ -1155,24 +1089,18 @@
         if(!f) return;
         importJSON(f);
       });
+
+      window.addEventListener("resize", ()=>{ updateStats(); }, {passive:true});
     }
 
-    /***********************
-     * INIT
-     ***********************/
     function init(){
-      // Set default date
       $("sessionDate").value = todayISO();
-
       renderTabs();
       renderPlayerPanel();
       bindEvents();
-
-      // Primo render chart
       updateStats();
     }
 
-    // Start
     init();
   </script>
 </body>
