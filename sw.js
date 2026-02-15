@@ -1,4 +1,4 @@
-const CACHE_NAME = "virtus-shot-tracker-v4"; // se vuoi forzare update, cambia v3 -> v4
+const CACHE_NAME = "virtus-shot-tracker-v5"; // se vuoi forzare update, cambia v3 -> v4
 const ASSETS = [
   "/virtus-shot-tracker/",
   "/virtus-shot-tracker/index.html",
