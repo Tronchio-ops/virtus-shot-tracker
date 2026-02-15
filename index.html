@@ -3,27 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#062b1a" />
-  <title>Virtus Shot Tracker</title>
+  <meta name="theme-color" content="#060A08" />
+  <title>Virtus Shooting Lab</title>
+
+  <!-- Cache-bust (aiuta un po' su mobile) -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 
   <style>
     :root{
-      --bg0:#020403;
-      --bg1:#04140d;
-      --bg2:#062b1a;
-      --card:rgba(8, 20, 14, .78);
-      --card2:rgba(10, 26, 18, .86);
-      --stroke:rgba(255,255,255,.08);
-      --stroke2:rgba(255,255,255,.12);
-      --txt:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.58);
-      --green:#12c46a;
-      --green2:#0a7a43;
-      --shadow: 0 12px 28px rgba(0,0,0,.45);
-      --r:22px;
+      --bg:#060A08;
+      --bg2:#07110C;
+      --card:rgba(255,255,255,.04);
+      --card2:rgba(255,255,255,.03);
+      --stroke:rgba(255,255,255,.06);
+      --stroke2:rgba(255,255,255,.10);
+      --txt:#EAF5EE;
+      --muted:rgba(234,245,238,.72);
+      --muted2:rgba(234,245,238,.55);
+      --green:#17C964;
+      --green2:#0B3D2A;
+      --shadow: 0 14px 36px rgba(0,0,0,.50);
+      --r:24px;
       --r2:18px;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -31,20 +35,19 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       color:var(--txt);
       background:
-        radial-gradient(1200px 800px at 20% -10%, rgba(18,196,106,.20), transparent 55%),
-        radial-gradient(900px 600px at 90% 10%, rgba(18,196,106,.14), transparent 55%),
-        linear-gradient(180deg, var(--bg2), var(--bg0) 60%);
+        radial-gradient(900px 600px at 18% -10%, rgba(23,201,100,.16), transparent 60%),
+        radial-gradient(900px 600px at 92% 10%, rgba(23,201,100,.10), transparent 55%),
+        linear-gradient(180deg, #07160f, var(--bg) 55%);
       min-height:100%;
     }
-
     .wrap{
       width:min(980px, 94vw);
-      margin: 18px auto 40px;
-      padding-bottom: 24px;
+      margin:18px auto 42px;
     }
 
+    /* Cards */
     .card{
-      background: linear-gradient(180deg, rgba(18,196,106,.08), transparent 55%), var(--card);
+      background: linear-gradient(180deg, rgba(23,201,100,.06), transparent 60%), var(--card);
       border:1px solid var(--stroke);
       border-radius: var(--r);
       box-shadow: var(--shadow);
@@ -52,103 +55,65 @@
       -webkit-backdrop-filter: blur(10px);
       overflow:hidden;
     }
-    .card.pad{ padding: 16px; }
-    .row{display:flex; gap:12px; align-items:center}
+    .card.pad{padding:16px}
+    .sectionTitle{
+      margin: 2px 2px 12px;
+      font-size: 22px;
+      font-weight: 1000;
+      letter-spacing:.2px;
+    }
+    .muted{color:var(--muted)}
+    .row{display:flex; align-items:center; gap:12px}
     .col{display:flex; flex-direction:column; gap:10px}
     .spacer{flex:1}
-    .muted{color:var(--muted)}
     .divider{height:1px; background:var(--stroke); margin:12px 0}
 
-    /* HEADER */
+    /* Header */
     .header{
-      padding:16px 16px;
-      display:flex;
-      align-items:center;
-      gap:14px;
+      display:flex; align-items:center; gap:14px;
+      padding:16px;
       background:
-        radial-gradient(700px 300px at 10% 0%, rgba(18,196,106,.20), transparent 60%),
-        linear-gradient(135deg, rgba(0,0,0,.30), rgba(0,0,0,.08));
+        radial-gradient(700px 260px at 10% 0%, rgba(23,201,100,.18), transparent 65%),
+        linear-gradient(135deg, rgba(0,0,0,.35), rgba(0,0,0,.12));
     }
-    .logo{
-      width:64px; height:64px; border-radius:16px;
-      background: rgba(0,0,0,.35);
-      border:1px solid var(--stroke2);
-      display:grid; place-items:center;
+    .logoBox{
+      width:76px; height:76px;
+      border-radius: 22px;
       overflow:hidden;
+      border:1px solid var(--stroke2);
+      background: rgba(0,0,0,.32);
       flex:0 0 auto;
+      display:grid; place-items:center;
     }
-    .logo img{width:100%; height:100%; object-fit:cover}
-    .titleBox{display:flex; flex-direction:column; gap:2px}
+    .logoBox img{width:100%; height:100%; object-fit:cover}
+    .titleBox{min-width:0}
     .title{
-      font-size: 34px;
-      font-weight: 900;
-      letter-spacing:.2px;
-      line-height:1.05;
       margin:0;
+      font-size: 34px;
+      line-height:1.05;
+      font-weight: 1100;
+      letter-spacing: .2px;
       text-shadow: 0 2px 16px rgba(0,0,0,.35);
       word-break: break-word;
     }
-
-    /* TOP BAR: player + menu */
-    .topbar{
-      margin-top:14px;
-      padding: 14px 14px;
-      display:flex; align-items:center; gap:12px;
-    }
-    .pill{
-      display:inline-flex; align-items:center; gap:10px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.30);
+    .menuBtn{
+      margin-left:auto;
+      width:46px; height:46px;
+      border-radius: 16px;
       border:1px solid var(--stroke2);
-      max-width: 70%;
-    }
-    .badge{
-      width:34px; height:34px; border-radius:999px;
+      background: rgba(0,0,0,.26);
+      color: var(--txt);
       display:grid; place-items:center;
-      background: rgba(255,255,255,.05);
-      border:1px solid var(--stroke);
-      font-weight:800;
-      color:rgba(255,255,255,.85);
-      flex:0 0 auto;
-    }
-    .pname{
-      font-weight:800;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .pmini{
-      width:34px; height:34px; border-radius:12px;
-      overflow:hidden;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      flex:0 0 auto;
-    }
-    .pmini img{width:100%; height:100%; object-fit:cover}
-
-    .iconBtn{
-      width:44px; height:44px; border-radius:14px;
-      display:grid; place-items:center;
-      background: rgba(0,0,0,.28);
-      border:1px solid var(--stroke2);
-      color:var(--txt);
       cursor:pointer;
       user-select:none;
+      font-size:22px;
+      font-weight:1000;
     }
-    .iconBtn:active{transform: scale(.98)}
-    .dots{font-size:22px; line-height:0}
+    .menuBtn:active{transform: scale(.98)}
 
-    /* SECTION TITLES */
-    .sectionTitle{
-      margin: 10px 2px 8px;
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing:.2px;
-    }
-
-    /* INPUTS */
-    input[type="text"], input[type="date"], select{
+    /* Inputs */
+    label{font-size:13px; color:var(--muted)}
+    input[type="date"], input[type="text"], select{
       width:100%;
       padding: 14px 14px;
       border-radius: 16px;
@@ -161,77 +126,112 @@
     input[type="date"]{color-scheme: dark}
     select{appearance:none}
 
-    .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
-    .grid3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px}
+    /* Tabs players (presenti) */
+    .tabs{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:6px;
+    }
+    .ptab{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.22);
+      cursor:pointer;
+      user-select:none;
+      max-width: 100%;
+    }
+    .ptab.active{
+      border-color: rgba(23,201,100,.38);
+      background: linear-gradient(180deg, rgba(23,201,100,.16), rgba(0,0,0,.18));
+    }
+    .ava{
+      width:36px; height:36px;
+      border-radius: 999px;
+      overflow:hidden;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      display:grid; place-items:center;
+      font-weight:1000;
+      color: rgba(234,245,238,.80);
+      flex:0 0 auto;
+    }
+    .ava img{width:100%; height:100%; object-fit:cover}
+    .ptabName{
+      font-weight: 1000;
+      font-size: 13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 220px;
+    }
 
-    /* TIMER */
+    /* Timer */
     .timerBox{
       border-radius: var(--r);
       border:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(18,196,106,.10), rgba(0,0,0,.22));
+      background: linear-gradient(180deg, rgba(23,201,100,.10), rgba(0,0,0,.18));
       padding: 14px;
     }
     .time{
-      font-size: 66px;
-      font-weight: 1000;
-      letter-spacing: 1px;
       text-align:center;
+      font-size: 66px;
+      font-weight: 1150;
+      letter-spacing: 1px;
       margin: 6px 0 12px;
-      text-shadow: 0 2px 20px rgba(0,0,0,.35);
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 2px 22px rgba(0,0,0,.40);
     }
-    .btnRow{display:flex; gap:10px; align-items:center; justify-content:center}
+    .btnRow{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
     .btn{
       border:1px solid var(--stroke2);
-      background: rgba(0,0,0,.28);
+      background: rgba(0,0,0,.24);
       color: var(--txt);
       padding: 12px 14px;
       border-radius: 16px;
-      font-weight: 900;
+      font-weight: 1000;
       cursor:pointer;
       user-select:none;
       min-width: 92px;
     }
     .btn:active{transform: scale(.98)}
     .btnPrimary{
-      background: linear-gradient(180deg, rgba(18,196,106,.22), rgba(18,196,106,.10));
-      border-color: rgba(18,196,106,.35);
+      background: linear-gradient(180deg, rgba(23,201,100,.22), rgba(11,61,42,.18));
+      border-color: rgba(23,201,100,.40);
+      box-shadow: 0 12px 26px rgba(0,0,0,.28);
     }
     .btnStartBig{
       min-width: 190px;
-      font-size: 18px;
       padding: 16px 18px;
       border-radius: 18px;
+      font-size: 18px;
     }
 
-    /* SHOOT INPUT */
+    /* Shots */
     .shotRow{
       display:grid;
       grid-template-columns: 1fr auto auto auto;
       gap:10px;
       align-items:center;
-      padding: 12px 12px;
+      padding: 12px;
       border-radius: var(--r);
       border:1px solid var(--stroke);
-      background: rgba(0,0,0,.22);
+      background: rgba(0,0,0,.20);
     }
-    .shotName{
-      font-weight: 950;
-      font-size: 18px;
-      line-height:1.05;
-    }
-    .shotSub{
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
+    .shotName{font-weight:1100; font-size: 18px; line-height:1.05}
+    .shotSub{font-size:12px; color:var(--muted2); margin-top:4px}
     .pmBtn{
       width:46px; height:46px;
       border-radius: 16px;
       border:1px solid var(--stroke2);
-      background: rgba(0,0,0,.26);
+      background: rgba(0,0,0,.22);
       color: var(--txt);
       font-size: 26px;
-      font-weight: 900;
+      font-weight: 1100;
       display:grid; place-items:center;
       cursor:pointer;
       user-select:none;
@@ -241,16 +241,16 @@
       width:64px;
       text-align:center;
       font-size: 22px;
-      font-weight: 1000;
+      font-weight: 1150;
       padding: 10px 0;
       border-radius: 16px;
       border:1px solid var(--stroke2);
-      background: rgba(0,0,0,.18);
+      background: rgba(0,0,0,.16);
+      font-variant-numeric: tabular-nums;
     }
-
     .actions2{display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top: 12px}
 
-    /* STATS */
+    /* Stats */
     .statsBox{
       position:relative;
       border-radius: var(--r);
@@ -259,25 +259,67 @@
       padding: 12px;
       overflow:hidden;
     }
-    .statsLogo{
+    .watermark{
       position:absolute;
       inset:0;
       display:grid;
       place-items:center;
-      opacity:.14;
+      opacity:.10;
       pointer-events:none;
       transform: translateY(10px);
     }
-    .statsLogo img{
+    .watermark img{
       width:min(420px, 80%);
       filter: saturate(1.1) contrast(1.05);
     }
-    canvas{
-      width:100% !important;
-      height: 260px !important;
+    canvas{width:100% !important; height:260px !important}
+
+    .statLine{
+      margin-top:10px;
+      font-weight:1000;
     }
 
-    /* OVERLAY / MODALS */
+    /* Ranking list */
+    .rankBox{
+      margin-top:12px;
+      border-radius: var(--r);
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.16);
+      padding: 12px;
+    }
+    .rankItem{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding: 10px 10px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.05);
+      background: rgba(255,255,255,.02);
+      margin-bottom: 10px;
+    }
+    .rankItem:last-child{margin-bottom:0}
+    .rkNum{
+      width:34px; height:34px;
+      border-radius: 14px;
+      border:1px solid rgba(23,201,100,.22);
+      background: rgba(23,201,100,.12);
+      display:grid; place-items:center;
+      font-weight:1100;
+      font-variant-numeric: tabular-nums;
+      flex:0 0 auto;
+    }
+    .rkName{
+      font-weight:1100;
+      flex:1;
+      min-width:0;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .rkPct{font-weight:1150; font-variant-numeric: tabular-nums;}
+    .rkMeta{color:var(--muted2); font-size:12px; margin-left:auto}
+
+    /* Overlays / Modals (scroll FIX) */
     .overlay{
       position:fixed;
       inset:0;
@@ -290,28 +332,28 @@
     }
     .overlay.show{display:flex}
     .modal{
-      width:min(720px, 96vw);
+      width:min(740px, 96vw);
       max-height: 86vh;
       overflow:hidden;
       border-radius: 22px;
       border:1px solid var(--stroke2);
-      background: rgba(6, 18, 12, .94);
+      background: rgba(6, 14, 10, .94);
       box-shadow: var(--shadow);
       display:flex;
       flex-direction:column;
     }
     .modalHead{
-      padding: 14px 14px;
+      padding: 14px;
       display:flex;
       align-items:center;
       gap:10px;
       border-bottom:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(18,196,106,.10), transparent 70%);
+      background: linear-gradient(180deg, rgba(23,201,100,.10), transparent 70%);
     }
-    .modalTitle{font-weight:1000; font-size: 18px}
+    .modalTitle{font-weight:1100; font-size: 18px}
     .modalBody{
       padding: 12px;
-      overflow:auto;           /* <-- SCROLL QUI */
+      overflow:auto;
       -webkit-overflow-scrolling: touch;
       flex:1 1 auto;
     }
@@ -323,41 +365,48 @@
       gap:10px;
       justify-content:flex-end;
     }
+    .xBtn{
+      margin-left:auto;
+      width:40px; height:40px;
+      border-radius: 14px;
+      border:1px solid var(--stroke2);
+      background: rgba(0,0,0,.22);
+      color: var(--txt);
+      display:grid; place-items:center;
+      cursor:pointer;
+      user-select:none;
+      font-weight:1100;
+    }
+    .xBtn:active{transform: scale(.98)}
 
-    .listItem{
+    /* Select players list */
+    .pickRow{
       display:flex;
       align-items:center;
       gap:12px;
       padding: 12px;
       border-radius: 18px;
       border:1px solid var(--stroke);
-      background: rgba(0,0,0,.20);
-      margin-bottom: 10px;
-    }
-    .listItem input{width:22px; height:22px}
-    .liText{display:flex; flex-direction:column}
-    .liMain{font-weight: 950}
-    .liSub{font-size:12px; color:var(--muted)}
-
-    .menuItem{
-      width:100%;
-      text-align:left;
-      padding: 14px 12px;
-      border-radius: 16px;
-      border:1px solid var(--stroke);
       background: rgba(0,0,0,.18);
-      color: var(--txt);
-      font-weight: 950;
-      cursor:pointer;
-      margin-bottom: 10px;
+      margin-bottom:10px;
     }
-    .menuItem:active{transform: scale(.99)}
+    .pickRow input{width:22px; height:22px}
+    .pickMain{font-weight:1100}
+    .pickSub{font-size:12px; color:var(--muted2)}
+    .chipSmall{
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      font-weight:1000;
+      font-size:12px;
+      color: rgba(234,245,238,.85);
+    }
 
     /* Responsive */
     @media (max-width:520px){
       .title{font-size:30px}
       .time{font-size:58px}
-      .shotRow{grid-template-columns: 1fr auto auto auto}
       canvas{height:240px !important}
     }
   </style>
@@ -365,44 +414,51 @@
 
 <body>
   <div class="wrap">
-    <!-- HEADER BOX -->
+
+    <!-- HEADER -->
     <div class="card">
       <div class="header">
-        <div class="logo" id="logoBox">
+        <div class="logoBox" id="logoBox">
           <img id="logoImg" alt="Virtus logo" src="icon-512.png" />
         </div>
         <div class="titleBox">
-          <h1 class="title">Virtus Shot Tracker</h1>
+          <h1 class="title">Virtus Shooting Lab</h1>
         </div>
-      </div>
-
-      <!-- PLAYER + MENU -->
-      <div class="topbar">
-        <div class="pill" id="playerPill" title="Giocatore selezionato">
-          <div class="badge" id="playerBadge">G1</div>
-          <div class="pmini" id="playerPhotoMini" style="display:none">
-            <img id="playerPhotoMiniImg" alt="foto giocatore" />
-          </div>
-          <div class="pname" id="playerNameTop">Giocatore 1</div>
-        </div>
-        <div class="spacer"></div>
-        <button class="iconBtn" id="menuBtn" aria-label="Menu">
-          <span class="dots">⋮</span>
-        </button>
+        <button class="menuBtn" id="menuBtn" aria-label="Menu">⋮</button>
       </div>
     </div>
 
-    <!-- SESSION -->
+    <!-- HOME: 1) DATA 2) TAB 3) TIMER 4) INPUT 5) SALVA 6) STATS + CLASSIFICA GIORNATA -->
     <div class="card pad" style="margin-top:14px;">
       <div class="sectionTitle">Sessione</div>
-      <div class="grid2">
-        <div class="col">
-          <label class="muted" for="sessionDate">Data sessione</label>
+
+      <!-- 1) DATA -->
+      <div class="row" style="flex-wrap:wrap;">
+        <div class="col" style="flex:1; min-width: 220px;">
+          <label for="sessionDate">Data sessione</label>
           <input id="sessionDate" type="date" />
         </div>
-        <div class="col">
-          <label class="muted" for="timerPreset">Timer</label>
-          <select id="timerPreset">
+      </div>
+
+      <!-- 2) TAB GIOCATORI PRESENTI -->
+      <div class="divider"></div>
+      <div class="row" style="flex-wrap:wrap;">
+        <div class="col" style="flex:1; min-width:220px;">
+          <div class="muted" style="font-weight:900;">Giocatori presenti</div>
+          <div id="presentHint" class="muted" style="font-size:13px; margin-top:4px;">Menu ⋮ → Seleziona giocatori</div>
+        </div>
+        <button class="btn btnPrimary" id="openSelectPlayers" type="button">Seleziona</button>
+      </div>
+      <div class="tabs" id="playerTabs" style="margin-top:12px;"></div>
+    </div>
+
+    <!-- 3) TIMER -->
+    <div class="card pad" style="margin-top:14px;">
+      <div class="row" style="gap:12px; flex-wrap:wrap;">
+        <div class="sectionTitle" style="margin:0;">Timer</div>
+        <div class="spacer"></div>
+        <div style="min-width:170px;">
+          <select id="timerPreset" aria-label="Timer preset">
             <option value="45">45 sec</option>
             <option value="40">40 sec</option>
             <option value="35">35 sec</option>
@@ -410,31 +466,17 @@
         </div>
       </div>
 
-      <div class="divider"></div>
-
-      <div class="row" style="gap:10px;">
-        <div class="col" style="flex:1;">
-          <div class="muted">Giocatori presenti</div>
-          <div id="presentSummary" style="font-weight:900;">Nessuno selezionato</div>
-        </div>
-        <button class="btn btnPrimary" id="openSelectPlayers">Seleziona</button>
-      </div>
-    </div>
-
-    <!-- TIMER -->
-    <div class="card pad" style="margin-top:14px;">
-      <div class="sectionTitle">Timer</div>
-      <div class="timerBox">
+      <div class="timerBox" style="margin-top:12px;">
         <div class="time" id="timeDisplay">00:45</div>
         <div class="btnRow">
-          <button class="btn btnPrimary btnStartBig" id="startBtn">START</button>
-          <button class="btn" id="stopBtn">Stop</button>
-          <button class="btn" id="resetBtn">Reset</button>
+          <button class="btn btnPrimary btnStartBig" id="startBtn" type="button">START</button>
+          <button class="btn" id="stopBtn" type="button">Stop</button>
+          <button class="btn" id="resetBtn" type="button">Reset</button>
         </div>
       </div>
     </div>
 
-    <!-- INPUT SHOTS -->
+    <!-- 4) INSERIMENTO -->
     <div class="card pad" style="margin-top:14px;">
       <div class="sectionTitle">Inserimento tiri</div>
 
@@ -444,9 +486,9 @@
             <div class="shotName">Fondo sx</div>
             <div class="shotSub">su 10</div>
           </div>
-          <button class="pmBtn" data-k="fsx" data-d="-1">−</button>
-          <div class="val" id="val-fsx">0</div>
-          <button class="pmBtn" data-k="fsx" data-d="1">+</button>
+          <button class="pmBtn" data-k="fondo_sx" data-d="-1" type="button">−</button>
+          <div class="val" id="val-fondo_sx">0</div>
+          <button class="pmBtn" data-k="fondo_sx" data-d="1" type="button">+</button>
         </div>
 
         <div class="shotRow">
@@ -454,9 +496,9 @@
             <div class="shotName">45° sx</div>
             <div class="shotSub">su 10</div>
           </div>
-          <button class="pmBtn" data-k="45sx" data-d="-1">−</button>
-          <div class="val" id="val-45sx">0</div>
-          <button class="pmBtn" data-k="45sx" data-d="1">+</button>
+          <button class="pmBtn" data-k="angolo_sx" data-d="-1" type="button">−</button>
+          <div class="val" id="val-angolo_sx">0</div>
+          <button class="pmBtn" data-k="angolo_sx" data-d="1" type="button">+</button>
         </div>
 
         <div class="shotRow">
@@ -464,9 +506,9 @@
             <div class="shotName">Frontale</div>
             <div class="shotSub">su 10</div>
           </div>
-          <button class="pmBtn" data-k="fr" data-d="-1">−</button>
-          <div class="val" id="val-fr">0</div>
-          <button class="pmBtn" data-k="fr" data-d="1">+</button>
+          <button class="pmBtn" data-k="frontale" data-d="-1" type="button">−</button>
+          <div class="val" id="val-frontale">0</div>
+          <button class="pmBtn" data-k="frontale" data-d="1" type="button">+</button>
         </div>
 
         <div class="shotRow">
@@ -474,9 +516,9 @@
             <div class="shotName">45° dx</div>
             <div class="shotSub">su 10</div>
           </div>
-          <button class="pmBtn" data-k="45dx" data-d="-1">−</button>
-          <div class="val" id="val-45dx">0</div>
-          <button class="pmBtn" data-k="45dx" data-d="1">+</button>
+          <button class="pmBtn" data-k="angolo_dx" data-d="-1" type="button">−</button>
+          <div class="val" id="val-angolo_dx">0</div>
+          <button class="pmBtn" data-k="angolo_dx" data-d="1" type="button">+</button>
         </div>
 
         <div class="shotRow">
@@ -484,34 +526,45 @@
             <div class="shotName">Fondo dx</div>
             <div class="shotSub">su 10</div>
           </div>
-          <button class="pmBtn" data-k="fdx" data-d="-1">−</button>
-          <div class="val" id="val-fdx">0</div>
-          <button class="pmBtn" data-k="fdx" data-d="1">+</button>
+          <button class="pmBtn" data-k="fondo_dx" data-d="-1" type="button">−</button>
+          <div class="val" id="val-fondo_dx">0</div>
+          <button class="pmBtn" data-k="fondo_dx" data-d="1" type="button">+</button>
         </div>
       </div>
 
       <div class="actions2">
-        <button class="btn" id="clearBtn">Azzera</button>
-        <button class="btn btnPrimary" id="saveBtn">Salva</button>
+        <button class="btn" id="clearBtn" type="button">Azzera</button>
+        <button class="btn btnPrimary" id="saveBtn" type="button">Salva</button>
       </div>
     </div>
 
-    <!-- STATS -->
+    <!-- 6) STATISTICHE (SOLO GIORNATA) + CLASSIFICA GIORNATA -->
     <div class="card pad" style="margin-top:14px;">
-      <div class="sectionTitle">Statistiche</div>
+      <div class="sectionTitle">Statistiche (giornata)</div>
+
       <div class="statsBox">
-        <div class="statsLogo">
-          <img alt="logo" src="icon-512.png">
-        </div>
+        <div class="watermark"><img alt="logo" src="icon-512.png"></div>
         <canvas id="chart"></canvas>
       </div>
 
-      <div class="row" style="margin-top:10px;">
-        <div style="font-weight:950;" id="avgLine">Media: 0% • Sessioni: 0</div>
+      <div class="row" style="margin-top:10px; flex-wrap:wrap;">
+        <div class="statLine" id="dayStatLine">—</div>
         <div class="spacer"></div>
-        <button class="btn btnPrimary" id="shareBtn">Condividi WhatsApp</button>
+        <button class="btn btnPrimary" id="shareBtn" type="button">Condividi WhatsApp</button>
+      </div>
+
+      <!-- CLASSIFICA GIORNATA (sempre presente) -->
+      <div class="rankBox" style="margin-top:14px;">
+        <div class="row" style="gap:10px; flex-wrap:wrap;">
+          <div style="font-weight:1100; font-size:18px;">Classifica giornata</div>
+          <div class="spacer"></div>
+          <div class="chipSmall" id="rankDayMeta">—</div>
+        </div>
+        <div style="height:10px"></div>
+        <div id="rankDayList"></div>
       </div>
     </div>
+
   </div>
 
   <!-- MENU MODAL -->
@@ -519,17 +572,17 @@
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modalHead">
         <div class="modalTitle">Menu</div>
-        <div class="spacer"></div>
-        <button class="iconBtn" id="menuClose" aria-label="Chiudi"><span class="dots">✕</span></button>
+        <button class="xBtn" id="menuClose" aria-label="Chiudi">✕</button>
       </div>
       <div class="modalBody">
-        <button class="menuItem" id="menuNewSession">Nuova sessione (reset presenti)</button>
-        <button class="menuItem" id="menuSelectPlayers">Seleziona giocatori</button>
-        <button class="menuItem" id="menuPlayerSettings">Giocatore (nome + foto)</button>
-        <button class="menuItem" id="menuBackup">Backup / Import</button>
+        <button class="btn btnPrimary" style="width:100%; margin-bottom:10px;" id="menuSelectPlayers" type="button">Seleziona giocatori</button>
+        <button class="btn" style="width:100%; margin-bottom:10px;" id="menuPlayer" type="button">Giocatore (nome + foto)</button>
+        <button class="btn" style="width:100%; margin-bottom:10px;" id="menuTeamRanking" type="button">Classifica squadra (totale)</button>
+        <button class="btn" style="width:100%; margin-bottom:10px;" id="menuBackup" type="button">Backup / Import</button>
+        <button class="btn" style="width:100%; margin-bottom:10px;" id="menuResetSessions" type="button">Reset totale sessioni</button>
       </div>
       <div class="modalFoot">
-        <button class="btn" id="menuClose2">Chiudi</button>
+        <button class="btn" id="menuClose2" type="button">Chiudi</button>
       </div>
     </div>
   </div>
@@ -539,115 +592,157 @@
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modalHead">
         <div class="modalTitle">Seleziona giocatori presenti</div>
-        <div class="spacer"></div>
-        <button class="iconBtn" id="selectClose" aria-label="Chiudi"><span class="dots">✕</span></button>
+        <button class="xBtn" id="selectClose" aria-label="Chiudi">✕</button>
       </div>
       <div class="modalBody" id="selectList"></div>
       <div class="modalFoot">
-        <button class="btn" id="selectCancel">Annulla</button>
-        <button class="btn btnPrimary" id="selectOk">OK</button>
+        <button class="btn" id="selectCancel" type="button">Annulla</button>
+        <button class="btn btnPrimary" id="selectOk" type="button">OK</button>
       </div>
     </div>
   </div>
 
-  <!-- PLAYER SETTINGS MODAL -->
+  <!-- PLAYER MODAL -->
   <div class="overlay" id="playerOverlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modalHead">
         <div class="modalTitle">Giocatore</div>
-        <div class="spacer"></div>
-        <button class="iconBtn" id="playerClose" aria-label="Chiudi"><span class="dots">✕</span></button>
+        <button class="xBtn" id="playerClose" aria-label="Chiudi">✕</button>
       </div>
       <div class="modalBody">
-        <div class="grid2">
-          <div class="col">
-            <label class="muted" for="playerNameInput">Nome</label>
-            <input id="playerNameInput" type="text" placeholder="Es. Marco" />
-          </div>
-          <div class="col">
-            <label class="muted">Foto</label>
-            <!-- camera directly -->
+        <div class="row" style="gap:14px; flex-wrap:wrap;">
+          <div class="ava" id="playerPreviewAva" style="width:92px; height:92px; border-radius:24px;">VS</div>
+          <div class="col" style="flex:1; min-width:220px;">
+            <label for="playerNameInput">Nome</label>
+            <input id="playerNameInput" type="text" placeholder="Es. Emanuele" />
+            <label for="playerPhotoInput">Foto (fotocamera)</label>
             <input id="playerPhotoInput" type="file" accept="image/*" capture="environment" />
           </div>
         </div>
         <div class="divider"></div>
-        <div class="row" style="gap:12px; align-items:flex-start;">
-          <div class="pmini" style="width:92px; height:92px; border-radius:22px;" id="playerPhotoPreviewWrap">
-            <img id="playerPhotoPreview" alt="preview" style="width:100%; height:100%; object-fit:cover; display:none;">
-          </div>
-          <div class="col" style="flex:1;">
-            <button class="btn btnPrimary" id="playerSave">Salva</button>
-            <button class="btn" id="playerRemovePhoto">Rimuovi foto</button>
-            <button class="btn" id="playerReset">Reset giocatore</button>
-          </div>
+        <div class="actions2">
+          <button class="btn btnPrimary" id="playerSave" type="button">Salva</button>
+          <button class="btn" id="playerRemovePhoto" type="button">Rimuovi foto</button>
         </div>
       </div>
       <div class="modalFoot">
-        <button class="btn" id="playerClose2">Chiudi</button>
+        <button class="btn" id="playerClose2" type="button">Chiudi</button>
       </div>
     </div>
   </div>
 
-  <!-- BACKUP MODAL -->
+  <!-- TEAM RANKING MODAL -->
+  <div class="overlay" id="teamOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modalHead">
+        <div class="modalTitle">Classifica squadra (totale)</div>
+        <button class="xBtn" id="teamClose" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="modalBody">
+        <div class="muted" style="font-weight:900; margin-bottom:10px;">Media totale su tutte le sessioni salvate.</div>
+        <div id="rankTeamList"></div>
+      </div>
+      <div class="modalFoot">
+        <button class="btn" id="teamClose2" type="button">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACKUP / IMPORT MODAL -->
   <div class="overlay" id="backupOverlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modalHead">
         <div class="modalTitle">Backup / Import</div>
-        <div class="spacer"></div>
-        <button class="iconBtn" id="backupClose" aria-label="Chiudi"><span class="dots">✕</span></button>
+        <button class="xBtn" id="backupClose" aria-label="Chiudi">✕</button>
       </div>
       <div class="modalBody">
-        <div class="row" style="gap:10px;">
-          <input id="importJson" type="file" accept="application/json" />
-        </div>
+        <div class="muted" style="margin-bottom:10px;">Import abbina automaticamente per NOME. Se non trova, ti fa scegliere il giocatore.</div>
+
+        <label for="importJson">Import JSON</label>
+        <input id="importJson" type="file" accept="application/json" />
+
         <div class="divider"></div>
-        <div class="row" style="gap:10px;">
-          <button class="btn btnPrimary" id="exportJson">Esporta JSON</button>
+
+        <button class="btn btnPrimary" style="width:100%;" id="exportJson" type="button">Esporta JSON (giocatore attivo)</button>
+
+        <div class="divider"></div>
+        <div class="muted" style="font-size:13px;">
+          Consiglio: prima di esportare, il giocatore deve avere scritto il proprio nome in “Giocatore (nome + foto)”.
         </div>
       </div>
       <div class="modalFoot">
-        <button class="btn" id="backupClose2">Chiudi</button>
+        <button class="btn" id="backupClose2" type="button">Chiudi</button>
       </div>
     </div>
   </div>
 
-  <!-- Chart.js (CDN) -->
+  <!-- IMPORT TARGET PICK MODAL (if name not found) -->
+  <div class="overlay" id="importPickOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modalHead">
+        <div class="modalTitle">Scegli giocatore per import</div>
+        <button class="xBtn" id="importPickClose" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="modalBody">
+        <div class="muted" style="font-weight:900; margin-bottom:10px;" id="importPickInfo">—</div>
+        <div id="importPickList"></div>
+      </div>
+      <div class="modalFoot">
+        <button class="btn" id="importPickCancel" type="button">Annulla</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <script>
-    /* =========================
-       STORAGE / STATE
-    ========================= */
-    const LS_KEY = "virtus_shot_tracker_v9";
+    /***********************
+     * BEST-EFFORT: evitare vecchie versioni PWA
+     ***********************/
+    (async function(){
+      try{
+        if('serviceWorker' in navigator){
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for(const r of regs){ await r.unregister(); }
+        }
+        if('caches' in window){
+          const keys = await caches.keys();
+          for(const k of keys){ await caches.delete(k); }
+        }
+      }catch(e){}
+    })();
 
+    /***********************
+     * CONFIG
+     ***********************/
+    const SHOTS_PER_POS = 10;
     const POS = [
-      { key:"fsx",  label:"Fondo sx" },
-      { key:"45sx", label:"45° sx" },
-      { key:"fr",   label:"Frontale" },
-      { key:"45dx", label:"45° dx" },
-      { key:"fdx",  label:"Fondo dx" },
+      { key:"fondo_sx",  label:"Fondo sx" },
+      { key:"angolo_sx", label:"45° sx" },
+      { key:"frontale",  label:"Frontale" },
+      { key:"angolo_dx", label:"45° dx" },
+      { key:"fondo_dx",  label:"Fondo dx" },
     ];
+    const PLAYER_COUNT = 12;
+    const LS_KEY = "virtus_shooting_lab_v1";
 
-    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-
+    /***********************
+     * STATE
+     ***********************/
     function defaultState(){
-      const players = Array.from({length:12}, (_,i)=>{
+      const players = Array.from({length:PLAYER_COUNT}, (_,i)=>{
         const id = "G"+(i+1);
-        return {
-          id,
-          name: "Giocatore " + (i+1),
-          photo: null,          // dataURL
-          sessions: []          // {date, made:{}, totalMade, totalAtt, percByPos:{}}
-        };
+        return { id, name: `Giocatore ${i+1}`, photo:null, sessions:[] };
       });
+      const inputs = Object.fromEntries(players.map(p => [p.id, Object.fromEntries(POS.map(x=>[x.key,0]))]));
       return {
-        version: 9,
-        sessionDate: new Date().toISOString().slice(0,10),
-        presentIds: [],          // players selected for today
-        currentPlayerId: "G1",
+        version: 1,
+        sessionDate: todayISO(),
+        presentIds: [],
+        activeId: "G1",
         timerSec: 45,
-        // current input per player (separate!)
-        currentInputs: Object.fromEntries(players.map(p => [p.id, Object.fromEntries(POS.map(x=>[x.key,0]))])),
+        inputs,
         players
       };
     }
@@ -657,266 +752,154 @@
         const raw = localStorage.getItem(LS_KEY);
         if(!raw) return defaultState();
         const st = JSON.parse(raw);
-
-        // minimal migrations / safety
-        if(!st.players || !Array.isArray(st.players)) return defaultState();
-        if(!st.currentInputs) st.currentInputs = {};
+        if(!st || !Array.isArray(st.players)) return defaultState();
+        // normalize
+        if(!st.inputs) st.inputs = {};
         for(const p of st.players){
-          if(!st.currentInputs[p.id]){
-            st.currentInputs[p.id] = Object.fromEntries(POS.map(x=>[x.key,0]));
-          }else{
-            for(const x of POS){
-              if(typeof st.currentInputs[p.id][x.key] !== "number") st.currentInputs[p.id][x.key] = 0;
-            }
-          }
-          if(!Array.isArray(p.sessions)) p.sessions = [];
           if(typeof p.name !== "string") p.name = p.id;
           if(typeof p.photo !== "string") p.photo = null;
+          if(!Array.isArray(p.sessions)) p.sessions = [];
+          if(!st.inputs[p.id]) st.inputs[p.id] = Object.fromEntries(POS.map(x=>[x.key,0]));
+          for(const x of POS){
+            if(typeof st.inputs[p.id][x.key] !== "number") st.inputs[p.id][x.key] = 0;
+          }
         }
-        if(!st.presentIds) st.presentIds = [];
-        if(!st.sessionDate) st.sessionDate = new Date().toISOString().slice(0,10);
-        if(!st.currentPlayerId) st.currentPlayerId = st.players[0].id;
-        if(!st.timerSec) st.timerSec = 45;
+        if(!Array.isArray(st.presentIds)) st.presentIds = [];
+        if(!st.sessionDate) st.sessionDate = todayISO();
+        if(!st.activeId) st.activeId = st.players[0].id;
+        if(!st.timerSec || ![35,40,45].includes(Number(st.timerSec))) st.timerSec = 45;
         return st;
       }catch(e){
         return defaultState();
       }
     }
 
+    let state = loadState();
+
     function saveState(){
       localStorage.setItem(LS_KEY, JSON.stringify(state));
     }
 
-    let state = loadState();
+    function getPlayer(id){
+      return state.players.find(p=>p.id === id);
+    }
 
-    function getPlayer(id){ return state.players.find(p=>p.id===id); }
+    function todayISO(){
+      const d = new Date();
+      const off = d.getTimezoneOffset();
+      const local = new Date(d.getTime() - off*60*1000);
+      return local.toISOString().slice(0,10);
+    }
 
-    function ensureCurrentPlayerValid(){
-      const validIds = state.presentIds.length ? state.presentIds : state.players.map(p=>p.id);
-      if(!validIds.includes(state.currentPlayerId)){
-        state.currentPlayerId = validIds[0];
+    function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+
+    function initials(name){
+      const parts = String(name||"").trim().split(/\s+/).filter(Boolean);
+      if(parts.length === 0) return "VS";
+      const a = parts[0][0] || "";
+      const b = parts.length>1 ? (parts[parts.length-1][0]||"") : "";
+      return (a+b).toUpperCase();
+    }
+
+    function ensureActiveValid(){
+      if(state.presentIds.length){
+        if(!state.presentIds.includes(state.activeId)) state.activeId = state.presentIds[0];
+      }else{
+        state.activeId = "G1";
       }
     }
 
-    /* =========================
-       DOM
-    ========================= */
-    const sessionDateEl = document.getElementById("sessionDate");
-    const timerPresetEl = document.getElementById("timerPreset");
+    /***********************
+     * DOM
+     ***********************/
+    const el = (id)=>document.getElementById(id);
 
-    const playerBadge = document.getElementById("playerBadge");
-    const playerNameTop = document.getElementById("playerNameTop");
-    const playerPhotoMini = document.getElementById("playerPhotoMini");
-    const playerPhotoMiniImg = document.getElementById("playerPhotoMiniImg");
+    const sessionDateEl = el("sessionDate");
+    const timerPresetEl = el("timerPreset");
+    const openSelectPlayersBtn = el("openSelectPlayers");
+    const playerTabsEl = el("playerTabs");
+    const presentHintEl = el("presentHint");
 
-    const presentSummary = document.getElementById("presentSummary");
+    const timeDisplayEl = el("timeDisplay");
+    const startBtn = el("startBtn");
+    const stopBtn  = el("stopBtn");
+    const resetBtn = el("resetBtn");
 
-    const timeDisplay = document.getElementById("timeDisplay");
-    const startBtn = document.getElementById("startBtn");
-    const stopBtn  = document.getElementById("stopBtn");
-    const resetBtn = document.getElementById("resetBtn");
+    const clearBtn = el("clearBtn");
+    const saveBtn  = el("saveBtn");
+    const shareBtn = el("shareBtn");
 
-    const clearBtn = document.getElementById("clearBtn");
-    const saveBtn  = document.getElementById("saveBtn");
-    const shareBtn = document.getElementById("shareBtn");
+    const dayStatLineEl = el("dayStatLine");
+    const rankDayMetaEl = el("rankDayMeta");
+    const rankDayListEl = el("rankDayList");
 
-    const avgLine  = document.getElementById("avgLine");
+    // overlays
+    const menuBtn = el("menuBtn");
+    const menuOverlay = el("menuOverlay");
+    const menuClose = el("menuClose");
+    const menuClose2 = el("menuClose2");
+    const menuSelectPlayers = el("menuSelectPlayers");
+    const menuPlayer = el("menuPlayer");
+    const menuTeamRanking = el("menuTeamRanking");
+    const menuBackup = el("menuBackup");
+    const menuResetSessions = el("menuResetSessions");
 
-    const openSelectPlayers = document.getElementById("openSelectPlayers");
+    const selectOverlay = el("selectOverlay");
+    const selectClose = el("selectClose");
+    const selectCancel = el("selectCancel");
+    const selectOk = el("selectOk");
+    const selectList = el("selectList");
 
-    /* Menu overlays */
-    const menuBtn = document.getElementById("menuBtn");
-    const menuOverlay = document.getElementById("menuOverlay");
-    const menuClose = document.getElementById("menuClose");
-    const menuClose2 = document.getElementById("menuClose2");
-    const menuNewSession = document.getElementById("menuNewSession");
-    const menuSelectPlayers = document.getElementById("menuSelectPlayers");
-    const menuPlayerSettings = document.getElementById("menuPlayerSettings");
-    const menuBackup = document.getElementById("menuBackup");
+    const playerOverlay = el("playerOverlay");
+    const playerClose = el("playerClose");
+    const playerClose2 = el("playerClose2");
+    const playerPreviewAva = el("playerPreviewAva");
+    const playerNameInput = el("playerNameInput");
+    const playerPhotoInput = el("playerPhotoInput");
+    const playerSave = el("playerSave");
+    const playerRemovePhoto = el("playerRemovePhoto");
 
-    const selectOverlay = document.getElementById("selectOverlay");
-    const selectList = document.getElementById("selectList");
-    const selectClose = document.getElementById("selectClose");
-    const selectCancel = document.getElementById("selectCancel");
-    const selectOk = document.getElementById("selectOk");
+    const teamOverlay = el("teamOverlay");
+    const teamClose = el("teamClose");
+    const teamClose2 = el("teamClose2");
+    const rankTeamList = el("rankTeamList");
 
-    const playerOverlay = document.getElementById("playerOverlay");
-    const playerClose = document.getElementById("playerClose");
-    const playerClose2 = document.getElementById("playerClose2");
-    const playerNameInput = document.getElementById("playerNameInput");
-    const playerPhotoInput = document.getElementById("playerPhotoInput");
-    const playerPhotoPreview = document.getElementById("playerPhotoPreview");
-    const playerSave = document.getElementById("playerSave");
-    const playerRemovePhoto = document.getElementById("playerRemovePhoto");
-    const playerReset = document.getElementById("playerReset");
+    const backupOverlay = el("backupOverlay");
+    const backupClose = el("backupClose");
+    const backupClose2 = el("backupClose2");
+    const exportJsonBtn = el("exportJson");
+    const importJsonEl = el("importJson");
 
-    const backupOverlay = document.getElementById("backupOverlay");
-    const backupClose = document.getElementById("backupClose");
-    const backupClose2 = document.getElementById("backupClose2");
-    const exportJsonBtn = document.getElementById("exportJson");
-    const importJson = document.getElementById("importJson");
+    const importPickOverlay = el("importPickOverlay");
+    const importPickClose = el("importPickClose");
+    const importPickCancel = el("importPickCancel");
+    const importPickInfo = el("importPickInfo");
+    const importPickList = el("importPickList");
 
-    /* =========================
-       MODAL HELPERS
-    ========================= */
-    function openOverlay(el){
-      el.classList.add("show");
-      el.setAttribute("aria-hidden","false");
-      // prevent background scroll
+    /***********************
+     * Overlay helpers
+     ***********************/
+    function openOverlay(o){
+      o.classList.add("show");
+      o.setAttribute("aria-hidden","false");
       document.body.style.overflow = "hidden";
     }
-    function closeOverlay(el){
-      el.classList.remove("show");
-      el.setAttribute("aria-hidden","true");
+    function closeOverlay(o){
+      o.classList.remove("show");
+      o.setAttribute("aria-hidden","true");
       document.body.style.overflow = "";
-    }
-    function closeAllOverlays(){
-      [menuOverlay, selectOverlay, playerOverlay, backupOverlay].forEach(closeOverlay);
     }
     function bindOverlayClose(overlay){
       overlay.addEventListener("click", (e)=>{
         if(e.target === overlay) closeOverlay(overlay);
       });
     }
-    [menuOverlay, selectOverlay, playerOverlay, backupOverlay].forEach(bindOverlayClose);
+    [menuOverlay, selectOverlay, playerOverlay, teamOverlay, backupOverlay, importPickOverlay].forEach(bindOverlayClose);
 
-    /* =========================
-       PLAYER PRESENT SELECTION
-    ========================= */
-    function renderPresentSummary(){
-      const ids = state.presentIds;
-      if(!ids.length){
-        presentSummary.textContent = "Nessuno selezionato";
-        return;
-      }
-      const names = ids.map(id => getPlayer(id)?.name || id);
-      presentSummary.textContent = names.join(", ");
-    }
-
-    function openSelectModal(){
-      // build list
-      selectList.innerHTML = "";
-      const ids = new Set(state.presentIds);
-
-      state.players.forEach(p=>{
-        const div = document.createElement("div");
-        div.className = "listItem";
-        div.innerHTML = `
-          <input type="checkbox" ${ids.has(p.id) ? "checked" : ""} data-id="${p.id}">
-          <div class="badge" style="width:38px;height:38px;border-radius:14px;">${p.id}</div>
-          <div class="liText">
-            <div class="liMain">${escapeHtml(p.name)}</div>
-            <div class="liSub">${p.id}</div>
-          </div>
-        `;
-        selectList.appendChild(div);
-      });
-
-      openOverlay(selectOverlay);
-    }
-
-    function applySelectedPlayers(){
-      const checks = selectList.querySelectorAll('input[type="checkbox"][data-id]');
-      const selected = [];
-      checks.forEach(ch=>{
-        if(ch.checked) selected.push(ch.getAttribute("data-id"));
-      });
-      state.presentIds = selected;
-      ensureCurrentPlayerValid();
-      saveState();
-      updateUI();
-    }
-
-    /* =========================
-       PLAYER UI + SETTINGS
-    ========================= */
-    function updatePlayerPill(){
-      ensureCurrentPlayerValid();
-      const p = getPlayer(state.currentPlayerId);
-      if(!p) return;
-
-      playerBadge.textContent = p.id;
-      playerNameTop.textContent = p.name;
-
-      if(p.photo){
-        playerPhotoMini.style.display = "";
-        playerPhotoMiniImg.src = p.photo;
-      }else{
-        playerPhotoMini.style.display = "none";
-        playerPhotoMiniImg.src = "";
-      }
-    }
-
-    function openPlayerSettings(){
-      const p = getPlayer(state.currentPlayerId);
-      if(!p) return;
-      playerNameInput.value = p.name || "";
-      if(p.photo){
-        playerPhotoPreview.style.display = "";
-        playerPhotoPreview.src = p.photo;
-      }else{
-        playerPhotoPreview.style.display = "none";
-        playerPhotoPreview.src = "";
-      }
-      // reset file input so camera can be used again
-      playerPhotoInput.value = "";
-      openOverlay(playerOverlay);
-    }
-
-    playerPhotoInput.addEventListener("change", async ()=>{
-      const file = playerPhotoInput.files && playerPhotoInput.files[0];
-      if(!file) return;
-      const dataUrl = await fileToDataURL(file, 720); // compress
-      playerPhotoPreview.style.display = "";
-      playerPhotoPreview.src = dataUrl;
-    });
-
-    playerSave.addEventListener("click", ()=>{
-      const p = getPlayer(state.currentPlayerId);
-      if(!p) return;
-      const name = (playerNameInput.value || "").trim();
-      if(name) p.name = name;
-
-      if(playerPhotoPreview.src && playerPhotoPreview.style.display !== "none"){
-        p.photo = playerPhotoPreview.src;
-      }
-      saveState();
-      updateUI();
-      closeOverlay(playerOverlay);
-    });
-
-    playerRemovePhoto.addEventListener("click", ()=>{
-      const p = getPlayer(state.currentPlayerId);
-      if(!p) return;
-      p.photo = null;
-      playerPhotoPreview.style.display = "none";
-      playerPhotoPreview.src = "";
-      saveState();
-      updateUI();
-    });
-
-    playerReset.addEventListener("click", ()=>{
-      const p = getPlayer(state.currentPlayerId);
-      if(!p) return;
-      // reset only this player
-      p.sessions = [];
-      p.photo = null;
-      // keep name? reset to default label
-      p.name = "Giocatore " + p.id.replace("G","");
-      state.currentInputs[p.id] = Object.fromEntries(POS.map(x=>[x.key,0]));
-      saveState();
-      updateUI();
-      closeOverlay(playerOverlay);
-    });
-
-    /* =========================
-       TIMER
-    ========================= */
-    let timer = {
-      running:false,
-      remaining: state.timerSec,
-      t:null
-    };
+    /***********************
+     * Timer
+     ***********************/
+    let timer = { running:false, remaining: state.timerSec, t:null };
 
     function fmt(sec){
       const s = Math.max(0, sec|0);
@@ -924,69 +907,41 @@
       const ss = String(s%60).padStart(2,"0");
       return `${mm}:${ss}`;
     }
-
-    function setTimer(sec){
-      timer.remaining = sec;
-      timeDisplay.textContent = fmt(timer.remaining);
-    }
-
     function stopTimer(){
       timer.running=false;
       if(timer.t) clearInterval(timer.t);
       timer.t=null;
     }
-
+    function resetTimer(){
+      stopTimer();
+      timer.remaining = state.timerSec;
+      timeDisplayEl.textContent = fmt(timer.remaining);
+    }
     function startTimer(){
       if(timer.running) return;
       timer.running=true;
-
-      // If timer is at 0, restart from preset
-      if(timer.remaining <= 0){
-        timer.remaining = state.timerSec;
-        timeDisplay.textContent = fmt(timer.remaining);
-      }
+      if(timer.remaining <= 0) timer.remaining = state.timerSec;
 
       timer.t = setInterval(()=>{
         timer.remaining -= 1;
-        timeDisplay.textContent = fmt(timer.remaining);
+        timeDisplayEl.textContent = fmt(timer.remaining);
         if(timer.remaining <= 0){
           stopTimer();
-          timeDisplay.textContent = "00:00";
-          finishSignal(); // 10 beeps + vib
+          timeDisplayEl.textContent = "00:00";
+          finishSignal();
         }
       }, 1000);
     }
 
-    startBtn.addEventListener("click", startTimer);
-    stopBtn.addEventListener("click", stopTimer);
-    resetBtn.addEventListener("click", ()=>{
-      stopTimer();
-      timer.remaining = state.timerSec;
-      timeDisplay.textContent = fmt(timer.remaining);
-    });
-
-    timerPresetEl.addEventListener("change", ()=>{
-      const v = parseInt(timerPresetEl.value,10) || 45;
-      state.timerSec = v;
-      saveState();
-      stopTimer();
-      setTimer(state.timerSec);
-    });
-
-    /* =========================
-       SOUND + VIB
-    ========================= */
+    /***********************
+     * Sound + vibration (10 beep, louder)
+     ***********************/
     let audioCtx = null;
-
     function getAudioCtx(){
-      if(!audioCtx){
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
+      if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       return audioCtx;
     }
-
-    function beepOnce(freq=880, dur=0.08, gainVal=0.55){
-      // gainVal higher = louder (phone still limits)
+    function beepOnce(freq=988, dur=0.08, gainVal=0.85){
       const ctx = getAudioCtx();
       const o = ctx.createOscillator();
       const g = ctx.createGain();
@@ -998,34 +953,28 @@
       o.start();
       o.stop(ctx.currentTime + dur);
     }
+    const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
 
     async function finishSignal(){
-      // vibration (if allowed)
       if(navigator.vibrate){
         navigator.vibrate([120,80,120,80,120,80,120,80,120]);
       }
-
-      // 10 beeps (~5s total spacing)
-      const pattern = [
-        880, 880, 988, 988, 1047, 1047, 1175, 1175, 1319, 1319
-      ];
+      const pattern = [880,880,988,988,1047,1047,1175,1175,1319,1319];
       for(let i=0;i<pattern.length;i++){
-        try{ beepOnce(pattern[i], 0.09, 0.70); }catch(e){}
-        await sleep(450);
+        try{ beepOnce(pattern[i], 0.09, 0.90); }catch(e){}
+        await sleep(420);
       }
     }
 
-    /* =========================
-       INPUT PER PLAYER (NO SLIDER)
-    ========================= */
-    function currentInput(){
-      return state.currentInputs[state.currentPlayerId];
-    }
+    /***********************
+     * Inputs per-player
+     ***********************/
+    function curInputs(){ return state.inputs[state.activeId]; }
 
-    function updateInputUI(){
-      const inp = currentInput();
+    function updateInputsUI(){
+      const inp = curInputs();
       for(const x of POS){
-        document.getElementById("val-"+x.key).textContent = String(inp[x.key] || 0);
+        el("val-"+x.key).textContent = String(inp[x.key] || 0);
       }
     }
 
@@ -1033,99 +982,105 @@
       btn.addEventListener("click", ()=>{
         const k = btn.getAttribute("data-k");
         const d = parseInt(btn.getAttribute("data-d"),10) || 0;
-        const inp = currentInput();
-        inp[k] = clamp((inp[k]||0) + d, 0, 10);
+        const inp = curInputs();
+        inp[k] = clamp((inp[k]||0) + d, 0, SHOTS_PER_POS);
         saveState();
-        updateInputUI();
-      });
+        updateInputsUI();
+        updateDayStats(); // live refresh
+      }, {passive:true});
     });
 
-    clearBtn.addEventListener("click", ()=>{
-      state.currentInputs[state.currentPlayerId] = Object.fromEntries(POS.map(x=>[x.key,0]));
+    function clearInputs(){
+      state.inputs[state.activeId] = Object.fromEntries(POS.map(x=>[x.key,0]));
       saveState();
-      updateInputUI();
-    });
+      updateInputsUI();
+      updateDayStats();
+    }
 
-    saveBtn.addEventListener("click", ()=>{
-      const p = getPlayer(state.currentPlayerId);
+    /***********************
+     * Sessions + day stats
+     ***********************/
+    function saveSession(){
+      if(!state.presentIds.length){
+        alert("Prima seleziona i giocatori presenti (Menu ⋮).");
+        return;
+      }
+      const p = getPlayer(state.activeId);
       if(!p) return;
 
-      const inp = currentInput();
+      const date = state.sessionDate;
+      const inp = curInputs();
+
       const made = {};
       let totalMade = 0;
       let totalAtt = 0;
 
-      POS.forEach(x=>{
-        const v = clamp(inp[x.key]||0, 0, 10);
+      for(const x of POS){
+        const v = clamp(inp[x.key]||0, 0, SHOTS_PER_POS);
         made[x.key] = v;
         totalMade += v;
-        totalAtt += 10;
-      });
+        totalAtt += SHOTS_PER_POS;
+      }
 
-      const percByPos = {};
-      POS.forEach(x=>{
-        percByPos[x.key] = Math.round((made[x.key]/10)*100);
-      });
-
-      const entry = {
-        date: state.sessionDate,
+      p.sessions.push({
+        date,
         made,
-        totalMade,
-        totalAtt,
-        percByPos
-      };
+        shotsPerPos: SHOTS_PER_POS,
+        ts: Date.now()
+      });
 
-      p.sessions.push(entry);
-
-      // after save: reset inputs for that player
-      state.currentInputs[p.id] = Object.fromEntries(POS.map(x=>[x.key,0]));
-
+      // reset input after save
+      state.inputs[p.id] = Object.fromEntries(POS.map(x=>[x.key,0]));
       saveState();
       updateUI();
-    });
-
-    /* =========================
-       STATS CHART
-    ========================= */
-    let chart = null;
-
-    function computeStats(player){
-      const sessions = player.sessions || [];
-      if(!sessions.length){
-        return { labels: POS.map(x=>x.label), values: POS.map(_=>0), avg:0, n:0 };
-      }
-      // average percentage per position across sessions
-      const sums = Object.fromEntries(POS.map(x=>[x.key,0]));
-      sessions.forEach(s=>{
-        POS.forEach(x=>{
-          const pv = (s.percByPos && typeof s.percByPos[x.key]==="number") ? s.percByPos[x.key] : Math.round(((s.made?.[x.key]||0)/10)*100);
-          sums[x.key] += pv;
-        });
-      });
-      const n = sessions.length;
-      const values = POS.map(x=>Math.round(sums[x.key]/n));
-      const avg = Math.round(values.reduce((a,b)=>a+b,0)/values.length);
-      return { labels: POS.map(x=>x.label), values, avg, n };
     }
 
-    function renderChart(){
-      const p = getPlayer(state.currentPlayerId);
-      const st = computeStats(p);
+    function sessionsOnDate(player, date){
+      return (player.sessions || []).filter(s => String(s.date) === String(date));
+    }
 
-      avgLine.textContent = `Media: ${st.avg}% • Sessioni: ${st.n}`;
+    function computeDayPlayerStats(player, date){
+      const ss = sessionsOnDate(player, date);
+      if(!ss.length){
+        return { byPos: POS.map(()=>0), overall:0, made:0, att:0, sessions:0 };
+      }
+      let made = 0, att = 0;
+      const byPosMade = POS.map(()=>0);
+      const byPosAtt  = POS.map(()=>0);
 
-      const ctx = document.getElementById("chart").getContext("2d");
+      for(const s of ss){
+        const spp = Number(s.shotsPerPos || SHOTS_PER_POS);
+        for(let i=0;i<POS.length;i++){
+          const k = POS[i].key;
+          const m = clamp(Number(s.made?.[k] ?? 0), 0, spp);
+          byPosMade[i] += m;
+          byPosAtt[i]  += spp;
+          made += m;
+          att  += spp;
+        }
+      }
+
+      const byPos = byPosMade.map((m,i)=> byPosAtt[i] ? Math.round((m/byPosAtt[i])*100) : 0);
+      const overall = att ? Math.round((made/att)*100) : 0;
+
+      return { byPos, overall, made, att, sessions:ss.length };
+    }
+
+    /***********************
+     * Chart (giornata only)
+     ***********************/
+    let chart = null;
+    function renderChart(dayStats){
+      const ctx = el("chart").getContext("2d");
       const data = {
-        labels: st.labels,
+        labels: POS.map(x=>x.label),
         datasets: [{
-          label: "Percentuale",
-          data: st.values,
+          data: dayStats.byPos,
           borderWidth: 3,
           pointRadius: 4,
           tension: 0.35,
         }]
       };
-
       const opts = {
         responsive: true,
         maintainAspectRatio: false,
@@ -1133,96 +1088,655 @@
           y: {
             min: 0,
             max: 100,
-            ticks: { color: "rgba(255,255,255,.75)", stepSize: 20 },
+            ticks: { color: "rgba(234,245,238,.78)", stepSize: 20 },
             grid: { color: "rgba(255,255,255,.10)" }
           },
           x: {
-            ticks: { color: "rgba(255,255,255,.75)" },
+            ticks: { color: "rgba(234,245,238,.78)" },
             grid: { color: "rgba(255,255,255,.08)" }
           }
         },
         plugins: {
           legend: { display: false },
           tooltip: {
-            callbacks: {
-              label: (ctx)=> `${ctx.parsed.y}%`
-            }
+            callbacks: { label: (c)=> `${c.parsed.y}%` }
           }
         }
       };
-
       if(chart){
         chart.data = data;
         chart.options = opts;
         chart.update();
       }else{
-        chart = new Chart(ctx, {
-          type: "line",
-          data,
-          options: opts
-        });
+        chart = new Chart(ctx, { type:"line", data, options: opts });
       }
     }
 
-    /* =========================
-       SHARE WHATSAPP
-    ========================= */
-    shareBtn.addEventListener("click", ()=>{
-      const p = getPlayer(state.currentPlayerId);
+    function updateDayStats(){
+      ensureActiveValid();
+      const p = getPlayer(state.activeId);
+      const date = state.sessionDate;
+      if(!p){
+        dayStatLineEl.textContent = "—";
+        renderChart({byPos: POS.map(()=>0)});
+        return;
+      }
+      const st = computeDayPlayerStats(p, date);
+
+      // If player has no saved sessions for the day, show also "live" input as hint? NO: you asked to keep it clean.
+      dayStatLineEl.textContent = `Giornata ${date}: ${st.overall}% (${st.made}/${st.att}) • Sessioni: ${st.sessions}`;
+
+      renderChart(st);
+      renderDayRanking(); // keep in sync
+    }
+
+    /***********************
+     * Day ranking (always visible)
+     ***********************/
+    function renderDayRanking(){
+      const date = state.sessionDate;
+      const ids = state.presentIds || [];
+      rankDayMetaEl.textContent = `${date} • presenti: ${ids.length}`;
+
+      if(!ids.length){
+        rankDayListEl.innerHTML = `<div class="muted">Seleziona i giocatori presenti dal Menu ⋮.</div>`;
+        return;
+      }
+
+      const rows = ids.map(id=>{
+        const p = getPlayer(id);
+        if(!p) return null;
+        const st = computeDayPlayerStats(p, date);
+        return { id, name: p.name, pct: st.overall, made: st.made, att: st.att, sessions: st.sessions, photo: p.photo };
+      }).filter(Boolean);
+
+      // if nobody has sessions today, show helpful text
+      const anyData = rows.some(r=>r.sessions > 0);
+      if(!anyData){
+        rankDayListEl.innerHTML = `<div class="muted">Nessun dato salvato oggi. Inserisci e premi “Salva” per i presenti.</div>`;
+        return;
+      }
+
+      rows.sort((a,b)=> b.pct - a.pct);
+
+      rankDayListEl.innerHTML = "";
+      rows.forEach((r, idx)=>{
+        const div = document.createElement("div");
+        div.className = "rankItem";
+
+        const num = document.createElement("div");
+        num.className = "rkNum";
+        num.textContent = String(idx+1);
+
+        const ava = document.createElement("div");
+        ava.className = "ava";
+        ava.style.width = "44px";
+        ava.style.height = "44px";
+        ava.style.borderRadius = "16px";
+        if(r.photo){
+          const img = document.createElement("img");
+          img.src = r.photo;
+          ava.appendChild(img);
+        }else{
+          ava.textContent = initials(r.name);
+        }
+
+        const nm = document.createElement("div");
+        nm.className = "rkName";
+        nm.textContent = r.name;
+
+        const meta = document.createElement("div");
+        meta.className = "rkMeta";
+        meta.textContent = r.sessions ? `${r.made}/${r.att} • ${r.sessions} sess.` : "—";
+
+        const pct = document.createElement("div");
+        pct.className = "rkPct";
+        pct.textContent = `${r.pct}%`;
+
+        div.appendChild(num);
+        div.appendChild(ava);
+        div.appendChild(nm);
+        div.appendChild(meta);
+        div.appendChild(pct);
+
+        // tap: switch active player
+        div.addEventListener("click", ()=>{
+          state.activeId = r.id;
+          saveState();
+          renderTabs();
+          updateInputsUI();
+          updateDayStats();
+        });
+
+        rankDayListEl.appendChild(div);
+      });
+    }
+
+    /***********************
+     * Team ranking (menu) - total average across all sessions
+     ***********************/
+    function computeTotalPlayer(player){
+      const ss = player.sessions || [];
+      if(!ss.length) return { pct:0, made:0, att:0, sessions:0 };
+      let made = 0, att = 0;
+      for(const s of ss){
+        const spp = Number(s.shotsPerPos || SHOTS_PER_POS);
+        for(const x of POS){
+          made += clamp(Number(s.made?.[x.key] ?? 0), 0, spp);
+          att  += spp;
+        }
+      }
+      const pct = att ? Math.round((made/att)*100) : 0;
+      return { pct, made, att, sessions:ss.length };
+    }
+
+    function renderTeamRanking(){
+      const rows = state.players.map(p=>{
+        const t = computeTotalPlayer(p);
+        return { id:p.id, name:p.name, photo:p.photo, ...t };
+      }).filter(r=>r.sessions>0);
+
+      if(!rows.length){
+        rankTeamList.innerHTML = `<div class="muted">Nessuna sessione salvata ancora.</div>`;
+        return;
+      }
+
+      rows.sort((a,b)=> b.pct - a.pct);
+
+      rankTeamList.innerHTML = "";
+      rows.forEach((r, idx)=>{
+        const div = document.createElement("div");
+        div.className = "rankItem";
+
+        const num = document.createElement("div");
+        num.className = "rkNum";
+        num.textContent = String(idx+1);
+
+        const ava = document.createElement("div");
+        ava.className = "ava";
+        ava.style.width = "44px";
+        ava.style.height = "44px";
+        ava.style.borderRadius = "16px";
+        if(r.photo){
+          const img = document.createElement("img");
+          img.src = r.photo;
+          ava.appendChild(img);
+        }else{
+          ava.textContent = initials(r.name);
+        }
+
+        const nm = document.createElement("div");
+        nm.className = "rkName";
+        nm.textContent = r.name;
+
+        const meta = document.createElement("div");
+        meta.className = "rkMeta";
+        meta.textContent = `${r.made}/${r.att} • ${r.sessions} sess.`;
+
+        const pct = document.createElement("div");
+        pct.className = "rkPct";
+        pct.textContent = `${r.pct}%`;
+
+        div.appendChild(num);
+        div.appendChild(ava);
+        div.appendChild(nm);
+        div.appendChild(meta);
+        div.appendChild(pct);
+
+        rankTeamList.appendChild(div);
+      });
+    }
+
+    /***********************
+     * Tabs (present players only)
+     ***********************/
+    function renderTabs(){
+      ensureActiveValid();
+
+      const ids = state.presentIds || [];
+      playerTabsEl.innerHTML = "";
+
+      if(!ids.length){
+        presentHintEl.textContent = "Menu ⋮ → Seleziona giocatori";
+        playerTabsEl.innerHTML = `<div class="muted">Nessun giocatore selezionato.</div>`;
+        return;
+      }
+
+      presentHintEl.textContent = "";
+
+      ids.forEach(id=>{
+        const p = getPlayer(id);
+        if(!p) return;
+
+        const tab = document.createElement("div");
+        tab.className = "ptab" + (id === state.activeId ? " active" : "");
+
+        const av = document.createElement("div");
+        av.className = "ava";
+        if(p.photo){
+          const img = document.createElement("img");
+          img.src = p.photo;
+          av.appendChild(img);
+        }else{
+          av.textContent = initials(p.name);
+        }
+
+        const nm = document.createElement("div");
+        nm.className = "ptabName";
+        nm.textContent = p.name;
+
+        tab.appendChild(av);
+        tab.appendChild(nm);
+
+        tab.addEventListener("click", ()=>{
+          state.activeId = id;
+          saveState();
+          renderTabs();
+          updateInputsUI();
+          updateDayStats();
+        });
+
+        playerTabsEl.appendChild(tab);
+      });
+    }
+
+    /***********************
+     * Select players modal
+     ***********************/
+    function openSelectModal(){
+      selectList.innerHTML = "";
+      const selected = new Set(state.presentIds);
+
+      state.players.forEach(p=>{
+        const row = document.createElement("div");
+        row.className = "pickRow";
+
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.checked = selected.has(p.id);
+        cb.setAttribute("data-id", p.id);
+
+        const av = document.createElement("div");
+        av.className = "ava";
+        av.style.width = "44px";
+        av.style.height = "44px";
+        av.style.borderRadius = "16px";
+        if(p.photo){
+          const img = document.createElement("img");
+          img.src = p.photo;
+          av.appendChild(img);
+        }else{
+          av.textContent = initials(p.name);
+        }
+
+        const box = document.createElement("div");
+        box.style.display = "flex";
+        box.style.flexDirection = "column";
+
+        const main = document.createElement("div");
+        main.className = "pickMain";
+        main.textContent = p.name;
+
+        const sub = document.createElement("div");
+        sub.className = "pickSub";
+        sub.textContent = p.id;
+
+        box.appendChild(main);
+        box.appendChild(sub);
+
+        row.appendChild(cb);
+        row.appendChild(av);
+        row.appendChild(box);
+
+        // tap row toggles checkbox
+        row.addEventListener("click", (e)=>{
+          if(e.target.tagName.toLowerCase() !== "input"){
+            cb.checked = !cb.checked;
+          }
+        });
+
+        selectList.appendChild(row);
+      });
+
+      openOverlay(selectOverlay);
+    }
+
+    function applySelectedPlayers(){
+      const checks = selectList.querySelectorAll('input[type="checkbox"][data-id]');
+      const ids = [];
+      checks.forEach(c=>{
+        if(c.checked) ids.push(c.getAttribute("data-id"));
+      });
+      state.presentIds = ids;
+      ensureActiveValid();
+      saveState();
+      renderTabs();
+      updateInputsUI();
+      updateDayStats();
+    }
+
+    /***********************
+     * Player modal (name + camera photo)
+     ***********************/
+    function renderPlayerModal(){
+      const p = getPlayer(state.activeId);
       if(!p) return;
+      playerNameInput.value = p.name;
 
-      const st = computeStats(p);
+      // preview
+      playerPreviewAva.innerHTML = "";
+      if(p.photo){
+        const img = document.createElement("img");
+        img.src = p.photo;
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
+        img.style.borderRadius = "24px";
+        playerPreviewAva.appendChild(img);
+      }else{
+        playerPreviewAva.textContent = initials(p.name);
+      }
+
+      playerPhotoInput.value = "";
+    }
+
+    async function fileToDataURL(file, maxSize=720){
+      const bmp = await createImageBitmap(file);
+      const scale = Math.min(1, maxSize / Math.max(bmp.width, bmp.height));
+      const w = Math.round(bmp.width * scale);
+      const h = Math.round(bmp.height * scale);
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      const g = c.getContext("2d");
+      g.drawImage(bmp, 0,0,w,h);
+      return c.toDataURL("image/jpeg", 0.86);
+    }
+
+    playerPhotoInput.addEventListener("change", async ()=>{
+      const file = playerPhotoInput.files && playerPhotoInput.files[0];
+      if(!file) return;
+      const dataUrl = await fileToDataURL(file, 720);
+      const p = getPlayer(state.activeId);
+      if(!p) return;
+      p.photo = dataUrl;
+      saveState();
+      renderPlayerModal();
+      renderTabs();
+      updateDayStats();
+    });
+
+    /***********************
+     * Export/Import
+     ***********************/
+    function safeFile(name){
+      return String(name || "giocatore")
+        .trim().toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g,"")
+        .slice(0,40) || "giocatore";
+    }
+
+    function exportJSON(){
+      const p = getPlayer(state.activeId);
+      if(!p){ alert("Nessun giocatore attivo."); return; }
+      const payload = {
+        app: "VirtusShootingLab",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        playerName: p.name,
+        sessions: p.sessions
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `vsl_${safeFile(p.name)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function sessionSig(s){
+      const m = s?.made || {};
+      return [
+        s?.date || "",
+        s?.shotsPerPos || SHOTS_PER_POS,
+        m.fondo_sx ?? "",
+        m.angolo_sx ?? "",
+        m.frontale ?? "",
+        m.angolo_dx ?? "",
+        m.fondo_dx ?? "",
+        s?.ts || ""
+      ].join("|");
+    }
+
+    // import flow variables
+    let pendingImport = null; // {payload, sessions, nameLower}
+
+    function findPlayerByNameCaseInsensitive(name){
+      const n = String(name||"").trim().toLowerCase();
+      if(!n) return null;
+      return state.players.find(p => String(p.name||"").trim().toLowerCase() === n) || null;
+    }
+
+    function mergeSessions(targetPlayer, newSessions){
+      const existing = new Set((targetPlayer.sessions||[]).map(sessionSig));
+      let added = 0;
+      for(const s of newSessions){
+        const sig = sessionSig(s);
+        if(!existing.has(sig)){
+          targetPlayer.sessions.push(s);
+          existing.add(sig);
+          added++;
+        }
+      }
+      return added;
+    }
+
+    function openImportPickModal(importName){
+      importPickInfo.textContent = `Import: “${importName}” non trovato tra i tuoi nomi. Scegli dove importare:`;
+      importPickList.innerHTML = "";
+
+      state.players.forEach(p=>{
+        const row = document.createElement("div");
+        row.className = "pickRow";
+
+        const av = document.createElement("div");
+        av.className = "ava";
+        av.style.width = "44px";
+        av.style.height = "44px";
+        av.style.borderRadius = "16px";
+        if(p.photo){
+          const img = document.createElement("img");
+          img.src = p.photo;
+          av.appendChild(img);
+        }else{
+          av.textContent = initials(p.name);
+        }
+
+        const box = document.createElement("div");
+        box.style.display = "flex";
+        box.style.flexDirection = "column";
+
+        const main = document.createElement("div");
+        main.className = "pickMain";
+        main.textContent = p.name;
+
+        const sub = document.createElement("div");
+        sub.className = "pickSub";
+        sub.textContent = p.id;
+
+        box.appendChild(main);
+        box.appendChild(sub);
+
+        const go = document.createElement("button");
+        go.className = "btn btnPrimary";
+        go.type = "button";
+        go.textContent = "Importa qui";
+
+        go.addEventListener("click", ()=>{
+          if(!pendingImport) return;
+          const added = mergeSessions(p, pendingImport.sessions);
+          saveState();
+          closeOverlay(importPickOverlay);
+          pendingImport = null;
+          updateUI();
+          alert(`Import completato ✅ (+${added} sessioni)`);
+        });
+
+        row.appendChild(av);
+        row.appendChild(box);
+        row.appendChild(go);
+
+        importPickList.appendChild(row);
+      });
+
+      openOverlay(importPickOverlay);
+    }
+
+    async function importJSON(file){
+      try{
+        const txt = await file.text();
+        const obj = JSON.parse(txt);
+        if(!obj || !Array.isArray(obj.sessions)) throw new Error("JSON non valido");
+
+        const importName = String(obj.playerName || "").trim();
+        const sessions = obj.sessions;
+
+        // try automatic match by name
+        const target = findPlayerByNameCaseInsensitive(importName);
+
+        if(target){
+          const added = mergeSessions(target, sessions);
+          saveState();
+          updateUI();
+          alert(`Import completato su “${target.name}” ✅ (+${added} sessioni)`);
+          return;
+        }
+
+        // else: ask user where to import
+        pendingImport = { sessions, importName };
+        openImportPickModal(importName || "(senza nome)");
+      }catch(e){
+        alert("Import fallito: " + (e.message || e));
+      }finally{
+        importJsonEl.value = "";
+      }
+    }
+
+    /***********************
+     * WhatsApp share (giornata)
+     ***********************/
+    function shareWhatsApp(){
+      const p = getPlayer(state.activeId);
+      if(!p){ alert("Nessun giocatore attivo."); return; }
+      const date = state.sessionDate;
+      const st = computeDayPlayerStats(p, date);
+
       const msg =
-`Virtus Shot Tracker
+`🏀 Virtus Shooting Lab
 Giocatore: ${p.name}
-Sessioni: ${st.n}
-Media: ${st.avg}%
+Giornata: ${date}
+Risultato: ${st.overall}% (${st.made}/${st.att})
+Sessioni: ${st.sessions}
 
-Fondo sx: ${st.values[0]}%
-45° sx: ${st.values[1]}%
-Frontale: ${st.values[2]}%
-45° dx: ${st.values[3]}%
-Fondo dx: ${st.values[4]}%`;
+Fondo sx: ${st.byPos[0]}%
+45° sx: ${st.byPos[1]}%
+Frontale: ${st.byPos[2]}%
+45° dx: ${st.byPos[3]}%
+Fondo dx: ${st.byPos[4]}%`;
 
       const url = "https://wa.me/?text=" + encodeURIComponent(msg);
       window.open(url, "_blank");
-    });
+    }
 
-    /* =========================
-       MENU ACTIONS
-    ========================= */
-    function openMenu(){ openOverlay(menuOverlay); }
-    function closeMenu(){ closeOverlay(menuOverlay); }
-
-    menuBtn.addEventListener("click", openMenu);
-    menuClose.addEventListener("click", closeMenu);
-    menuClose2.addEventListener("click", closeMenu);
-
-    menuNewSession.addEventListener("click", ()=>{
-      state.presentIds = [];
-      state.sessionDate = new Date().toISOString().slice(0,10);
+    /***********************
+     * Reset total sessions (keep names/photos)
+     ***********************/
+    function resetAllSessions(){
+      const ok = confirm("Vuoi cancellare TUTTE le sessioni salvate? (Nomi e foto restano)");
+      if(!ok) return;
+      for(const p of state.players){
+        p.sessions = [];
+      }
       saveState();
       updateUI();
-      closeMenu();
+      alert("Sessioni cancellate ✅");
+    }
+
+    /***********************
+     * UI update
+     ***********************/
+    function updateUI(){
+      ensureActiveValid();
+
+      sessionDateEl.value = state.sessionDate;
+      timerPresetEl.value = String(state.timerSec);
+
+      renderTabs();
+      updateInputsUI();
+
+      resetTimer();
+      updateDayStats();
+    }
+
+    /***********************
+     * Events
+     ***********************/
+    // session date
+    sessionDateEl.addEventListener("change", ()=>{
+      state.sessionDate = sessionDateEl.value || todayISO();
+      saveState();
+      updateDayStats();
     });
+
+    // timer preset
+    timerPresetEl.addEventListener("change", ()=>{
+      const v = Number(timerPresetEl.value);
+      state.timerSec = [35,40,45].includes(v) ? v : 45;
+      saveState();
+      resetTimer();
+    });
+
+    startBtn.addEventListener("click", startTimer);
+    stopBtn.addEventListener("click", stopTimer);
+    resetBtn.addEventListener("click", resetTimer);
+
+    clearBtn.addEventListener("click", clearInputs);
+    saveBtn.addEventListener("click", saveSession);
+    shareBtn.addEventListener("click", shareWhatsApp);
+
+    // menu
+    menuBtn.addEventListener("click", ()=>openOverlay(menuOverlay));
+    menuClose.addEventListener("click", ()=>closeOverlay(menuOverlay));
+    menuClose2.addEventListener("click", ()=>closeOverlay(menuOverlay));
 
     menuSelectPlayers.addEventListener("click", ()=>{
-      closeMenu();
+      closeOverlay(menuOverlay);
       openSelectModal();
     });
-
-    menuPlayerSettings.addEventListener("click", ()=>{
-      closeMenu();
-      openPlayerSettings();
+    menuPlayer.addEventListener("click", ()=>{
+      closeOverlay(menuOverlay);
+      renderPlayerModal();
+      openOverlay(playerOverlay);
     });
-
+    menuTeamRanking.addEventListener("click", ()=>{
+      closeOverlay(menuOverlay);
+      renderTeamRanking();
+      openOverlay(teamOverlay);
+    });
     menuBackup.addEventListener("click", ()=>{
-      closeMenu();
+      closeOverlay(menuOverlay);
       openOverlay(backupOverlay);
     });
+    menuResetSessions.addEventListener("click", ()=>{
+      closeOverlay(menuOverlay);
+      resetAllSessions();
+    });
 
-    openSelectPlayers.addEventListener("click", openSelectModal);
-
+    // select players
+    openSelectPlayersBtn.addEventListener("click", openSelectModal);
     selectClose.addEventListener("click", ()=>closeOverlay(selectOverlay));
     selectCancel.addEventListener("click", ()=>closeOverlay(selectOverlay));
     selectOk.addEventListener("click", ()=>{
@@ -1230,121 +1744,73 @@ Fondo dx: ${st.values[4]}%`;
       closeOverlay(selectOverlay);
     });
 
+    // player modal
     playerClose.addEventListener("click", ()=>closeOverlay(playerOverlay));
     playerClose2.addEventListener("click", ()=>closeOverlay(playerOverlay));
+    playerSave.addEventListener("click", ()=>{
+      const p = getPlayer(state.activeId);
+      if(!p) return;
+      const name = (playerNameInput.value || "").trim();
+      if(name) p.name = name;
+      saveState();
+      renderPlayerModal();
+      renderTabs();
+      updateDayStats();
+      closeOverlay(playerOverlay);
+    });
+    playerRemovePhoto.addEventListener("click", ()=>{
+      const p = getPlayer(state.activeId);
+      if(!p) return;
+      p.photo = null;
+      saveState();
+      renderPlayerModal();
+      renderTabs();
+      updateDayStats();
+    });
 
+    // team modal
+    teamClose.addEventListener("click", ()=>closeOverlay(teamOverlay));
+    teamClose2.addEventListener("click", ()=>closeOverlay(teamOverlay));
+
+    // backup
     backupClose.addEventListener("click", ()=>closeOverlay(backupOverlay));
     backupClose2.addEventListener("click", ()=>closeOverlay(backupOverlay));
-
-    /* =========================
-       BACKUP / IMPORT
-    ========================= */
-    exportJsonBtn.addEventListener("click", ()=>{
-      const data = JSON.stringify(state, null, 2);
-      const blob = new Blob([data], {type:"application/json"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `virtus-shot-tracker-backup-${new Date().toISOString().slice(0,10)}.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(a.href);
+    exportJsonBtn.addEventListener("click", exportJSON);
+    importJsonEl.addEventListener("change", ()=>{
+      const f = importJsonEl.files && importJsonEl.files[0];
+      if(!f) return;
+      importJSON(f);
     });
 
-    importJson.addEventListener("change", async ()=>{
-      const file = importJson.files && importJson.files[0];
-      if(!file) return;
-      try{
-        const txt = await file.text();
-        const obj = JSON.parse(txt);
-        if(!obj || !obj.players) throw new Error("JSON non valido");
-        localStorage.setItem(LS_KEY, JSON.stringify(obj));
-        state = loadState();
-        updateUI();
-        closeOverlay(backupOverlay);
-      }catch(e){
-        alert("Import fallito: " + (e.message || e));
-      }finally{
-        importJson.value = "";
-      }
+    // import pick
+    importPickClose.addEventListener("click", ()=>{
+      pendingImport = null;
+      closeOverlay(importPickOverlay);
+    });
+    importPickCancel.addEventListener("click", ()=>{
+      pendingImport = null;
+      closeOverlay(importPickOverlay);
     });
 
-    /* =========================
-       SESSION DATE
-    ========================= */
-    sessionDateEl.addEventListener("change", ()=>{
-      state.sessionDate = sessionDateEl.value || new Date().toISOString().slice(0,10);
-      saveState();
-    });
+    /***********************
+     * Boot
+     ***********************/
+    // ensure date
+    if(!state.sessionDate) state.sessionDate = todayISO();
+    // default presentIds if empty? keep empty (you choose who is present)
+    ensureActiveValid();
 
-    /* =========================
-       PLAYER SWITCH (tap pill)
-       - cycles through present players (or all)
-    ========================= */
-    document.getElementById("playerPill").addEventListener("click", ()=>{
-      const ids = state.presentIds.length ? state.presentIds : state.players.map(p=>p.id);
-      const i = ids.indexOf(state.currentPlayerId);
-      const next = ids[(i+1) % ids.length];
-      state.currentPlayerId = next;
-      saveState();
-      updateUI();
-    });
+    // init controls
+    sessionDateEl.value = state.sessionDate;
+    timerPresetEl.value = String(state.timerSec);
+    timeDisplayEl.textContent = fmt(state.timerSec);
 
-    /* =========================
-       MAIN UPDATE
-    ========================= */
-    function updateUI(){
-      ensureCurrentPlayerValid();
-
-      // session
-      sessionDateEl.value = state.sessionDate || new Date().toISOString().slice(0,10);
-      timerPresetEl.value = String(state.timerSec || 45);
-
-      renderPresentSummary();
-      updatePlayerPill();
-
-      // timer
-      stopTimer();
-      timer.remaining = state.timerSec || 45;
-      timeDisplay.textContent = fmt(timer.remaining);
-
-      // inputs
-      updateInputUI();
-
-      // stats
-      renderChart();
-    }
-
-    /* =========================
-       UTIL
-    ========================= */
-    function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
-
-    function escapeHtml(str){
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    async function fileToDataURL(file, maxSize=720){
-      const img = await createImageBitmap(file);
-      const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-      const w = Math.round(img.width * scale);
-      const h = Math.round(img.height * scale);
-
-      const c = document.createElement("canvas");
-      c.width = w; c.height = h;
-      const g = c.getContext("2d");
-      g.drawImage(img, 0, 0, w, h);
-      return c.toDataURL("image/jpeg", 0.85);
-    }
-
-    // init
-    ensureCurrentPlayerValid();
     updateUI();
+
+    // If on resize, refresh chart sizing (Chart.js generally handles it, but safe)
+    window.addEventListener("resize", ()=>{
+      try{ if(chart) chart.resize(); }catch(e){}
+    }, {passive:true});
   </script>
 </body>
 </html>
