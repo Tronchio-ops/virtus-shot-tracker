@@ -2,426 +2,807 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Virtus Shot Tracker</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#062714" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
     :root{
-      --bg1:#062714;      /* verde scuro */
-      --bg2:#00130a;      /* quasi nero */
-      --card: rgba(0,0,0,0.42);
+      --bg1:#041b0d;
+      --bg2:#062714;
+      --card: rgba(0,0,0,0.35);
+      --border: rgba(255,255,255,0.12);
+      --text:#ecfff2;
+      --muted: rgba(236,255,242,0.75);
       --accent:#1e8239;
-      --text:#ffffff;
+      --danger:#c43b3b;
+      --btn:#0f3a1d;
+      --btn2:#155225;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius:16px;
     }
-
+    *{box-sizing:border-box;}
     body{
       margin:0;
       font-family: Arial, sans-serif;
       color:var(--text);
-      background: radial-gradient(circle at center, var(--bg1), var(--bg2));
+      background:
+        radial-gradient(circle at 20% 10%, rgba(30,130,57,0.20), transparent 55%),
+        radial-gradient(circle at 80% 30%, rgba(30,130,57,0.14), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
       min-height:100vh;
     }
+    header{
+      padding:18px 16px 8px;
+      text-align:center;
+    }
+    header h1{
+      margin:0;
+      font-size:28px;
+      letter-spacing:0.5px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+    }
+    header .sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:13px;
+    }
 
-    .container{ padding:16px; max-width:900px; margin:0 auto; }
-
-    h1{ text-align:center; margin:10px 0 14px; font-size:28px; }
+    .wrap{
+      max-width: 980px;
+      margin:0 auto;
+      padding: 10px 12px 80px;
+    }
 
     .tabs{
       display:flex;
       gap:8px;
       overflow-x:auto;
-      padding-bottom:8px;
-      margin-bottom:12px;
-      -webkit-overflow-scrolling: touch;
+      padding: 8px 4px 12px;
     }
     .tab{
-      flex: 0 0 auto;
-      background: rgba(255,255,255,0.10);
-      border: 1px solid rgba(255,255,255,0.12);
+      flex:0 0 auto;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,0.25);
       color: var(--text);
       padding:10px 12px;
-      border-radius:12px;
-      font-weight:700;
+      border-radius: 999px;
+      font-size:13px;
       cursor:pointer;
-      user-select:none;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
       white-space:nowrap;
     }
     .tab.active{
-      background: rgba(30,130,57,0.35);
-      border-color: rgba(30,130,57,0.55);
+      border-color: rgba(30,130,57,0.75);
+      background: rgba(30,130,57,0.18);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+    @media (min-width: 900px){
+      .grid{ grid-template-columns: 1.05fr 0.95fr; }
     }
 
     .card{
-      background:var(--card);
-      padding:14px;
-      border-radius:14px;
-      margin-bottom:14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
     }
-
+    .card h2{
+      margin:0 0 10px;
+      font-size:18px;
+    }
     .row{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       align-items:center;
     }
-    .row > * { flex: 1 1 160px; }
-
-    label{ font-weight:700; display:block; margin-top:8px; }
-    input, button{
-      width:100%;
-      padding:10px;
-      margin-top:6px;
-      border-radius:10px;
-      border:none;
-      outline:none;
-      font-size:16px;
+    label{
+      font-size:13px;
+      color: var(--muted);
     }
-
-    input{ background: rgba(255,255,255,0.92); color:#111; }
+    input[type="text"], input[type="number"], input[type="date"]{
+      width: 100%;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.25);
+      color: var(--text);
+      outline:none;
+    }
+    input[type="number"]{ text-align:center; }
+    .inputs{
+      display:grid;
+      grid-template-columns: 1fr 110px;
+      gap:10px;
+      align-items:center;
+      margin: 8px 0;
+    }
+    .inputs .pos{ color:var(--text); font-weight:700; }
 
     .btn{
-      background:var(--accent);
-      color:white;
-      font-weight:800;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: linear-gradient(180deg, var(--btn2), var(--btn));
+      color: var(--text);
+      padding: 11px 12px;
+      border-radius: 14px;
+      font-weight:700;
       cursor:pointer;
+      width:100%;
+      box-shadow: 0 10px 18px rgba(0,0,0,0.18);
     }
-
-    .btn.secondary{
-      background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.18);
+    .btn.secondary{ background: rgba(0,0,0,0.25); }
+    .btn.danger{
+      background: linear-gradient(180deg, rgba(196,59,59,0.9), rgba(130,18,18,0.8));
+      border-color: rgba(255,255,255,0.12);
     }
+    .btn.small{ width:auto; padding:9px 10px; border-radius: 12px; font-size:13px; }
+    .btn:active{ transform: translateY(1px); }
 
     .hint{
-      opacity:0.9;
-      font-size:13px;
       margin-top:8px;
+      color: var(--muted);
+      font-size:12px;
       line-height:1.35;
     }
 
-    .stats{
-      font-size:16px;
-      line-height:1.45;
-    }
-
-    /* Chart container con watermark */
-    .chartWrap{
+    .watermarkWrap{
       position:relative;
-      border-radius:14px;
+      border-radius: var(--radius);
       overflow:hidden;
-      background: rgba(255,255,255,0.92); /* base chiara per leggibilità grafico */
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      padding: 10px;
     }
-    .chartWrap::before{
+    .watermarkWrap::before{
       content:"";
       position:absolute;
       inset:0;
-      background-image: url("icon-512.png"); /* watermark */
+      background-image: url("icon-512.png");
       background-repeat:no-repeat;
       background-position:center;
-      background-size: 320px;
-      opacity:0.10; /* trasparenza logo */
+      background-size: 72%;
+      opacity: 0.10;
+      filter: blur(0px);
       pointer-events:none;
-      transform: translateZ(0);
     }
-    canvas{
-      position:relative;
-      z-index:1;
-      display:block;
-      width:100% !important;
-      height: 320px !important;
+    canvas{ position:relative; z-index:1; }
+
+    .stats{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .kpi{
+      padding:10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    .kpi .t{ font-size:12px; color:var(--muted); }
+    .kpi .v{ font-size:18px; font-weight:800; margin-top:4px; }
+
+    .list{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      max-height: 360px;
+      overflow:auto;
+      padding-right: 4px;
+    }
+    .item{
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      border-radius: 14px;
+      padding: 10px;
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .item .left{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .item .date{
+      font-weight:800;
+      font-size:13px;
+    }
+    .item .mini{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .item .right{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .pill{
+      font-size:12px;
+      padding:6px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(30,130,57,0.16);
+      font-weight:800;
+      white-space:nowrap;
     }
 
-    .danger{
-      background: rgba(255,60,60,0.18);
-      border: 1px solid rgba(255,60,60,0.35);
+    footer{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding:10px 12px;
+      background: rgba(0,0,0,0.40);
+      border-top:1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(8px);
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      z-index: 999;
     }
+    footer button{ max-width: 420px; }
   </style>
 </head>
-
 <body>
-  <div class="container">
+  <header>
     <h1>Virtus Shot Tracker</h1>
+    <div class="sub">Sessione = <b>10 tiri per posizione</b> • 8 giocatori • dati salvati sul telefono</div>
+  </header>
 
-    <!-- TAB GIOCATORI -->
+  <div class="wrap">
     <div class="tabs" id="tabs"></div>
 
-    <!-- NOME GIOCATORE + RESET -->
-    <div class="card">
-      <div class="row">
-        <div>
+    <div class="card" style="margin-bottom:12px;">
+      <div class="row" style="justify-content:space-between;">
+        <div style="flex:1; min-width:220px;">
           <label>Nome giocatore (pagina)</label>
-          <input id="playerName" type="text" placeholder="Nome giocatore" />
-          <div class="hint">Cambialo e viene salvato solo per questa pagina giocatore.</div>
+          <input id="playerName" type="text" placeholder="Es. Marco" />
         </div>
-
-        <div>
-          <label>&nbsp;</label>
-          <button class="btn secondary" onclick="resetPlayer()">Reset dati giocatore</button>
-          <div class="hint">Azzera sessioni e statistiche del giocatore selezionato (nuovo punto zero).</div>
+        <div style="display:flex; gap:10px; align-items:end;">
+          <button class="btn small secondary" id="saveNameBtn">Salva nome</button>
+          <button class="btn small danger" id="resetPlayerBtn">Reset giocatore</button>
         </div>
       </div>
-    </div>
-
-    <!-- INSERIMENTO SESSIONE -->
-    <div class="card">
-      <label>Data</label>
-      <input type="date" id="date">
-
       <div class="hint">
-        Sessione = <b>10 tiri per posizione</b>. Inserisci solo i canestri (0–10).  
-        La % sessione viene calcolata su <b>50 tiri totali</b>.
-      </div>
-
-      <label>Fondo sx (0–10)</label>
-      <input id="fsx" type="number" min="0" max="10" inputmode="numeric">
-
-      <label>45° sx (0–10)</label>
-      <input id="s45" type="number" min="0" max="10" inputmode="numeric">
-
-      <label>Frontale (0–10)</label>
-      <input id="front" type="number" min="0" max="10" inputmode="numeric">
-
-      <label>45° dx (0–10)</label>
-      <input id="d45" type="number" min="0" max="10" inputmode="numeric">
-
-      <label>Fondo dx (0–10)</label>
-      <input id="fdx" type="number" min="0" max="10" inputmode="numeric">
-
-      <button class="btn" onclick="addSession()">Aggiungi sessione</button>
-    </div>
-
-    <!-- STATS -->
-    <div class="card">
-      <h3 style="margin:0 0 8px;">Statistiche giocatore</h3>
-      <div class="stats" id="stats"></div>
-    </div>
-
-    <!-- CHART -->
-    <div class="card">
-      <h3 style="margin:0 0 10px;">Andamento % per sessione</h3>
-      <div class="chartWrap">
-        <canvas id="chart"></canvas>
-      </div>
-      <div class="hint">
-        Scala fissa: <b>0% → 100%</b>.
+        Cambia nome e premi <b>Salva nome</b>. Il reset cancella tutte le sessioni del giocatore selezionato.
       </div>
     </div>
 
+    <div class="grid">
+      <!-- LEFT: insert -->
+      <div class="card">
+        <h2>Nuova sessione</h2>
+        <div class="row">
+          <div style="flex:1; min-width:170px;">
+            <label>Data</label>
+            <input id="sessionDate" type="date" />
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <label>Note (opzionale)</label>
+            <input id="sessionNote" type="text" placeholder="Es. dopo allenamento / gara..." />
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:10px;">
+          Inserisci solo i <b>canestri segnati</b> (0–10). Tentativi fissi = 10 per ogni posizione.
+        </div>
+
+        <div id="inputsBox" style="margin-top:10px;"></div>
+
+        <button class="btn" id="addSessionBtn" style="margin-top:10px;">Aggiungi sessione</button>
+      </div>
+
+      <!-- RIGHT: charts + stats + history -->
+      <div class="card">
+        <h2>Statistiche & Calendario</h2>
+
+        <div class="stats" id="kpiBox"></div>
+
+        <div class="watermarkWrap" style="margin-top:12px;">
+          <canvas id="barChart" height="220"></canvas>
+        </div>
+
+        <div class="watermarkWrap" style="margin-top:12px;">
+          <canvas id="lineChart" height="220"></canvas>
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <button class="btn small secondary" id="exportBtn">Condividi riepilogo</button>
+          <button class="btn small danger" id="resetAllBtn">RESET TUTTO</button>
+        </div>
+
+        <div class="hint">
+          “RESET TUTTO” cancella i dati di tutti gli 8 giocatori (azione irreversibile).
+        </div>
+
+        <h2 style="margin-top:16px;">Storico (per data)</h2>
+        <div class="list" id="historyList"></div>
+      </div>
+    </div>
   </div>
 
+  <footer>
+    <button class="btn secondary" id="forceRefreshBtn">Aggiorna app (ricarica)</button>
+  </footer>
+
 <script>
-  // ======== CONFIG ========
-  const PLAYER_SLOTS = 8;
-  const DEFAULT_NAMES = ["Giocatore 1","Giocatore 2","Giocatore 3","Giocatore 4","Giocatore 5","Giocatore 6","Giocatore 7","Giocatore 8"];
-  const ATTEMPTS_PER_SPOT = 10;
-  const SPOTS = ["fsx","s45","front","d45","fdx"]; // 5 posizioni -> 50 tiri/sessione
+/* =========================
+   CONFIG
+========================= */
+const POSITIONS = [
+  { key:"fondo_sx", label:"Fondo sx" },
+  { key:"45_sx",    label:"45° sx" },
+  { key:"frontale", label:"Frontale" },
+  { key:"45_dx",    label:"45° dx" },
+  { key:"fondo_dx", label:"Fondo dx" }
+];
+const ATTEMPTS_PER_POS = 10;
+const PLAYERS_COUNT = 8;
+const STORAGE_KEY = "virtus_shot_tracker_v3";
 
-  // ======== STATE ========
-  let selectedPlayerIndex = 0;
-  let chartInstance = null;
+/* =========================
+   STATE
+========================= */
+let state = loadState();
+let currentPlayer = state.ui?.currentPlayer ?? 0;
+let barChart, lineChart;
 
-  // ======== STORAGE HELPERS ========
-  const keyNames = () => "virtus_players_names_v1";
-  const keySessions = (idx) => `virtus_player_${idx}_sessions_v1`;
+/* =========================
+   INIT
+========================= */
+renderTabs();
+renderInputs();
+bindUI();
+syncPlayerNameInput();
+setDefaultDate();
+renderAll();
 
-  function loadPlayerNames(){
-    const raw = localStorage.getItem(keyNames());
-    if(!raw) return [...DEFAULT_NAMES];
-    try{
-      const arr = JSON.parse(raw);
-      if(Array.isArray(arr) && arr.length === PLAYER_SLOTS) return arr;
-      return [...DEFAULT_NAMES];
-    }catch{ return [...DEFAULT_NAMES]; }
+/* =========================
+   UI BUILDERS
+========================= */
+function renderTabs(){
+  const tabs = document.getElementById("tabs");
+  tabs.innerHTML = "";
+  for(let i=0;i<PLAYERS_COUNT;i++){
+    const name = state.players[i]?.name || `Giocatore ${i+1}`;
+    const btn = document.createElement("button");
+    btn.className = "tab" + (i===currentPlayer ? " active":"");
+    btn.textContent = name;
+    btn.onclick = () => {
+      currentPlayer = i;
+      state.ui.currentPlayer = i;
+      saveState();
+      renderTabs();
+      syncPlayerNameInput();
+      renderAll();
+    };
+    tabs.appendChild(btn);
   }
+}
 
-  function savePlayerNames(names){
-    localStorage.setItem(keyNames(), JSON.stringify(names));
-  }
+function renderInputs(){
+  const box = document.getElementById("inputsBox");
+  box.innerHTML = "";
+  POSITIONS.forEach(p=>{
+    const row = document.createElement("div");
+    row.className = "inputs";
+    row.innerHTML = `
+      <div class="pos">${p.label} <span style="color:var(--muted); font-weight:600;">(su ${ATTEMPTS_PER_POS})</span></div>
+      <input type="number" min="0" max="${ATTEMPTS_PER_POS}" step="1" value="0" data-pos="${p.key}">
+    `;
+    box.appendChild(row);
+  });
+}
 
-  function loadSessions(idx){
-    const raw = localStorage.getItem(keySessions(idx));
-    if(!raw) return [];
-    try{
-      const arr = JSON.parse(raw);
-      return Array.isArray(arr) ? arr : [];
-    }catch{ return []; }
-  }
+function bindUI(){
+  document.getElementById("saveNameBtn").onclick = savePlayerName;
+  document.getElementById("addSessionBtn").onclick = addSession;
+  document.getElementById("resetPlayerBtn").onclick = resetCurrentPlayer;
+  document.getElementById("resetAllBtn").onclick = resetAllPlayers;
+  document.getElementById("exportBtn").onclick = shareSummary;
+  document.getElementById("forceRefreshBtn").onclick = () => location.reload();
+}
 
-  function saveSessions(idx, sessions){
-    localStorage.setItem(keySessions(idx), JSON.stringify(sessions));
-  }
+function syncPlayerNameInput(){
+  document.getElementById("playerName").value = state.players[currentPlayer].name;
+}
 
-  // ======== UI ========
-  function buildTabs(){
-    const tabs = document.getElementById("tabs");
-    tabs.innerHTML = "";
-    const names = loadPlayerNames();
+function setDefaultDate(){
+  const d = new Date();
+  const iso = d.toISOString().slice(0,10);
+  document.getElementById("sessionDate").value = iso;
+}
 
-    for(let i=0;i<PLAYER_SLOTS;i++){
-      const btn = document.createElement("div");
-      btn.className = "tab" + (i===selectedPlayerIndex ? " active" : "");
-      btn.textContent = names[i];
-      btn.onclick = () => selectPlayer(i);
-      tabs.appendChild(btn);
-    }
-  }
+/* =========================
+   DATA MODEL
+========================= */
+function defaultState(){
+  return {
+    ui:{ currentPlayer: 0 },
+    players: Array.from({length: PLAYERS_COUNT}, (_,i)=>({
+      name: `Giocatore ${i+1}`,
+      sessions: [] // {id,date,note, made:{...}, attempts:10}
+    }))
+  };
+}
 
-  function selectPlayer(idx){
-    selectedPlayerIndex = idx;
-    buildTabs();
-
-    // carica nome
-    const names = loadPlayerNames();
-    document.getElementById("playerName").value = names[idx];
-
-    // aggiorna stats + chart
-    updateStats();
-    drawChart();
-  }
-
-  function clamp10(n){
-    if(Number.isNaN(n)) return 0;
-    if(n < 0) return 0;
-    if(n > 10) return 10;
-    return Math.round(n);
-  }
-
-  // ======== ACTIONS ========
-  function addSession(){
-    const date = document.getElementById("date").value || new Date().toISOString().slice(0,10);
-
-    const fsx   = clamp10(+document.getElementById("fsx").value);
-    const s45   = clamp10(+document.getElementById("s45").value);
-    const front = clamp10(+document.getElementById("front").value);
-    const d45   = clamp10(+document.getElementById("d45").value);
-    const fdx   = clamp10(+document.getElementById("fdx").value);
-
-    // sessione su 50 tiri totali
-    const madeTotal = fsx + s45 + front + d45 + fdx;
-    const pct = Math.round((madeTotal / (ATTEMPTS_PER_SPOT * SPOTS.length)) * 100);
-
-    const session = { date, fsx, s45, front, d45, fdx, pct };
-
-    const sessions = loadSessions(selectedPlayerIndex);
-    sessions.push(session);
-    saveSessions(selectedPlayerIndex, sessions);
-
-    // pulisci campi
-    document.getElementById("fsx").value = "";
-    document.getElementById("s45").value = "";
-    document.getElementById("front").value = "";
-    document.getElementById("d45").value = "";
-    document.getElementById("fdx").value = "";
-
-    updateStats();
-    drawChart();
-  }
-
-  function resetPlayer(){
-    const names = loadPlayerNames();
-    const player = names[selectedPlayerIndex] || "questo giocatore";
-    const ok = confirm(`Sicuro di voler azzerare TUTTI i dati di "${player}"?`);
-    if(!ok) return;
-
-    saveSessions(selectedPlayerIndex, []);
-    updateStats();
-    drawChart();
-  }
-
-  // ======== STATS ========
-  function updateStats(){
-    const sessions = loadSessions(selectedPlayerIndex);
-    if(sessions.length === 0){
-      document.getElementById("stats").innerHTML = "Nessuna sessione salvata.";
-      return;
-    }
-
-    const totalSessions = sessions.length;
-
-    // Totali canestri su 50 per sessione
-    let madeAll = 0;
-    let maxPct = 0;
-    let minPct = 100;
-    sessions.forEach(s => {
-      const made = (s.fsx||0)+(s.s45||0)+(s.front||0)+(s.d45||0)+(s.fdx||0);
-      madeAll += made;
-      maxPct = Math.max(maxPct, s.pct ?? 0);
-      minPct = Math.min(minPct, s.pct ?? 100);
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    // harden
+    if(!parsed.players || parsed.players.length !== PLAYERS_COUNT) return defaultState();
+    parsed.ui = parsed.ui || { currentPlayer:0 };
+    parsed.players.forEach((pl,i)=>{
+      pl.name = pl.name || `Giocatore ${i+1}`;
+      pl.sessions = Array.isArray(pl.sessions) ? pl.sessions : [];
     });
+    return parsed;
+  }catch(e){
+    return defaultState();
+  }
+}
 
-    const attemptsAll = totalSessions * ATTEMPTS_PER_SPOT * SPOTS.length; // 50 * N
-    const avgPct = Math.round((madeAll / attemptsAll) * 100);
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
 
-    document.getElementById("stats").innerHTML =
-      `Sessioni: <b>${totalSessions}</b><br>` +
-      `Media % (totale): <b>${avgPct}%</b><br>` +
-      `Migliore sessione: <b>${maxPct}%</b><br>` +
-      `Peggiore sessione: <b>${minPct}%</b>`;
+function uid(){
+  return Math.random().toString(16).slice(2) + Date.now().toString(16);
+}
+
+/* =========================
+   ACTIONS
+========================= */
+function savePlayerName(){
+  const v = document.getElementById("playerName").value.trim();
+  if(!v) return alert("Inserisci un nome valido.");
+  state.players[currentPlayer].name = v;
+  saveState();
+  renderTabs();
+  renderAll();
+}
+
+function addSession(){
+  const date = document.getElementById("sessionDate").value;
+  if(!date) return alert("Seleziona una data.");
+  const note = document.getElementById("sessionNote").value.trim();
+
+  const inputs = [...document.querySelectorAll('#inputsBox input[type="number"]')];
+  const made = {};
+  for(const inp of inputs){
+    const k = inp.dataset.pos;
+    let n = Number(inp.value);
+    if(Number.isNaN(n)) n = 0;
+    if(n < 0) n = 0;
+    if(n > ATTEMPTS_PER_POS) n = ATTEMPTS_PER_POS;
+    made[k] = n;
   }
 
-  // ======== CHART ========
-  function drawChart(){
-    const sessions = loadSessions(selectedPlayerIndex);
+  const session = {
+    id: uid(),
+    date,
+    note,
+    attempts: ATTEMPTS_PER_POS,
+    made
+  };
 
-    const labels = sessions.map(s => s.date);
-    const values = sessions.map(s => s.pct ?? 0);
-
-    const ctx = document.getElementById("chart").getContext("2d");
-
-    if(chartInstance){
-      chartInstance.destroy();
-      chartInstance = null;
-    }
-
-    chartInstance = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels,
-        datasets: [{
-          label: "% sessione (50 tiri)",
-          data: values,
-          tension: 0.25,
-          pointRadius: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            min: 0,
-            max: 100,
-            ticks: {
-              callback: (v) => v + "%"
-            }
-          }
-        }
-      }
-    });
-  }
-
-  // ======== PLAYER NAME EDIT ========
-  document.getElementById("playerName").addEventListener("input", (e) => {
-    const names = loadPlayerNames();
-    names[selectedPlayerIndex] = (e.target.value || DEFAULT_NAMES[selectedPlayerIndex]).trim();
-    savePlayerNames(names);
-    buildTabs();
+  state.players[currentPlayer].sessions.push(session);
+  // sort by date desc then by insertion
+  state.players[currentPlayer].sessions.sort((a,b)=>{
+    if(a.date===b.date) return 0;
+    return a.date < b.date ? 1 : -1;
   });
 
-  // ======== INIT ========
-  (function init(){
-    // data oggi
-    document.getElementById("date").value = new Date().toISOString().slice(0,10);
+  saveState();
+  // reset inputs
+  document.getElementById("sessionNote").value = "";
+  inputs.forEach(i=> i.value = "0");
 
-    // crea names se manca
-    const names = loadPlayerNames();
-    if(!localStorage.getItem(keyNames())) savePlayerNames(names);
+  renderAll();
+}
 
-    buildTabs();
-    selectPlayer(0);
-  })();
+function deleteSession(sessionId){
+  const pl = state.players[currentPlayer];
+  pl.sessions = pl.sessions.filter(s => s.id !== sessionId);
+  saveState();
+  renderAll();
+}
+
+function resetCurrentPlayer(){
+  const name = state.players[currentPlayer].name;
+  if(!confirm(`Reset totale del giocatore "${name}"?`)) return;
+  state.players[currentPlayer].sessions = [];
+  saveState();
+  renderAll();
+}
+
+function resetAllPlayers(){
+  if(!confirm("RESET TUTTO? Cancella dati di tutti i giocatori.")) return;
+  state = defaultState();
+  currentPlayer = 0;
+  saveState();
+  renderTabs();
+  syncPlayerNameInput();
+  renderAll();
+}
+
+/* =========================
+   CALCS
+========================= */
+function calcTotals(player){
+  const totals = {
+    sessions: player.sessions.length,
+    madeByPos: Object.fromEntries(POSITIONS.map(p=>[p.key,0])),
+    attByPos: Object.fromEntries(POSITIONS.map(p=>[p.key,0])),
+  };
+
+  for(const s of player.sessions){
+    for(const p of POSITIONS){
+      totals.madeByPos[p.key] += (s.made?.[p.key] ?? 0);
+      totals.attByPos[p.key] += (s.attempts ?? ATTEMPTS_PER_POS);
+    }
+  }
+  return totals;
+}
+
+function pct(made, att){
+  if(!att) return 0;
+  return Math.round((made/att)*100);
+}
+
+function sessionSummary(s){
+  // total made out of (attempts*positions)
+  let m=0;
+  let a=0;
+  for(const p of POSITIONS){
+    m += (s.made?.[p.key] ?? 0);
+    a += (s.attempts ?? ATTEMPTS_PER_POS);
+  }
+  return { made:m, att:a, pct:pct(m,a) };
+}
+
+/* =========================
+   RENDER
+========================= */
+function renderAll(){
+  const pl = state.players[currentPlayer];
+  renderKPIs(pl);
+  renderHistory(pl);
+  renderCharts(pl);
+}
+
+function renderKPIs(pl){
+  const totals = calcTotals(pl);
+  let madeAll = 0, attAll = 0;
+
+  for(const p of POSITIONS){
+    madeAll += totals.madeByPos[p.key];
+    attAll += totals.attByPos[p.key];
+  }
+
+  const kpiBox = document.getElementById("kpiBox");
+  const overall = pct(madeAll, attAll);
+
+  // best position
+  let best = {label:"-", value:-1};
+  POSITIONS.forEach(p=>{
+    const v = pct(totals.madeByPos[p.key], totals.attByPos[p.key]);
+    if(v > best.value) best = {label:p.label, value:v};
+  });
+
+  // last session
+  const last = pl.sessions[0];
+  const lastPct = last ? sessionSummary(last).pct : 0;
+
+  kpiBox.innerHTML = `
+    <div class="kpi"><div class="t">Sessioni</div><div class="v">${totals.sessions}</div></div>
+    <div class="kpi"><div class="t">% Totale</div><div class="v">${overall}%</div></div>
+    <div class="kpi"><div class="t">Miglior posizione</div><div class="v">${best.label} (${best.value<0?0:best.value}%)</div></div>
+    <div class="kpi"><div class="t">Ultima sessione</div><div class="v">${last ? lastPct+"%" : "-"}</div></div>
+  `;
+}
+
+function renderHistory(pl){
+  const list = document.getElementById("historyList");
+  list.innerHTML = "";
+
+  if(pl.sessions.length===0){
+    const empty = document.createElement("div");
+    empty.className = "hint";
+    empty.textContent = "Nessuna sessione salvata. Inserisci i canestri e premi “Aggiungi sessione”.";
+    list.appendChild(empty);
+    return;
+  }
+
+  for(const s of pl.sessions){
+    const sum = sessionSummary(s);
+    const item = document.createElement("div");
+    item.className = "item";
+    item.innerHTML = `
+      <div class="left">
+        <div class="date">${formatDateIT(s.date)} ${s.note ? " • " + escapeHtml(s.note) : ""}</div>
+        <div class="mini">${sum.made}/${sum.att} totali • ${positionsMini(s)}</div>
+      </div>
+      <div class="right">
+        <div class="pill">${sum.pct}%</div>
+        <button class="btn small danger" title="Cancella">X</button>
+      </div>
+    `;
+    item.querySelector("button").onclick = () => {
+      if(confirm("Cancellare questa sessione?")) deleteSession(s.id);
+    };
+    list.appendChild(item);
+  }
+}
+
+function renderCharts(pl){
+  const totals = calcTotals(pl);
+
+  // BAR: overall % per posizione (0-100)
+  const labels = POSITIONS.map(p=>p.label);
+  const values = POSITIONS.map(p=> pct(totals.madeByPos[p.key], totals.attByPos[p.key]));
+
+  const barCtx = document.getElementById("barChart");
+  if(barChart) barChart.destroy();
+  barChart = new Chart(barCtx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "% per posizione (totale)",
+        data: values
+      }]
+    },
+    options: {
+      responsive:true,
+      plugins:{
+        legend:{ labels:{ color:"#ecfff2"} },
+        tooltip:{ enabled:true }
+      },
+      scales:{
+        x:{ ticks:{ color:"#ecfff2" }, grid:{ color:"rgba(255,255,255,0.08)" } },
+        y:{
+          min:0,
+          max:100,
+          ticks:{ color:"#ecfff2", callback:(v)=> v+"%" },
+          grid:{ color:"rgba(255,255,255,0.08)" }
+        }
+      }
+    }
+  });
+
+  // LINE: andamento % totale ultime 10 sessioni (0-100)
+  const last10 = pl.sessions.slice(0,10).slice().reverse(); // chronological
+  const lineLabels = last10.map(s => formatDateShortIT(s.date));
+  const lineValues = last10.map(s => sessionSummary(s).pct);
+
+  const lineCtx = document.getElementById("lineChart");
+  if(lineChart) lineChart.destroy();
+  lineChart = new Chart(lineCtx, {
+    type:"line",
+    data:{
+      labels: lineLabels,
+      datasets:[{
+        label:"Andamento % (ultime 10)",
+        data: lineValues,
+        tension: 0.25,
+        pointRadius: 3
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{ labels:{ color:"#ecfff2"} }
+      },
+      scales:{
+        x:{ ticks:{ color:"#ecfff2" }, grid:{ color:"rgba(255,255,255,0.08)" } },
+        y:{
+          min:0,
+          max:100,
+          ticks:{ color:"#ecfff2", callback:(v)=> v+"%" },
+          grid:{ color:"rgba(255,255,255,0.08)" }
+        }
+      }
+    }
+  });
+}
+
+/* =========================
+   SHARE
+========================= */
+function shareSummary(){
+  const pl = state.players[currentPlayer];
+  const totals = calcTotals(pl);
+
+  let madeAll=0, attAll=0;
+  POSITIONS.forEach(p=>{
+    madeAll += totals.madeByPos[p.key];
+    attAll += totals.attByPos[p.key];
+  });
+
+  const overall = pct(madeAll, attAll);
+  const lines = [];
+  lines.push(`🏀 ${pl.name} — Virtus Shot Tracker`);
+  lines.push(`Sessioni: ${pl.sessions.length}`);
+  lines.push(`Totale: ${madeAll}/${attAll} = ${overall}%`);
+  lines.push(`Per posizione (su ${ATTEMPTS_PER_POS}):`);
+  POSITIONS.forEach(p=>{
+    const m = totals.madeByPos[p.key];
+    const a = totals.attByPos[p.key];
+    lines.push(`- ${p.label}: ${m}/${a} (${pct(m,a)}%)`);
+  });
+
+  const last = pl.sessions[0];
+  if(last){
+    const s = sessionSummary(last);
+    lines.push(`Ultima: ${formatDateIT(last.date)} — ${s.made}/${s.att} (${s.pct}%)`);
+  }
+
+  const text = lines.join("\n");
+
+  if(navigator.share){
+    navigator.share({ text }).catch(()=> copyToClipboard(text));
+  }else{
+    copyToClipboard(text);
+  }
+}
+
+function copyToClipboard(text){
+  navigator.clipboard?.writeText(text)
+    .then(()=> alert("Copiato negli appunti ✅"))
+    .catch(()=> {
+      prompt("Copia manualmente:", text);
+    });
+}
+
+/* =========================
+   HELPERS
+========================= */
+function positionsMini(s){
+  return POSITIONS.map(p=>{
+    const m = s.made?.[p.key] ?? 0;
+    return `${p.label}:${m}/10`;
+  }).join(" • ");
+}
+function formatDateIT(iso){
+  // iso YYYY-MM-DD
+  const [y,m,d] = iso.split("-").map(Number);
+  const dt = new Date(y, m-1, d);
+  return dt.toLocaleDateString("it-IT", { weekday:"short", day:"2-digit", month:"2-digit", year:"numeric" });
+}
+function formatDateShortIT(iso){
+  const [y,m,d] = iso.split("-").map(Number);
+  const dt = new Date(y, m-1, d);
+  return dt.toLocaleDateString("it-IT", { day:"2-digit", month:"2-digit" });
+}
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, (c)=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[c]));
+}
+
+/* =========================
+   PWA: Service Worker
+========================= */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
 </script>
 </body>
 </html>
