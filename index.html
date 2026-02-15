@@ -2,357 +2,281 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>Virtus Shot Tracker</title>
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#062714" />
 
-  <!-- Chart.js -->
+  <!-- Chart.js (CDN stabile) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
     :root{
-      --bg1:#031a0d;
-      --bg2:#062714;
+      --bg1:#04180d;
+      --bg2:#0a2c18;
       --card: rgba(0,0,0,.35);
-      --card2: rgba(0,0,0,.25);
-      --text:#e9fff2;
-      --muted: rgba(233,255,242,.78);
-      --line: rgba(255,255,255,.10);
+      --card2: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.65);
       --accent:#1e8239;
-      --accent2:#0f5b27;
-      --danger:#7a2a2a;
-      --btn:#0f5b27;
-      --btn2:#1e8239;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --accent2:#0f5f27;
+      --danger:#8a2f2f;
+      --shadow: 0 18px 40px rgba(0,0,0,.35);
       --radius: 18px;
+      --btnRadius: 16px;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{box-sizing:border-box;}
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
+      color:var(--text);
       background:
-        radial-gradient(1200px 800px at 30% -10%, rgba(30,130,57,.35), transparent 55%),
-        radial-gradient(900px 700px at 85% 20%, rgba(30,130,57,.22), transparent 55%),
-        linear-gradient(180deg, var(--bg2), var(--bg1));
-      padding: 18px 14px 28px;
+        radial-gradient(1200px 800px at 20% 10%, rgba(30,130,57,.35), transparent 55%),
+        radial-gradient(900px 700px at 90% 30%, rgba(30,130,57,.20), transparent 55%),
+        linear-gradient(160deg, var(--bg2), var(--bg1));
+      min-height:100vh;
     }
-    .app{
-      max-width: 680px;
-      margin: 0 auto;
-    }
-    header{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:12px;
-      margin: 6px 2px 14px;
+    .wrap{max-width:980px;margin:0 auto;padding:20px 14px 70px;}
+    .hero{
+      padding:18px 18px 8px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(30,130,57,.18), rgba(0,0,0,.0));
     }
     h1{
-      font-size: 34px;
-      line-height: 1.05;
-      margin:0;
-      letter-spacing:.3px;
-      text-shadow: 0 8px 22px rgba(0,0,0,.35);
+      margin:0 0 8px 0;
+      font-weight:800;
+      letter-spacing:.2px;
+      font-size: clamp(34px, 6vw, 52px);
+      line-height:1.05;
     }
-    .sub{
-      margin: 6px 0 0;
-      font-size: 14px;
-      color: var(--muted);
+    .subrow{
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+      color:var(--muted);
+      font-size:14px;
     }
     .pill{
-      padding: 8px 10px;
-      border:1px solid var(--line);
+      margin-left:auto;
+      padding:8px 12px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
       border-radius: 999px;
-      background: rgba(0,0,0,.22);
-      color: var(--muted);
-      font-size: 12px;
-      white-space: nowrap;
+      color: var(--text);
+      font-weight:600;
     }
-
     .card{
+      margin-top:16px;
       background: var(--card);
-      border: 1px solid var(--line);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 14px;
-      margin: 12px 0;
+      padding:16px;
     }
-    .card h2{
-      margin: 2px 0 10px;
-      font-size: 26px;
-      letter-spacing:.2px;
+    .cardTitle{
+      font-size:28px;
+      font-weight:800;
+      margin:0 0 12px 0;
     }
-    .row{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items:center;
-    }
-    .row > *{flex:1}
-    label{
-      display:block;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
+    .row{display:flex;gap:12px;flex-wrap:wrap;}
+    .col{flex:1;min-width:250px;}
+    label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px;}
     input[type="text"], input[type="date"], textarea, select{
       width:100%;
-      border-radius: 14px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.22);
+      padding:14px 14px;
+      border-radius: 16px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.25);
       color: var(--text);
-      padding: 12px 12px;
-      font-size: 16px;
-      outline: none;
+      outline:none;
+      font-size:16px;
     }
-    textarea{min-height: 46px; resize: vertical}
+    textarea{min-height:54px;resize:vertical;}
+    .btnRow{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;}
+    button{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      padding:14px 14px;
+      border-radius: var(--btnRadius);
+      font-weight:800;
+      font-size:16px;
+      cursor:pointer;
+    }
+    button.primary{
+      background: linear-gradient(180deg, rgba(30,130,57,.95), rgba(15,95,39,.95));
+      border-color: rgba(30,130,57,.55);
+    }
+    button.danger{
+      background: rgba(138,47,47,.42);
+      border-color: rgba(138,47,47,.45);
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
 
     .tabs{
-      display:flex;
-      gap:8px;
-      overflow:auto;
-      padding: 6px 2px 4px;
-      -webkit-overflow-scrolling: touch;
+      display:flex;gap:10px;flex-wrap:wrap;
+      margin-top:6px;
     }
     .tab{
-      flex: 0 0 auto;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.22);
-      color: var(--muted);
-      font-weight: 650;
-      font-size: 13px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      font-weight:800;
       cursor:pointer;
       user-select:none;
     }
     .tab.active{
-      background: rgba(30,130,57,.25);
+      background: rgba(30,130,57,.35);
       border-color: rgba(30,130,57,.55);
-      color: var(--text);
     }
 
-    .btn{
-      border: 1px solid rgba(255,255,255,.14);
-      background: linear-gradient(180deg, rgba(15,91,39,.95), rgba(8,50,22,.95));
-      color: var(--text);
-      padding: 12px 14px;
-      border-radius: 14px;
-      font-weight: 750;
-      letter-spacing:.2px;
-      cursor:pointer;
-      box-shadow: 0 8px 18px rgba(0,0,0,.25);
-      user-select:none;
-    }
-    .btn:active{transform: translateY(1px)}
-    .btn.secondary{
-      background: rgba(0,0,0,.22);
-      border-color: var(--line);
-      color: var(--text);
-      box-shadow:none;
-    }
-    .btn.danger{
-      background: linear-gradient(180deg, rgba(122,42,42,.95), rgba(60,18,18,.95));
-      border-color: rgba(255,255,255,.14);
-    }
-
-    .shotCard{
-      background: var(--card2);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 12px;
-      margin: 10px 0;
-    }
-    .shotTop{
+    .shotGrid{
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      margin-bottom: 10px;
+      flex-direction:column;
+      gap:12px;
+      margin-top:10px;
     }
-    .shotTitle{
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing:.2px;
+    .shotRow{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:12px;
+      align-items:center;
+      padding:14px;
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    .shotName{
+      font-size:22px;
+      font-weight:900;
+      margin:0;
+      line-height:1.1;
     }
     .shotMeta{
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
+      margin-top:3px;
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
     }
-
-    .stepper{
+    .counter{
       display:flex;
       align-items:center;
-      gap: 10px;
-      justify-content:flex-end;
-      min-width: 160px;
-    }
-    .stepBtn{
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.28);
-      color: var(--text);
-      font-size: 20px;
-      font-weight: 900;
-      cursor:pointer;
-      user-select:none;
-    }
-    .stepBtn:active{transform: translateY(1px)}
-    .val{
-      width: 54px;
-      text-align:center;
-      font-size: 20px;
-      font-weight: 900;
-      padding: 6px 0;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
-    }
-
-    .sliderRow{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .lockBtn{
-      flex: 0 0 auto;
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
-      font-size: 18px;
-      font-weight: 900;
-      cursor:pointer;
-      user-select:none;
-    }
-    .rangeWrap{flex:1}
-    input[type="range"]{
-      width:100%;
-      height: 22px;
-      margin: 0;
-      accent-color: var(--accent);
-      touch-action: pan-y;
-    }
-    input[type="range"][disabled]{
-      opacity:.55;
-    }
-
-    .timerBox{
-      display:flex;
       gap:10px;
-      flex-wrap: wrap;
-      align-items:center;
-      justify-content: space-between;
+    }
+    .counter button{
+      width:50px;height:50px;
+      padding:0;
+      border-radius: 16px;
+      font-size:22px;
+      font-weight:900;
+      background: rgba(0,0,0,.25);
+    }
+    .counter .val{
+      width:62px;
+      text-align:center;
+      padding:10px 10px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.28);
+      font-size:20px;
+      font-weight:900;
+    }
+    .hint{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:10px;
+      line-height:1.35;
+    }
+
+    /* Timer area */
+    .timerBox{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:12px;flex-wrap:wrap;
+      padding:14px;
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.07);
+      margin-top:12px;
+    }
+    .timerLeft{
+      display:flex;flex-direction:column;gap:4px;
     }
     .timerBig{
-      font-size: 44px;
-      font-weight: 950;
-      letter-spacing: .5px;
+      font-size:34px;
+      font-weight:950;
+      letter-spacing:.6px;
     }
-    .timerSmall{
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .timerBtns{
-      display:flex;
-      gap:10px;
-      flex-wrap: wrap;
-      align-items:center;
-      justify-content:flex-end;
+    .timerSmall{color:var(--muted);font-weight:800;}
+    .timerBtns{display:flex;gap:10px;flex-wrap:wrap;}
+    .timerBtns button{min-width:140px;}
+    .mini{
+      font-size:13px;color:var(--muted);font-weight:800;margin-top:8px;
     }
 
-    .chartBox{
-      background: rgba(255,255,255,.95);
-      border-radius: 16px;
-      border: 1px solid rgba(0,0,0,.08);
-      padding: 10px;
+    /* Stats */
+    .chartWrap{
+      position:relative;
+      padding:10px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
       overflow:hidden;
     }
-
-    .hint{
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    .hr{
-      height:1px;
-      background: var(--line);
-      margin: 12px 0;
-    }
-
-    .fileRow{
+    .watermark{
+      position:absolute;
+      inset:0;
       display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
       align-items:center;
+      justify-content:center;
+      pointer-events:none;
+      opacity:.12;
+      filter: saturate(1.1) contrast(1.1);
     }
-    .fileRow input[type="file"]{
-      width:100%;
-      border-radius: 14px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.22);
-      color: var(--muted);
-      padding: 10px;
+    .watermark img{
+      max-width: 72%;
+      max-height: 72%;
+      transform: rotate(-10deg);
     }
+    canvas{width:100% !important;height:320px !important; background: transparent;}
 
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.78);
-      border: 1px solid rgba(255,255,255,.14);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 13px;
-      box-shadow: 0 10px 22px rgba(0,0,0,.35);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s ease;
-      max-width: 92vw;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
+    .footerSpace{height:18px;}
+
+    /* Mobile polish */
+    @media (max-width:520px){
+      .counter .val{width:58px;}
+      .timerBtns button{min-width:120px;}
     }
-    .toast.show{opacity:1}
   </style>
 </head>
 
 <body>
-  <div class="app">
-    <header>
-      <div>
-        <h1>Virtus Shot Tracker</h1>
-        <div class="sub">Sessione = <b>10 tiri</b> per posizione • Statistiche <b>0–100%</b></div>
+  <div class="wrap">
+    <div class="hero">
+      <h1>Virtus Shot<br/>Tracker</h1>
+      <div class="subrow">
+        <div>Sessione = <b>10 tiri</b> per posizione • Statistiche 0–100%</div>
+        <div class="pill" id="statusPill">Pronto</div>
       </div>
-      <div class="pill" id="appStatus">Pronto</div>
-    </header>
+    </div>
 
+    <!-- PLAYER / SETTINGS -->
     <div class="card">
+      <div class="cardTitle">Giocatori</div>
+
       <div class="tabs" id="playerTabs"></div>
 
-      <div class="row" style="margin-top:10px">
-        <div style="flex: 2 1 240px">
-          <label>Nome giocatore (tab selezionato)</label>
-          <input id="playerName" type="text" placeholder="Es. Marco" />
-        </div>
-        <div style="flex: 1 1 160px; min-width: 160px">
+      <label>Nome giocatore (tab selezionato)</label>
+      <input id="playerName" type="text" placeholder="Es. Marco" />
+
+      <div class="row">
+        <div class="col">
           <label>Timer gara</label>
           <select id="timerPreset">
             <option value="45">45 sec</option>
@@ -360,24 +284,18 @@
             <option value="35">35 sec</option>
           </select>
         </div>
-      </div>
 
-      <div class="row" style="margin-top:10px">
-        <button class="btn" id="saveNameBtn">Salva nome</button>
-        <button class="btn secondary" id="resetPlayerBtn">Reset giocatore</button>
-      </div>
-
-      <div class="hr"></div>
-
-      <div class="fileRow">
-        <div style="flex: 1 1 260px">
+        <div class="col">
           <label>Import JSON (auto sul giocatore giusto)</label>
           <input id="importFile" type="file" accept="application/json" />
         </div>
-        <div class="row" style="flex:1 1 260px; margin-top: 22px">
-          <button class="btn secondary" id="exportBtn">Esporta JSON</button>
-          <button class="btn secondary" id="shareBtn">Condividi su WhatsApp</button>
-        </div>
+      </div>
+
+      <div class="btnRow">
+        <button class="primary" id="saveNameBtn">Salva nome</button>
+        <button class="danger" id="resetPlayerBtn">Reset giocatore</button>
+        <button id="exportBtn">Esporta JSON</button>
+        <button id="shareBtn" class="primary">Condividi su WhatsApp</button>
       </div>
 
       <div class="hint">
@@ -385,672 +303,689 @@
       </div>
     </div>
 
+    <!-- GARA -->
     <div class="card">
-      <h2>Modalità gara</h2>
+      <div class="cardTitle">Modalità gara</div>
+
       <div class="timerBox">
-        <div>
-          <div class="timerBig" id="timerText">45</div>
-          <div class="timerSmall">secondi • beep + vibrazione a fine tempo</div>
+        <div class="timerLeft">
+          <div class="timerSmall">Tempo per ogni posizione</div>
+          <div class="timerBig" id="timerDisplay">00:45</div>
+          <div class="timerSmall" id="timerNote">Seleziona 45/40/35 e premi Start.</div>
         </div>
         <div class="timerBtns">
-          <button class="btn" id="timerStartBtn">Start</button>
-          <button class="btn secondary" id="timerResetBtn">Reset</button>
+          <button class="primary" id="startTimerBtn">Start</button>
+          <button id="stopTimerBtn">Stop</button>
+          <button id="resetTimerBtn">Reset</button>
         </div>
+      </div>
+      <div class="mini">
+        A fine tempo: <b>beep + vibrazione</b> (se il telefono lo permette). La gara è “solo timer”.
       </div>
     </div>
 
+    <!-- SESSION -->
     <div class="card">
-      <h2>Nuova sessione</h2>
+      <div class="cardTitle">Nuova sessione</div>
 
       <div class="row">
-        <div style="flex: 1 1 220px">
+        <div class="col">
           <label>Data</label>
           <input id="sessionDate" type="date" />
         </div>
-        <div style="flex: 2 1 320px">
+        <div class="col">
           <label>Note (opzionale)</label>
-          <input id="sessionNote" type="text" placeholder="Es. dopo allenamento / gara..." />
+          <textarea id="sessionNote" placeholder="Es. dopo allenamento / gara..."></textarea>
         </div>
       </div>
 
-      <div class="hint" style="margin-top:8px">
-        Inserisci i canestri segnati (0–10). Slider bloccato: sblocca con 🔒 per evitare cambi involontari durante lo scroll.
+      <div class="hint">
+        Inserisci i canestri segnati (0–10) con +/-.
       </div>
 
-      <div id="shotsArea"></div>
+      <div class="shotGrid" id="shotGrid"></div>
 
-      <div class="row" style="margin-top: 12px">
-        <button class="btn secondary" id="clearInputsBtn">Azzera inserimento</button>
-        <button class="btn" id="saveSessionBtn">Salva sessione</button>
+      <div class="btnRow" style="margin-top:14px;">
+        <button id="clearEntryBtn">Azzera inserimento</button>
+        <button class="primary" id="saveSessionBtn">Salva sessione</button>
       </div>
 
       <div class="hint">
-        Dopo “Salva sessione” puoi condividere su WhatsApp con il pulsante “Condividi su WhatsApp”.
+        Dopo “Salva sessione” puoi condividere su WhatsApp dal tasto “Condividi su WhatsApp”.
       </div>
     </div>
 
+    <!-- STATS -->
     <div class="card">
-      <h2>Statistiche</h2>
-      <div class="hint">Grafico sempre da <b>0%</b> a <b>100%</b>.</div>
+      <div class="cardTitle">Statistiche</div>
+      <div class="hint">Grafico sempre da <b>0% a 100%</b>.</div>
 
-      <div class="chartBox" style="margin-top:10px">
-        <canvas id="statsChart" height="220"></canvas>
+      <div class="chartWrap">
+        <div class="watermark">
+          <!-- usa PNG/SVG che hai già nel repo: preferisco icon-512.png -->
+          <img id="wmImg" src="icon-512.png" alt="Virtus watermark" />
+        </div>
+        <canvas id="shotChart"></canvas>
       </div>
 
-      <div class="hr"></div>
-
-      <div class="row">
-        <div class="pill" id="bestPill">Best session: —</div>
-        <div class="pill" id="countPill">Sessioni: —</div>
-      </div>
+      <div class="footerSpace"></div>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+<script>
+/* =========================
+   CONFIG
+========================= */
+const APP_KEY = "virtusShotTracker_v8";
+const POSITIONS = [
+  { key:"fondo_sx", label:"Fondo sx", idx:1 },
+  { key:"45_sx",    label:"45° sx",  idx:2 },
+  { key:"front",    label:"Frontale",idx:3 },
+  { key:"45_dx",    label:"45° dx",  idx:4 },
+  { key:"fondo_dx", label:"Fondo dx",idx:5 },
+];
+const SHOTS_PER_POSITION = 10;
+const PLAYER_SLOTS = 12;
 
-  <script>
-    // ------------------------------
-    // Config
-    // ------------------------------
-    const MAX_PLAYERS = 12; // 12 giocatori
-    const POSITIONS = [
-      { key: "fondo_sx", label: "Fondo sx", max: 10 },
-      { key: "45_sx",    label: "45° sx",  max: 10 },
-      { key: "frontale", label: "Frontale",max: 10 },
-      { key: "45_dx",    label: "45° dx",  max: 10 },
-      { key: "fondo_dx", label: "Fondo dx",max: 10 },
-    ];
+/* =========================
+   STATE
+========================= */
+let state = loadState();
+let chart = null;
 
-    const LS_KEY = "virtus_shot_tracker_v7";
-    const DEFAULT_TIMER = 45;
+// timer
+let tRunning = false;
+let tEndAt = 0;
+let tTick = null;
+let lastBeepAt = 0;
 
-    // ------------------------------
-    // State
-    // ------------------------------
-    let state = loadState();
-    let activePlayer = state.activePlayer ?? 0;
+/* =========================
+   INIT
+========================= */
+initTabs();
+initForm();
+initShotInputs();
+initChart();
+renderAll();
 
-    // Timer
-    let timerLeft = DEFAULT_TIMER;
-    let timerId = null;
-
-    // Chart
-    let chart = null;
-
-    // ------------------------------
-    // Utils
-    // ------------------------------
-    function toast(msg){
-      const el = document.getElementById("toast");
-      el.textContent = msg;
-      el.classList.add("show");
-      setTimeout(()=> el.classList.remove("show"), 1800);
-    }
-
-    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
-
-    function todayISO(){
-      const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth()+1).padStart(2,"0");
-      const dd = String(d.getDate()).padStart(2,"0");
-      return `${yyyy}-${mm}-${dd}`;
-    }
-
-    function ensurePlayers(s){
-      if(!s.players) s.players = [];
-      for(let i=0;i<MAX_PLAYERS;i++){
-        if(!s.players[i]){
-          s.players[i] = {
-            name: `Giocatore ${i+1}`,
-            sessions: [],
-            photoDataUrl: null
-          };
-        }else{
-          s.players[i].sessions = s.players[i].sessions || [];
-          if(typeof s.players[i].name !== "string" || !s.players[i].name.trim()){
-            s.players[i].name = `Giocatore ${i+1}`;
-          }
-        }
+/* =========================
+   STORAGE
+========================= */
+function defaultState(){
+  const players = {};
+  for(let i=1;i<=PLAYER_SLOTS;i++){
+    players["p"+i] = {
+      id:"p"+i,
+      name:"Giocatore " + i,
+      photo:null,
+      sessions:[],
+      // current entry (draft)
+      draft:{
+        date: todayISO(),
+        note:"",
+        values: Object.fromEntries(POSITIONS.map(p => [p.key, 0]))
       }
-      if(s.players.length > MAX_PLAYERS) s.players = s.players.slice(0, MAX_PLAYERS);
-      return s;
+    };
+  }
+  return {
+    version: 8,
+    selectedPlayerId: "p1",
+    timerPreset: 45,
+    players
+  };
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(APP_KEY);
+    if(!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+
+    // upgrade safety
+    if(!parsed.players){
+      return defaultState();
     }
 
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(LS_KEY);
-        const parsed = raw ? JSON.parse(raw) : {};
-        const s = ensurePlayers(parsed);
-        if(typeof s.activePlayer !== "number") s.activePlayer = 0;
-        if(typeof s.timerPreset !== "number") s.timerPreset = DEFAULT_TIMER;
-        return s;
-      }catch(e){
-        const s = ensurePlayers({ activePlayer: 0, timerPreset: DEFAULT_TIMER });
-        return s;
+    // ensure slots exist
+    for(let i=1;i<=PLAYER_SLOTS;i++){
+      const id="p"+i;
+      if(!parsed.players[id]){
+        parsed.players[id] = defaultState().players[id];
       }
     }
-
-    function saveState(){
-      state.activePlayer = activePlayer;
-      localStorage.setItem(LS_KEY, JSON.stringify(state));
+    if(!parsed.selectedPlayerId || !parsed.players[parsed.selectedPlayerId]){
+      parsed.selectedPlayerId="p1";
     }
+    if(!parsed.timerPreset) parsed.timerPreset = 45;
 
-    function getPlayer(i){ return state.players[i]; }
-
-    // ------------------------------
-    // UI init
-    // ------------------------------
-    const tabsEl = document.getElementById("playerTabs");
-    const playerNameEl = document.getElementById("playerName");
-    const timerPresetEl = document.getElementById("timerPreset");
-    const sessionDateEl = document.getElementById("sessionDate");
-    const sessionNoteEl = document.getElementById("sessionNote");
-    const shotsAreaEl = document.getElementById("shotsArea");
-    const timerTextEl = document.getElementById("timerText");
-    const appStatusEl = document.getElementById("appStatus");
-    const bestPillEl = document.getElementById("bestPill");
-    const countPillEl = document.getElementById("countPill");
-    const importFileEl = document.getElementById("importFile");
-
-    sessionDateEl.value = todayISO();
-
-    // Build tabs
-    function renderTabs(){
-      tabsEl.innerHTML = "";
-      for(let i=0;i<MAX_PLAYERS;i++){
-        const p = getPlayer(i);
-        const btn = document.createElement("button");
-        btn.className = "tab" + (i===activePlayer ? " active" : "");
-        btn.textContent = p.name || `Giocatore ${i+1}`;
-        btn.addEventListener("click", ()=>{
-          activePlayer = i;
-          saveState();
-          renderAll();
-          toast(`Selezionato: ${getPlayer(activePlayer).name}`);
-        });
-        tabsEl.appendChild(btn);
+    // ensure drafts
+    for(const id of Object.keys(parsed.players)){
+      const pl = parsed.players[id];
+      if(!pl.draft){
+        pl.draft = { date: todayISO(), note:"", values: Object.fromEntries(POSITIONS.map(p => [p.key, 0])) };
       }
-    }
-
-    // Shots UI (slider bloccato + stepper)
-    function buildShotsUI(){
-      shotsAreaEl.innerHTML = "";
-
-      POSITIONS.forEach((pos, idx)=>{
-        const wrap = document.createElement("div");
-        wrap.className = "shotCard";
-
-        const top = document.createElement("div");
-        top.className = "shotTop";
-
-        const left = document.createElement("div");
-        const title = document.createElement("div");
-        title.className = "shotTitle";
-        title.textContent = `${pos.label} (su 10)`;
-        const meta = document.createElement("div");
-        meta.className = "shotMeta";
-        meta.textContent = `Posizione ${idx+1}/5 • 0–10`;
-        left.appendChild(title);
-        left.appendChild(meta);
-
-        const step = document.createElement("div");
-        step.className = "stepper";
-
-        const minus = document.createElement("button");
-        minus.className = "stepBtn";
-        minus.textContent = "−";
-
-        const val = document.createElement("div");
-        val.className = "val";
-        val.textContent = "0";
-
-        const plus = document.createElement("button");
-        plus.className = "stepBtn";
-        plus.textContent = "+";
-
-        step.appendChild(minus);
-        step.appendChild(val);
-        step.appendChild(plus);
-
-        top.appendChild(left);
-        top.appendChild(step);
-
-        const sliderRow = document.createElement("div");
-        sliderRow.className = "sliderRow";
-
-        const lockBtn = document.createElement("button");
-        lockBtn.className = "lockBtn";
-        lockBtn.textContent = "🔒";
-
-        const rangeWrap = document.createElement("div");
-        rangeWrap.className = "rangeWrap";
-
-        const range = document.createElement("input");
-        range.type = "range";
-        range.min = "0";
-        range.max = String(pos.max);
-        range.step = "1";
-        range.value = "0";
-        range.disabled = true; // bloccato di default
-
-        // touch-action: pan-y già via CSS, ma disabilitato evita cambi involontari
-        // e lo sblocco è esplicito.
-        lockBtn.addEventListener("click", ()=>{
-          const locked = range.disabled;
-          range.disabled = !locked;
-          lockBtn.textContent = range.disabled ? "🔒" : "🔓";
-          if(!range.disabled) toast("Slider sbloccato");
-        });
-
-        function setValue(n){
-          const v = clamp(parseInt(n,10) || 0, 0, pos.max);
-          range.value = String(v);
-          val.textContent = String(v);
-        }
-
-        minus.addEventListener("click", ()=> setValue(parseInt(range.value,10) - 1));
-        plus.addEventListener("click", ()=> setValue(parseInt(range.value,10) + 1));
-        range.addEventListener("input", ()=> setValue(range.value));
-
-        rangeWrap.appendChild(range);
-        sliderRow.appendChild(lockBtn);
-        sliderRow.appendChild(rangeWrap);
-
-        wrap.appendChild(top);
-        wrap.appendChild(sliderRow);
-
-        // store refs on element for later read
-        wrap.dataset.key = pos.key;
-        wrap._get = ()=> parseInt(range.value,10) || 0;
-        wrap._set = (v)=> setValue(v);
-
-        shotsAreaEl.appendChild(wrap);
-      });
-    }
-
-    function getCurrentInputs(){
-      const out = {};
-      [...shotsAreaEl.children].forEach(card=>{
-        out[card.dataset.key] = card._get();
-      });
-      return out;
-    }
-
-    function setInputs(values){
-      [...shotsAreaEl.children].forEach(card=>{
-        const k = card.dataset.key;
-        card._set(values?.[k] ?? 0);
-      });
-    }
-
-    function clearInputs(){
-      setInputs({});
-      sessionNoteEl.value = "";
-      sessionDateEl.value = todayISO();
-    }
-
-    // ------------------------------
-    // Stats
-    // ------------------------------
-    function calcSessionPercent(s){
-      // 5 posizioni * 10 tiri = 50 tot
-      const maxTot = POSITIONS.length * 10;
-      const made =
-        (s.shots?.fondo_sx ?? 0) +
-        (s.shots?.["45_sx"] ?? 0) +
-        (s.shots?.frontale ?? 0) +
-        (s.shots?.["45_dx"] ?? 0) +
-        (s.shots?.fondo_dx ?? 0);
-
-      return Math.round((made / maxTot) * 100);
-    }
-
-    function buildChart(){
-      const ctx = document.getElementById("statsChart");
-      const p = getPlayer(activePlayer);
-
-      // last N sessions, label by date
-      const sessions = p.sessions || [];
-      const labels = sessions.map((s, i)=> (s.date || `S${i+1}`).slice(5));
-      const data = sessions.map(calcSessionPercent);
-
-      if(chart) chart.destroy();
-
-      chart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels,
-          datasets: [{
-            label: "Percentuale",
-            data,
-            tension: 0.25,
-            pointRadius: 3,
-            borderWidth: 3,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: true },
-            tooltip: { enabled: true }
-          },
-          scales: {
-            y: {
-              min: 0,
-              max: 100,
-              ticks: {
-                callback: (v)=> `${v}%`
-              }
-            }
-          }
-        }
-      });
-
-      // pills
-      const count = sessions.length;
-      countPillEl.textContent = `Sessioni: ${count}`;
-
-      if(count){
-        let best = -1;
-        let bestIdx = -1;
-        sessions.forEach((s, i)=>{
-          const pct = calcSessionPercent(s);
-          if(pct > best){ best = pct; bestIdx = i; }
-        });
-        const bestS = sessions[bestIdx];
-        bestPillEl.textContent = `Best session: ${best}% (${(bestS.date||"").split("-").reverse().join("/")})`;
-      }else{
-        bestPillEl.textContent = "Best session: —";
+      if(!pl.draft.values){
+        pl.draft.values = Object.fromEntries(POSITIONS.map(p => [p.key, 0]));
       }
-    }
-
-    // ------------------------------
-    // WhatsApp share
-    // ------------------------------
-    function buildShareText(){
-      const p = getPlayer(activePlayer);
-      const sessions = p.sessions || [];
-      const last = sessions[sessions.length - 1];
-
-      if(!last){
-        return `Virtus Shot Tracker\n${p.name}\nNessuna sessione salvata ancora.`;
+      for(const p of POSITIONS){
+        if(typeof pl.draft.values[p.key] !== "number") pl.draft.values[p.key]=0;
       }
-
-      const s = last;
-      const pct = calcSessionPercent(s);
-
-      return [
-        `🏀 Virtus Shot Tracker`,
-        `👤 ${p.name}`,
-        `📅 ${s.date?.split("-").reverse().join("/") || ""}`,
-        s.note ? `📝 ${s.note}` : null,
-        ``,
-        `Fondo sx: ${s.shots.fondo_sx}/10`,
-        `45° sx: ${s.shots["45_sx"]}/10`,
-        `Frontale: ${s.shots.frontale}/10`,
-        `45° dx: ${s.shots["45_dx"]}/10`,
-        `Fondo dx: ${s.shots.fondo_dx}/10`,
-        ``,
-        `✅ Totale: ${pct}% (su 50 tiri)`
-      ].filter(Boolean).join("\n");
+      if(!Array.isArray(pl.sessions)) pl.sessions=[];
+      if(typeof pl.name !== "string") pl.name = pl.name ? String(pl.name) : id;
     }
+    return parsed;
+  }catch(e){
+    return defaultState();
+  }
+}
+function saveState(){
+  localStorage.setItem(APP_KEY, JSON.stringify(state));
+}
+function currentPlayer(){
+  return state.players[state.selectedPlayerId];
+}
 
-    function shareWhatsApp(){
-      const text = buildShareText();
-      const url = "https://wa.me/?text=" + encodeURIComponent(text);
-      window.open(url, "_blank");
-    }
-
-    // ------------------------------
-    // Export / Import JSON
-    // ------------------------------
-    function exportJSON(){
-      const payload = {
-        version: "v7",
-        exportedAt: new Date().toISOString(),
-        players: state.players.map(p=>({
-          name: p.name,
-          sessions: p.sessions || []
-        }))
-      };
-
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "virtus-shot-tracker.json";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      toast("Export JSON creato");
-    }
-
-    function normalizeName(n){
-      return (n || "").trim().toLowerCase();
-    }
-
-    function importJSONFile(file){
-      const reader = new FileReader();
-      reader.onload = ()=>{
-        try{
-          const obj = JSON.parse(reader.result);
-
-          // Support: file singolo giocatore o multi
-          let incomingPlayers = [];
-          if(Array.isArray(obj.players)) incomingPlayers = obj.players;
-          else if(obj.player) incomingPlayers = [obj.player];
-          else if(obj.name && obj.sessions) incomingPlayers = [{ name: obj.name, sessions: obj.sessions }];
-          else throw new Error("Formato JSON non valido");
-
-          incomingPlayers.forEach(ip=>{
-            const inName = ip.name || "";
-            const inSessions = Array.isArray(ip.sessions) ? ip.sessions : [];
-
-            // trova match per nome (case-insensitive) altrimenti usa tab attivo
-            const idxByName = state.players.findIndex(p=> normalizeName(p.name) === normalizeName(inName));
-            const targetIdx = idxByName >= 0 ? idxByName : activePlayer;
-
-            state.players[targetIdx].name = inName || state.players[targetIdx].name;
-            // merge sessions (append)
-            state.players[targetIdx].sessions = (state.players[targetIdx].sessions || []).concat(inSessions);
-
-            // dedupe (date+shots)
-            const seen = new Set();
-            state.players[targetIdx].sessions = state.players[targetIdx].sessions.filter(s=>{
-              const key = JSON.stringify({ d:s.date, sh:s.shots, n:s.note||"" });
-              if(seen.has(key)) return false;
-              seen.add(key);
-              return true;
-            });
-          });
-
-          saveState();
-          renderAll();
-          toast("Import completato");
-        }catch(e){
-          toast("Import fallito (JSON)");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    // ------------------------------
-    // Timer (gara)
-    // ------------------------------
-    function beepAndVibrate(){
-      // Beep: WebAudio
-      try{
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        const ctx = new AudioCtx();
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = "square";
-        o.frequency.value = 880;
-        g.gain.value = 0.08;
-        o.connect(g);
-        g.connect(ctx.destination);
-        o.start();
-        setTimeout(()=>{ o.stop(); ctx.close(); }, 220);
-      }catch(e){}
-
-      // Vibrazione
-      try{
-        if(navigator.vibrate) navigator.vibrate([180, 80, 220, 80, 260]);
-      }catch(e){}
-    }
-
-    function setTimerPreset(sec){
-      const s = clamp(parseInt(sec,10) || DEFAULT_TIMER, 5, 120);
-      state.timerPreset = s;
-      timerLeft = s;
-      timerTextEl.textContent = String(timerLeft);
+/* =========================
+   UI INIT
+========================= */
+function initTabs(){
+  const tabs = document.getElementById("playerTabs");
+  tabs.innerHTML = "";
+  for(let i=1;i<=PLAYER_SLOTS;i++){
+    const id="p"+i;
+    const b=document.createElement("div");
+    b.className="tab";
+    b.textContent="Giocatore " + i;
+    b.dataset.pid=id;
+    b.addEventListener("click", () => {
+      state.selectedPlayerId=id;
       saveState();
-    }
-
-    function timerStart(){
-      if(timerId) return;
-
-      appStatusEl.textContent = "Timer ON";
-      timerId = setInterval(()=>{
-        timerLeft -= 1;
-        timerTextEl.textContent = String(timerLeft);
-        if(timerLeft <= 0){
-          clearInterval(timerId);
-          timerId = null;
-          appStatusEl.textContent = "Pronto";
-          timerLeft = state.timerPreset || DEFAULT_TIMER;
-          timerTextEl.textContent = String(timerLeft);
-          beepAndVibrate();
-        }
-      }, 1000);
-    }
-
-    function timerReset(){
-      if(timerId){
-        clearInterval(timerId);
-        timerId = null;
-      }
-      timerLeft = state.timerPreset || DEFAULT_TIMER;
-      timerTextEl.textContent = String(timerLeft);
-      appStatusEl.textContent = "Pronto";
-    }
-
-    // ------------------------------
-    // Save session
-    // ------------------------------
-    function saveSession(){
-      const p = getPlayer(activePlayer);
-      const shots = getCurrentInputs();
-
-      const session = {
-        date: sessionDateEl.value || todayISO(),
-        note: (sessionNoteEl.value || "").trim(),
-        shots: {
-          fondo_sx: clamp(shots.fondo_sx ?? 0, 0, 10),
-          "45_sx": clamp(shots["45_sx"] ?? 0, 0, 10),
-          frontale: clamp(shots.frontale ?? 0, 0, 10),
-          "45_dx": clamp(shots["45_dx"] ?? 0, 0, 10),
-          fondo_dx: clamp(shots.fondo_dx ?? 0, 0, 10),
-        }
-      };
-
-      p.sessions = p.sessions || [];
-      p.sessions.push(session);
-
-      saveState();
-      buildChart();
-      toast("Sessione salvata");
-
-      // Apri WhatsApp in automatico (come richiesto)
-      setTimeout(()=> shareWhatsApp(), 250);
-    }
-
-    function resetPlayer(){
-      const p = getPlayer(activePlayer);
-      p.sessions = [];
-      saveState();
-      buildChart();
-      toast("Giocatore resettato");
-    }
-
-    // ------------------------------
-    // Render
-    // ------------------------------
-    function renderAll(){
-      renderTabs();
-
-      const p = getPlayer(activePlayer);
-      playerNameEl.value = p.name || `Giocatore ${activePlayer+1}`;
-
-      timerPresetEl.value = String(state.timerPreset || DEFAULT_TIMER);
-      setTimerPreset(timerPresetEl.value);
-
-      buildChart();
-    }
-
-    // ------------------------------
-    // Events
-    // ------------------------------
-    document.getElementById("saveNameBtn").addEventListener("click", ()=>{
-      const name = (playerNameEl.value || "").trim() || `Giocatore ${activePlayer+1}`;
-      getPlayer(activePlayer).name = name;
-      saveState();
-      renderTabs();
-      toast("Nome salvato");
+      renderAll();
     });
+    tabs.appendChild(b);
+  }
+}
 
-    document.getElementById("resetPlayerBtn").addEventListener("click", ()=>{
-      resetPlayer();
-    });
-
-    document.getElementById("clearInputsBtn").addEventListener("click", ()=>{
-      clearInputs();
-      toast("Inserimento azzerato");
-    });
-
-    document.getElementById("saveSessionBtn").addEventListener("click", ()=>{
-      saveSession();
-    });
-
-    document.getElementById("shareBtn").addEventListener("click", ()=>{
-      shareWhatsApp();
-    });
-
-    document.getElementById("exportBtn").addEventListener("click", ()=>{
-      exportJSON();
-    });
-
-    importFileEl.addEventListener("change", (e)=>{
-      const file = e.target.files?.[0];
-      if(!file) return;
-      importJSONFile(file);
-      importFileEl.value = "";
-    });
-
-    timerPresetEl.addEventListener("change", ()=>{
-      setTimerPreset(timerPresetEl.value);
-      timerReset();
-      toast(`Timer: ${timerPresetEl.value}s`);
-    });
-
-    document.getElementById("timerStartBtn").addEventListener("click", ()=>{
-      timerStart();
-    });
-
-    document.getElementById("timerResetBtn").addEventListener("click", ()=>{
-      timerReset();
-    });
-
-    // ------------------------------
-    // Start
-    // ------------------------------
-    buildShotsUI();
+function initForm(){
+  document.getElementById("saveNameBtn").addEventListener("click", () => {
+    const pl = currentPlayer();
+    const name = (document.getElementById("playerName").value || "").trim();
+    if(name) pl.name = name;
+    saveState();
     renderAll();
-    timerReset();
+  });
 
-    // Optional: service worker (se lo aggiungi in futuro)
-    // if("serviceWorker" in navigator){ navigator.serviceWorker.register("./sw.js").catch(()=>{}); }
-  </script>
+  document.getElementById("resetPlayerBtn").addEventListener("click", () => {
+    if(!confirm("Reset totale giocatore selezionato? (dati e sessioni)")) return;
+    const id = state.selectedPlayerId;
+    state.players[id] = defaultState().players[id];
+    saveState();
+    renderAll();
+  });
+
+  document.getElementById("timerPreset").addEventListener("change", (e) => {
+    state.timerPreset = parseInt(e.target.value,10) || 45;
+    saveState();
+    if(!tRunning){
+      setTimerDisplay(state.timerPreset);
+    }
+  });
+
+  document.getElementById("sessionDate").addEventListener("change", (e) => {
+    const pl = currentPlayer();
+    pl.draft.date = e.target.value;
+    saveState();
+  });
+
+  document.getElementById("sessionNote").addEventListener("input", (e) => {
+    const pl = currentPlayer();
+    pl.draft.note = e.target.value;
+    saveState();
+  });
+
+  document.getElementById("clearEntryBtn").addEventListener("click", () => {
+    const pl = currentPlayer();
+    for(const p of POSITIONS) pl.draft.values[p.key]=0;
+    saveState();
+    renderAll();
+  });
+
+  document.getElementById("saveSessionBtn").addEventListener("click", () => {
+    const pl = currentPlayer();
+    const values = { ...pl.draft.values };
+    const totalMade = Object.values(values).reduce((a,b)=>a+b,0);
+    const totalShots = SHOTS_PER_POSITION * POSITIONS.length;
+
+    const session = {
+      id: "s_" + Date.now(),
+      date: pl.draft.date || todayISO(),
+      note: pl.draft.note || "",
+      values,
+      totalMade,
+      totalShots,
+      createdAt: new Date().toISOString()
+    };
+    pl.sessions.unshift(session);
+
+    // reset draft for next
+    pl.draft.note = "";
+    for(const p of POSITIONS) pl.draft.values[p.key]=0;
+
+    saveState();
+    renderAll();
+
+    flashPill("Sessione salvata ✅");
+  });
+
+  // Export / Share
+  document.getElementById("exportBtn").addEventListener("click", exportJSON);
+  document.getElementById("shareBtn").addEventListener("click", shareWhatsApp);
+
+  // Import JSON
+  document.getElementById("importFile").addEventListener("change", handleImportFile);
+
+  // Timer buttons
+  document.getElementById("startTimerBtn").addEventListener("click", startTimer);
+  document.getElementById("stopTimerBtn").addEventListener("click", stopTimer);
+  document.getElementById("resetTimerBtn").addEventListener("click", resetTimer);
+
+  // Defaults
+  document.getElementById("timerPreset").value = String(state.timerPreset || 45);
+  setTimerDisplay(state.timerPreset || 45);
+
+  // date default
+  const pl=currentPlayer();
+  if(!pl.draft.date) pl.draft.date = todayISO();
+  document.getElementById("sessionDate").value = pl.draft.date || todayISO();
+}
+
+function initShotInputs(){
+  const grid = document.getElementById("shotGrid");
+  grid.innerHTML = "";
+  for(const p of POSITIONS){
+    const row = document.createElement("div");
+    row.className="shotRow";
+
+    const left = document.createElement("div");
+    const name = document.createElement("div");
+    name.className="shotName";
+    name.textContent = p.label;
+    const meta = document.createElement("div");
+    meta.className="shotMeta";
+    meta.textContent = `(su ${SHOTS_PER_POSITION}) • Posizione ${p.idx}/${POSITIONS.length}`;
+    left.appendChild(name);
+    left.appendChild(meta);
+
+    const right = document.createElement("div");
+    right.className="counter";
+
+    const minus = document.createElement("button");
+    minus.textContent = "−";
+    minus.addEventListener("click", () => bumpValue(p.key, -1));
+
+    const val = document.createElement("div");
+    val.className="val";
+    val.id = `val_${p.key}`;
+    val.textContent = "0";
+
+    const plus = document.createElement("button");
+    plus.textContent = "+";
+    plus.addEventListener("click", () => bumpValue(p.key, +1));
+
+    right.appendChild(minus);
+    right.appendChild(val);
+    right.appendChild(plus);
+
+    row.appendChild(left);
+    row.appendChild(right);
+    grid.appendChild(row);
+  }
+}
+
+function initChart(){
+  const ctx = document.getElementById("shotChart");
+  chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: POSITIONS.map(p => p.label),
+      datasets: [{
+        label: "% realizzazione",
+        data: POSITIONS.map(() => 0),
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 250 },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks:{
+            label: (c) => `${Math.round(c.parsed.y)}%`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          min: 0,
+          max: 100,
+          ticks: {
+            callback: (v) => v + "%"
+          }
+        },
+        x: {
+          ticks: { maxRotation: 0, minRotation: 0 }
+        }
+      }
+    }
+  });
+}
+
+/* =========================
+   RENDER
+========================= */
+function renderAll(){
+  // tabs active + labels
+  const tabs = document.querySelectorAll(".tab");
+  tabs.forEach(t => {
+    const pid=t.dataset.pid;
+    t.classList.toggle("active", pid === state.selectedPlayerId);
+    const pl = state.players[pid];
+    // show short name on tab
+    if(pl && pl.name){
+      // keep "Giocatore i" label but if renamed show first word
+      const i = pid.replace("p","");
+      t.textContent = pl.name ? pl.name : ("Giocatore " + i);
+    }
+  });
+
+  // form fields
+  const pl = currentPlayer();
+  document.getElementById("playerName").value = pl.name || "";
+  document.getElementById("sessionDate").value = pl.draft.date || todayISO();
+  document.getElementById("sessionNote").value = pl.draft.note || "";
+  document.getElementById("timerPreset").value = String(state.timerPreset || 45);
+
+  // shot values
+  for(const p of POSITIONS){
+    const el = document.getElementById(`val_${p.key}`);
+    if(el) el.textContent = String(pl.draft.values[p.key] ?? 0);
+  }
+
+  // watermark fallback (se icon-512.png non esiste)
+  const wm = document.getElementById("wmImg");
+  wm.onerror = () => { wm.src = "icon-192.png"; };
+
+  // chart update
+  updateChart();
+
+  // status pill
+  const pill = document.getElementById("statusPill");
+  pill.textContent = tRunning ? "Gara in corso" : "Pronto";
+}
+
+/* =========================
+   VALUE LOGIC (PER PLAYER!)
+========================= */
+function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+function bumpValue(key, delta){
+  const pl = currentPlayer();
+  const cur = pl.draft.values[key] ?? 0;
+  const next = clamp(cur + delta, 0, SHOTS_PER_POSITION);
+  pl.draft.values[key] = next;
+  saveState();
+  const el = document.getElementById(`val_${key}`);
+  if(el) el.textContent = String(next);
+  updateChart();
+}
+
+/* =========================
+   CHART LOGIC
+========================= */
+function updateChart(){
+  const pl = currentPlayer();
+  const last = pl.sessions[0]; // last saved
+  // We plot last saved session if exists; otherwise plot draft
+  const sourceValues = last ? last.values : pl.draft.values;
+
+  const perc = POSITIONS.map(p => {
+    const made = sourceValues[p.key] ?? 0;
+    return Math.round((made / SHOTS_PER_POSITION) * 100);
+  });
+
+  chart.data.datasets[0].data = perc;
+  chart.update();
+}
+
+/* =========================
+   TIMER (gara)
+========================= */
+function setTimerDisplay(seconds){
+  const mm = String(Math.floor(seconds/60)).padStart(2,"0");
+  const ss = String(seconds%60).padStart(2,"0");
+  document.getElementById("timerDisplay").textContent = `${mm}:${ss}`;
+}
+
+function startTimer(){
+  if(tRunning) return;
+  const sec = parseInt(document.getElementById("timerPreset").value,10) || 45;
+  state.timerPreset = sec;
+  saveState();
+
+  tRunning = true;
+  tEndAt = Date.now() + sec*1000;
+  document.getElementById("timerNote").textContent = "Timer in corso…";
+  renderAll();
+
+  tTick = setInterval(() => {
+    const left = Math.max(0, Math.ceil((tEndAt - Date.now())/1000));
+    setTimerDisplay(left);
+
+    if(left <= 0){
+      finishTimer();
+    }
+  }, 200);
+}
+
+function stopTimer(){
+  if(!tRunning) return;
+  tRunning = false;
+  clearInterval(tTick);
+  tTick = null;
+  document.getElementById("timerNote").textContent = "Timer fermato.";
+  setTimerDisplay(state.timerPreset || 45);
+  renderAll();
+}
+
+function resetTimer(){
+  tRunning = false;
+  clearInterval(tTick);
+  tTick = null;
+  document.getElementById("timerNote").textContent = "Seleziona 45/40/35 e premi Start.";
+  setTimerDisplay(state.timerPreset || 45);
+  renderAll();
+}
+
+function finishTimer(){
+  if(!tRunning) return;
+  tRunning = false;
+  clearInterval(tTick);
+  tTick = null;
+
+  setTimerDisplay(0);
+  document.getElementById("timerNote").textContent = "Tempo finito ✅";
+
+  // beep + vibrazione
+  try{
+    if(navigator.vibrate) navigator.vibrate([200,80,200,80,260]);
+  }catch(e){}
+
+  try{
+    // Beep semplice via WebAudio (senza autostart, è attivato da click Start)
+    const now = Date.now();
+    if(now - lastBeepAt > 500){
+      lastBeepAt = now;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ac = new AC();
+      const o = ac.createOscillator();
+      const g = ac.createGain();
+      o.type = "square";
+      o.frequency.value = 880;
+      g.gain.value = 0.08;
+      o.connect(g); g.connect(ac.destination);
+      o.start();
+      setTimeout(() => { o.stop(); ac.close(); }, 220);
+    }
+  }catch(e){}
+
+  renderAll();
+  flashPill("TEMPO FINITO 🔔");
+}
+
+/* =========================
+   EXPORT / IMPORT
+========================= */
+function exportJSON(){
+  const pl = currentPlayer();
+  const payload = {
+    app: "Virtus Shot Tracker",
+    version: state.version,
+    exportedAt: new Date().toISOString(),
+    player: {
+      id: pl.id,
+      name: pl.name,
+      sessions: pl.sessions
+    }
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `virtus_shot_${safeFileName(pl.name || pl.id)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
+  flashPill("JSON esportato ✅");
+}
+
+function handleImportFile(ev){
+  const file = ev.target.files && ev.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(reader.result);
+
+      // Accept either full export payload or raw player object
+      let playerObj = null;
+      if(data && data.player && data.player.sessions){
+        playerObj = data.player;
+      }else if(data && data.sessions){
+        playerObj = data;
+      }else{
+        throw new Error("Formato non valido");
+      }
+
+      // Find matching player tab by name (best effort), else use current
+      const incomingName = (playerObj.name || "").trim();
+      let targetId = state.selectedPlayerId;
+
+      if(incomingName){
+        const found = Object.values(state.players).find(p => (p.name||"").trim().toLowerCase() === incomingName.toLowerCase());
+        if(found) targetId = found.id;
+      }
+
+      // Merge: replace sessions, keep draft reset
+      const tgt = state.players[targetId];
+      tgt.name = incomingName || tgt.name;
+      tgt.sessions = Array.isArray(playerObj.sessions) ? playerObj.sessions : [];
+      tgt.draft = {
+        date: todayISO(),
+        note:"",
+        values: Object.fromEntries(POSITIONS.map(p => [p.key, 0]))
+      };
+
+      state.selectedPlayerId = targetId;
+      saveState();
+      renderAll();
+      flashPill("Import OK ✅");
+
+    }catch(e){
+      alert("Errore import JSON: " + (e.message || "file non valido"));
+    }finally{
+      ev.target.value = "";
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* =========================
+   WHATSAPP SHARE (testo)
+========================= */
+function shareWhatsApp(){
+  const pl = currentPlayer();
+  const last = pl.sessions[0];
+  if(!last){
+    alert("Prima salva almeno una sessione.");
+    return;
+  }
+
+  const lines = [];
+  lines.push(`🏀 Virtus Shot • ${pl.name}`);
+  lines.push(`📅 ${formatDateIT(last.date)} • Sessione: 10 tiri per posizione`);
+  lines.push("");
+  for(const p of POSITIONS){
+    const made = last.values[p.key] ?? 0;
+    const perc = Math.round((made/SHOTS_PER_POSITION)*100);
+    lines.push(`${p.label}: ${made}/${SHOTS_PER_POSITION} (${perc}%)`);
+  }
+  lines.push("");
+  const totPerc = Math.round((last.totalMade/last.totalShots)*100);
+  lines.push(`Totale: ${last.totalMade}/${last.totalShots} (${totPerc}%)`);
+  if(last.note){
+    lines.push(`Note: ${last.note}`);
+  }
+
+  const text = encodeURIComponent(lines.join("\n"));
+  const url = `https://wa.me/?text=${text}`;
+  window.open(url, "_blank");
+}
+
+/* =========================
+   HELPERS
+========================= */
+function todayISO(){
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,"0");
+  const dd = String(d.getDate()).padStart(2,"0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+function formatDateIT(iso){
+  if(!iso) return "";
+  const [y,m,d] = iso.split("-");
+  if(!y||!m||!d) return iso;
+  return `${d}/${m}/${y}`;
+}
+function safeFileName(s){
+  return (s||"player")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g,"_")
+    .replace(/^_+|_+$/g,"")
+    .slice(0,40) || "player";
+}
+function flashPill(msg){
+  const pill = document.getElementById("statusPill");
+  const prev = pill.textContent;
+  pill.textContent = msg;
+  setTimeout(()=>{ pill.textContent = tRunning ? "Gara in corso" : "Pronto"; }, 1400);
+}
+</script>
 </body>
 </html>
