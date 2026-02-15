@@ -2,232 +2,254 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Virtus Shot Tracker</title>
 
   <!-- PWA -->
-  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#062714" />
 
-  <!-- Chart.js (CDN stabile) -->
+  <!-- Chart.js (stabile) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
     :root{
-      --bg1:#04180d;
-      --bg2:#0a2c18;
-      --card: rgba(0,0,0,.35);
-      --card2: rgba(255,255,255,.06);
-      --border: rgba(255,255,255,.10);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.65);
-      --accent:#1e8239;
-      --accent2:#0f5f27;
-      --danger:#8a2f2f;
-      --shadow: 0 18px 40px rgba(0,0,0,.35);
-      --radius: 18px;
-      --btnRadius: 16px;
+      --bg1:#041b10;
+      --bg2:#062714;
+      --card: rgba(0,0,0,.38);
+      --card2: rgba(0,0,0,.28);
+      --stroke: rgba(255,255,255,.08);
+      --text: #eafff3;
+      --muted: rgba(234,255,243,.72);
+      --accent:#0f7a3a;
+      --accent2:#0aa85a;
+      --danger:#8b2b2b;
+      --btn:#0a5f33;
+      --btn2:#0b6f3a;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius: 22px;
     }
+
     *{box-sizing:border-box;}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(30,130,57,.35), transparent 55%),
-        radial-gradient(900px 700px at 90% 30%, rgba(30,130,57,.20), transparent 55%),
-        linear-gradient(160deg, var(--bg2), var(--bg1));
-      min-height:100vh;
-    }
-    .wrap{max-width:980px;margin:0 auto;padding:20px 14px 70px;}
+    html,body{height:100%; margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); background: radial-gradient(1200px 600px at 20% 0%, #0e4a29 0%, var(--bg2) 35%, var(--bg1) 100%);}
+
+    .wrap{max-width:920px; margin:0 auto; padding:22px 14px 36px;}
+
     .hero{
-      padding:18px 18px 8px;
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(30,130,57,.18), rgba(0,0,0,.0));
+      padding:22px 18px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(14,74,41,.55), rgba(0,0,0,.22));
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
     }
-    h1{
-      margin:0 0 8px 0;
-      font-weight:800;
-      letter-spacing:.2px;
-      font-size: clamp(34px, 6vw, 52px);
-      line-height:1.05;
+    .hero::after{
+      content:"";
+      position:absolute; inset:-120px -120px auto auto;
+      width:420px; height:420px;
+      background: radial-gradient(circle at 30% 30%, rgba(10,168,90,.22), rgba(10,168,90,0) 70%);
+      transform: rotate(18deg);
+      pointer-events:none;
     }
-    .subrow{
-      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-      color:var(--muted);
-      font-size:14px;
-    }
-    .pill{
-      margin-left:auto;
-      padding:8px 12px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      border-radius: 999px;
-      color: var(--text);
-      font-weight:600;
-    }
-    .card{
+
+    h1{margin:0; font-size:46px; letter-spacing:.2px; line-height:1.02;}
+    .sub{margin-top:8px; color:var(--muted); font-size:15px;}
+
+    .tabs{
+      display:flex; gap:10px; flex-wrap:wrap;
       margin-top:16px;
+    }
+    .tab{
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      user-select:none;
+      transition:.15s transform ease, .15s background ease;
+      display:flex; align-items:center; gap:10px;
+      min-width: 128px;
+      justify-content:center;
+    }
+    .tab:hover{transform: translateY(-1px);}
+    .tab.active{
+      background: linear-gradient(135deg, rgba(10,168,90,.35), rgba(0,0,0,.25));
+      border-color: rgba(10,168,90,.35);
+    }
+    .tab .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: rgba(255,255,255,.35);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.06);
+    }
+    .tab.active .dot{background: rgba(10,168,90,.95); box-shadow: 0 0 0 3px rgba(10,168,90,.18);}
+
+    .grid{display:grid; grid-template-columns: 1fr; gap:14px; margin-top:14px;}
+    @media(min-width:860px){
+      .grid{grid-template-columns: 1.1fr .9fr;}
+    }
+
+    .card{
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--stroke);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding:16px;
+      overflow:hidden;
     }
-    .cardTitle{
-      font-size:28px;
-      font-weight:800;
-      margin:0 0 12px 0;
-    }
-    .row{display:flex;gap:12px;flex-wrap:wrap;}
-    .col{flex:1;min-width:250px;}
-    label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px;}
-    input[type="text"], input[type="date"], textarea, select{
+    .card h2{margin:0 0 10px; font-size:28px;}
+    .hint{color:var(--muted); font-size:13px; line-height:1.35;}
+
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .row > *{flex:1;}
+    .row .tight{flex:0 0 auto;}
+
+    label{display:block; font-size:13px; color:var(--muted); margin:8px 0 6px;}
+    input[type="text"], input[type="date"], select, textarea{
       width:100%;
-      padding:14px 14px;
-      border-radius: 16px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.25);
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
       color: var(--text);
+      padding:12px 12px;
+      border-radius: 14px;
       outline:none;
       font-size:16px;
     }
-    textarea{min-height:54px;resize:vertical;}
-    .btnRow{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;}
-    button{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      color:var(--text);
-      padding:14px 14px;
-      border-radius: var(--btnRadius);
-      font-weight:800;
-      font-size:16px;
+    textarea{min-height:72px; resize:vertical;}
+
+    .btn{
+      background: linear-gradient(135deg, rgba(11,111,58,.95), rgba(8,86,46,.95));
+      border: 1px solid rgba(10,168,90,.25);
+      color: var(--text);
+      padding:12px 14px;
+      border-radius: 16px;
       cursor:pointer;
+      font-size:16px;
+      font-weight:700;
+      transition:.15s transform ease, .15s filter ease;
+      box-shadow: 0 10px 26px rgba(0,0,0,.25);
+      user-select:none;
     }
-    button.primary{
-      background: linear-gradient(180deg, rgba(30,130,57,.95), rgba(15,95,39,.95));
-      border-color: rgba(30,130,57,.55);
+    .btn:hover{transform: translateY(-1px); filter: brightness(1.05);}
+    .btn.secondary{
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.12);
+      font-weight:700;
     }
-    button.danger{
-      background: rgba(138,47,47,.42);
-      border-color: rgba(138,47,47,.45);
-    }
-    button:disabled{
-      opacity:.55;
-      cursor:not-allowed;
+    .btn.danger{
+      background: linear-gradient(135deg, rgba(139,43,43,.92), rgba(84,18,18,.92));
+      border-color: rgba(255,120,120,.20);
     }
 
-    .tabs{
-      display:flex;gap:10px;flex-wrap:wrap;
-      margin-top:6px;
+    .photoRow{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:10px;}
+    .avatar{
+      width:66px; height:66px; border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
     }
-    .tab{
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
+    .avatar img{width:100%; height:100%; object-fit:cover;}
+    .avatar span{color:rgba(255,255,255,.35); font-size:12px;}
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      color:var(--muted);
+      font-size:13px;
+    }
+    .pill strong{color:var(--text);}
+
+    .scoreList{display:flex; flex-direction:column; gap:10px; margin-top:8px;}
+    .scoreItem{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      padding:12px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.08);
+      align-items:center;
+    }
+    .posTitle{font-size:22px; font-weight:800; line-height:1.1;}
+    .posSub{font-size:13px; color:var(--muted); margin-top:2px;}
+    .counter{
+      display:flex; align-items:center; gap:10px;
+    }
+    .cbtn{
+      width:52px; height:52px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
       color:var(--text);
-      font-weight:800;
+      font-size:26px;
+      font-weight:900;
       cursor:pointer;
       user-select:none;
     }
-    .tab.active{
-      background: rgba(30,130,57,.35);
-      border-color: rgba(30,130,57,.55);
-    }
-
-    .shotGrid{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      margin-top:10px;
-    }
-    .shotRow{
-      display:grid;
-      grid-template-columns: 1fr auto;
-      gap:12px;
-      align-items:center;
-      padding:14px;
-      border-radius: var(--radius);
-      background: rgba(0,0,0,.18);
-      border: 1px solid rgba(255,255,255,.07);
-    }
-    .shotName{
-      font-size:22px;
-      font-weight:900;
-      margin:0;
-      line-height:1.1;
-    }
-    .shotMeta{
-      margin-top:3px;
-      color:var(--muted);
-      font-weight:700;
-      font-size:13px;
-    }
-    .counter{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .counter button{
-      width:50px;height:50px;
-      padding:0;
+    .cval{
+      width:64px; height:52px;
       border-radius: 16px;
-      font-size:22px;
-      font-weight:900;
-      background: rgba(0,0,0,.25);
-    }
-    .counter .val{
-      width:62px;
-      text-align:center;
-      padding:10px 10px;
-      border-radius:16px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.28);
-      font-size:20px;
-      font-weight:900;
-    }
-    .hint{
-      color:var(--muted);
-      font-size:13px;
-      margin-top:10px;
-      line-height:1.35;
-    }
-
-    /* Timer area */
-    .timerBox{
-      display:flex;align-items:center;justify-content:space-between;
-      gap:12px;flex-wrap:wrap;
-      padding:14px;
-      border-radius: var(--radius);
-      background: rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.07);
-      margin-top:12px;
-    }
-    .timerLeft{
-      display:flex;flex-direction:column;gap:4px;
-    }
-    .timerBig{
-      font-size:34px;
-      font-weight:950;
-      letter-spacing:.6px;
-    }
-    .timerSmall{color:var(--muted);font-weight:800;}
-    .timerBtns{display:flex;gap:10px;flex-wrap:wrap;}
-    .timerBtns button{min-width:140px;}
-    .mini{
-      font-size:13px;color:var(--muted);font-weight:800;margin-top:8px;
-    }
-
-    /* Stats */
-    .chartWrap{
-      position:relative;
-      padding:10px;
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.04);
       border:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.14);
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px; font-weight:900;
+    }
+
+    .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:14px;}
+    .actions .btn{flex:1; min-width:180px;}
+
+    .timerBox{
+      margin-top:12px;
+      padding:12px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .timerTop{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+    .timerBig{font-size:36px; font-weight:1000; letter-spacing:.5px;}
+    .timerControls{display:flex; gap:10px; flex-wrap:wrap;}
+    .miniBtn{
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+    }
+    .miniBtn.primary{
+      background: linear-gradient(135deg, rgba(10,168,90,.38), rgba(0,0,0,.18));
+      border-color: rgba(10,168,90,.25);
+    }
+
+    .toggleRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
+    .toggle{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+      font-size:13px;
+      user-select:none;
+    }
+    .toggle input{transform: scale(1.25);}
+
+    .chartWrap{
+      margin-top:10px;
+      padding:12px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.14);
+      border:1px solid rgba(255,255,255,.08);
+      position:relative;
       overflow:hidden;
+      min-height: 360px;
     }
     .watermark{
       position:absolute;
@@ -235,24 +257,41 @@
       display:flex;
       align-items:center;
       justify-content:center;
+      opacity:.09;
       pointer-events:none;
-      opacity:.12;
-      filter: saturate(1.1) contrast(1.1);
+      transform: translateY(10px);
     }
     .watermark img{
-      max-width: 72%;
-      max-height: 72%;
-      transform: rotate(-10deg);
+      width:min(520px, 85%);
+      height:auto;
+      filter: saturate(1.05) contrast(1.05);
     }
-    canvas{width:100% !important;height:320px !important; background: transparent;}
+    canvas{position:relative; z-index:2; width:100% !important; height: 320px !important;}
 
-    .footerSpace{height:18px;}
+    .small{font-size:12px; color:var(--muted); margin-top:8px; line-height:1.35;}
+    .sep{height:1px; background: rgba(255,255,255,.08); margin:14px 0;}
+    .rightCard{display:flex; flex-direction:column; gap:14px;}
 
-    /* Mobile polish */
-    @media (max-width:520px){
-      .counter .val{width:58px;}
-      .timerBtns button{min-width:120px;}
+    .toast{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:18px;
+      padding:12px 14px;
+      background: rgba(0,0,0,.72);
+      border:1px solid rgba(255,255,255,.10);
+      color: var(--text);
+      border-radius: 14px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+      font-weight:800;
+      opacity:0;
+      pointer-events:none;
+      transition:.18s opacity ease, .18s transform ease;
+      z-index:9999;
+      max-width: 92vw;
+      text-align:center;
     }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(-2px);}
   </style>
 </head>
 
@@ -260,732 +299,881 @@
   <div class="wrap">
     <div class="hero">
       <h1>Virtus Shot<br/>Tracker</h1>
-      <div class="subrow">
-        <div>Sessione = <b>10 tiri</b> per posizione • Statistiche 0–100%</div>
-        <div class="pill" id="statusPill">Pronto</div>
+      <div class="sub">
+        Sessione = <b>10 tiri per posizione</b> • Timer gara <b>45 / 40 / 35 sec</b> • Statistiche <b>0–100%</b>
       </div>
+
+      <div class="tabs" id="tabs"></div>
     </div>
 
-    <!-- PLAYER / SETTINGS -->
-    <div class="card">
-      <div class="cardTitle">Giocatori</div>
+    <div class="grid">
+      <div class="card">
+        <h2>Giocatore</h2>
 
-      <div class="tabs" id="playerTabs"></div>
+        <label>Nome giocatore (tab selezionato)</label>
+        <input id="playerName" type="text" placeholder="Es. Marco" />
 
-      <label>Nome giocatore (tab selezionato)</label>
-      <input id="playerName" type="text" placeholder="Es. Marco" />
-
-      <div class="row">
-        <div class="col">
-          <label>Timer gara</label>
-          <select id="timerPreset">
-            <option value="45">45 sec</option>
-            <option value="40">40 sec</option>
-            <option value="35">35 sec</option>
-          </select>
+        <div class="photoRow">
+          <div class="avatar" id="avatarBox"><span>Foto</span></div>
+          <div style="flex:1; min-width:240px;">
+            <label style="margin-top:0;">Foto giocatore (salvata solo sul telefono)</label>
+            <input id="photoInput" type="file" accept="image/*" />
+          </div>
+          <button class="btn secondary tight" id="removePhotoBtn" type="button">Rimuovi foto</button>
         </div>
 
-        <div class="col">
+        <div class="row" style="margin-top:10px;">
+          <button class="btn" id="saveNameBtn" type="button">Salva nome</button>
+          <button class="btn danger" id="resetPlayerBtn" type="button">Reset giocatore</button>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="row">
+          <div>
+            <label>Timer gara</label>
+            <select id="timerSelect">
+              <option value="45">45 sec</option>
+              <option value="40">40 sec</option>
+              <option value="35">35 sec</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="timerBox">
+          <div class="timerTop">
+            <div class="pill">Timer: <strong id="timerLabel">45 sec</strong></div>
+            <div class="timerBig" id="timerBig">00:45</div>
+            <div class="timerControls">
+              <button class="miniBtn primary" id="startTimerBtn" type="button">Start</button>
+              <button class="miniBtn" id="stopTimerBtn" type="button">Stop</button>
+              <button class="miniBtn" id="resetTimerBtn" type="button">Reset</button>
+            </div>
+          </div>
+
+          <div class="toggleRow">
+            <label class="toggle">
+              <input id="beepC" type="checkbox" checked />
+              Suono (C)
+            </label>
+            <label class="toggle">
+              <input id="beepB" type="checkbox" />
+              Suono (B)
+            </label>
+            <label class="toggle">
+              <input id="vibrateEnd" type="checkbox" checked />
+              Vibrazione fine tempo
+            </label>
+            <label class="toggle">
+              <input id="autoSendWA" type="checkbox" checked />
+              WhatsApp automatico dopo “Salva sessione”
+            </label>
+          </div>
+
+          <div class="small">
+            Nota: su alcuni telefoni il suono/vibrazione può richiedere che tu abbia premuto almeno una volta “Start”.
+          </div>
+        </div>
+
+        <div class="sep"></div>
+
+        <h2>Nuova sessione</h2>
+
+        <div class="row">
+          <div>
+            <label>Data</label>
+            <input id="sessionDate" type="date" />
+          </div>
+          <div>
+            <label>Note (opzionale)</label>
+            <input id="sessionNote" type="text" placeholder="Es. dopo allenamento / gara..." />
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:8px;">
+          Inserisci i canestri segnati (0–10) per ogni posizione. Nessuno slider: solo + / –.
+        </div>
+
+        <div class="scoreList" id="scoreList"></div>
+
+        <div class="actions">
+          <button class="btn secondary" id="clearInputsBtn" type="button">Azzera inserimento</button>
+          <button class="btn" id="saveSessionBtn" type="button">Salva sessione</button>
+        </div>
+
+        <div class="small">
+          Dopo “Salva sessione” puoi condividere su WhatsApp. Il JSON serve per backup / invio al coach.
+        </div>
+      </div>
+
+      <div class="rightCard">
+        <div class="card">
+          <h2>Backup / Coach</h2>
+
           <label>Import JSON (auto sul giocatore giusto)</label>
           <input id="importFile" type="file" accept="application/json" />
+
+          <div class="actions" style="margin-top:12px;">
+            <button class="btn secondary" id="exportBtn" type="button">Esporta JSON</button>
+            <button class="btn" id="shareBtn" type="button">Condividi su WhatsApp</button>
+          </div>
+
+          <div class="small">
+            Se importi il JSON di un giocatore, l’app lo riconosce e lo mette nel tab corretto.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Statistiche</h2>
+          <div class="hint">Grafico sempre da 0% a 100%.</div>
+
+          <div class="chartWrap">
+            <div class="watermark" id="wmBox"></div>
+            <canvas id="chart"></canvas>
+          </div>
+
+          <div class="small" id="statsText"></div>
         </div>
       </div>
-
-      <div class="btnRow">
-        <button class="primary" id="saveNameBtn">Salva nome</button>
-        <button class="danger" id="resetPlayerBtn">Reset giocatore</button>
-        <button id="exportBtn">Esporta JSON</button>
-        <button id="shareBtn" class="primary">Condividi su WhatsApp</button>
-      </div>
-
-      <div class="hint">
-        Suggerimento: dopo “Salva sessione” puoi condividere subito il report. Il JSON serve per backup / invio coach.
-      </div>
-    </div>
-
-    <!-- GARA -->
-    <div class="card">
-      <div class="cardTitle">Modalità gara</div>
-
-      <div class="timerBox">
-        <div class="timerLeft">
-          <div class="timerSmall">Tempo per ogni posizione</div>
-          <div class="timerBig" id="timerDisplay">00:45</div>
-          <div class="timerSmall" id="timerNote">Seleziona 45/40/35 e premi Start.</div>
-        </div>
-        <div class="timerBtns">
-          <button class="primary" id="startTimerBtn">Start</button>
-          <button id="stopTimerBtn">Stop</button>
-          <button id="resetTimerBtn">Reset</button>
-        </div>
-      </div>
-      <div class="mini">
-        A fine tempo: <b>beep + vibrazione</b> (se il telefono lo permette). La gara è “solo timer”.
-      </div>
-    </div>
-
-    <!-- SESSION -->
-    <div class="card">
-      <div class="cardTitle">Nuova sessione</div>
-
-      <div class="row">
-        <div class="col">
-          <label>Data</label>
-          <input id="sessionDate" type="date" />
-        </div>
-        <div class="col">
-          <label>Note (opzionale)</label>
-          <textarea id="sessionNote" placeholder="Es. dopo allenamento / gara..."></textarea>
-        </div>
-      </div>
-
-      <div class="hint">
-        Inserisci i canestri segnati (0–10) con +/-.
-      </div>
-
-      <div class="shotGrid" id="shotGrid"></div>
-
-      <div class="btnRow" style="margin-top:14px;">
-        <button id="clearEntryBtn">Azzera inserimento</button>
-        <button class="primary" id="saveSessionBtn">Salva sessione</button>
-      </div>
-
-      <div class="hint">
-        Dopo “Salva sessione” puoi condividere su WhatsApp dal tasto “Condividi su WhatsApp”.
-      </div>
-    </div>
-
-    <!-- STATS -->
-    <div class="card">
-      <div class="cardTitle">Statistiche</div>
-      <div class="hint">Grafico sempre da <b>0% a 100%</b>.</div>
-
-      <div class="chartWrap">
-        <div class="watermark">
-          <!-- usa PNG/SVG che hai già nel repo: preferisco icon-512.png -->
-          <img id="wmImg" src="icon-512.png" alt="Virtus watermark" />
-        </div>
-        <canvas id="shotChart"></canvas>
-      </div>
-
-      <div class="footerSpace"></div>
     </div>
   </div>
 
-<script>
-/* =========================
-   CONFIG
-========================= */
-const APP_KEY = "virtusShotTracker_v8";
-const POSITIONS = [
-  { key:"fondo_sx", label:"Fondo sx", idx:1 },
-  { key:"45_sx",    label:"45° sx",  idx:2 },
-  { key:"front",    label:"Frontale",idx:3 },
-  { key:"45_dx",    label:"45° dx",  idx:4 },
-  { key:"fondo_dx", label:"Fondo dx",idx:5 },
-];
-const SHOTS_PER_POSITION = 10;
-const PLAYER_SLOTS = 12;
+  <div class="toast" id="toast"></div>
 
-/* =========================
-   STATE
-========================= */
-let state = loadState();
-let chart = null;
+  <script>
+    /***********************
+     * CONFIG
+     ***********************/
+    const POSITIONS = [
+      { key: "fondo_sx", label: "Fondo sx" },
+      { key: "angolo_sx", label: "45° sx" },
+      { key: "frontale", label: "Frontale" },
+      { key: "angolo_dx", label: "45° dx" },
+      { key: "fondo_dx", label: "Fondo dx" },
+    ];
+    const SHOTS_PER_POS = 10;
+    const PLAYER_COUNT = 12;
 
-// timer
-let tRunning = false;
-let tEndAt = 0;
-let tTick = null;
-let lastBeepAt = 0;
+    /***********************
+     * STATE
+     ***********************/
+    let activePlayerId = 1;
+    let chartInstance = null;
 
-/* =========================
-   INIT
-========================= */
-initTabs();
-initForm();
-initShotInputs();
-initChart();
-renderAll();
+    // Timer
+    let timerSeconds = 45;
+    let timerRemaining = 45;
+    let timerRunning = false;
+    let timerHandle = null;
 
-/* =========================
-   STORAGE
-========================= */
-function defaultState(){
-  const players = {};
-  for(let i=1;i<=PLAYER_SLOTS;i++){
-    players["p"+i] = {
-      id:"p"+i,
-      name:"Giocatore " + i,
-      photo:null,
-      sessions:[],
-      // current entry (draft)
-      draft:{
-        date: todayISO(),
-        note:"",
-        values: Object.fromEntries(POSITIONS.map(p => [p.key, 0]))
-      }
-    };
-  }
-  return {
-    version: 8,
-    selectedPlayerId: "p1",
-    timerPreset: 45,
-    players
-  };
-}
-function loadState(){
-  try{
-    const raw = localStorage.getItem(APP_KEY);
-    if(!raw) return defaultState();
-    const parsed = JSON.parse(raw);
+    /***********************
+     * STORAGE
+     ***********************/
+    function keyForPlayer(pid){ return `virtus_player_${pid}`; }
 
-    // upgrade safety
-    if(!parsed.players){
-      return defaultState();
-    }
-
-    // ensure slots exist
-    for(let i=1;i<=PLAYER_SLOTS;i++){
-      const id="p"+i;
-      if(!parsed.players[id]){
-        parsed.players[id] = defaultState().players[id];
-      }
-    }
-    if(!parsed.selectedPlayerId || !parsed.players[parsed.selectedPlayerId]){
-      parsed.selectedPlayerId="p1";
-    }
-    if(!parsed.timerPreset) parsed.timerPreset = 45;
-
-    // ensure drafts
-    for(const id of Object.keys(parsed.players)){
-      const pl = parsed.players[id];
-      if(!pl.draft){
-        pl.draft = { date: todayISO(), note:"", values: Object.fromEntries(POSITIONS.map(p => [p.key, 0])) };
-      }
-      if(!pl.draft.values){
-        pl.draft.values = Object.fromEntries(POSITIONS.map(p => [p.key, 0]));
-      }
-      for(const p of POSITIONS){
-        if(typeof pl.draft.values[p.key] !== "number") pl.draft.values[p.key]=0;
-      }
-      if(!Array.isArray(pl.sessions)) pl.sessions=[];
-      if(typeof pl.name !== "string") pl.name = pl.name ? String(pl.name) : id;
-    }
-    return parsed;
-  }catch(e){
-    return defaultState();
-  }
-}
-function saveState(){
-  localStorage.setItem(APP_KEY, JSON.stringify(state));
-}
-function currentPlayer(){
-  return state.players[state.selectedPlayerId];
-}
-
-/* =========================
-   UI INIT
-========================= */
-function initTabs(){
-  const tabs = document.getElementById("playerTabs");
-  tabs.innerHTML = "";
-  for(let i=1;i<=PLAYER_SLOTS;i++){
-    const id="p"+i;
-    const b=document.createElement("div");
-    b.className="tab";
-    b.textContent="Giocatore " + i;
-    b.dataset.pid=id;
-    b.addEventListener("click", () => {
-      state.selectedPlayerId=id;
-      saveState();
-      renderAll();
-    });
-    tabs.appendChild(b);
-  }
-}
-
-function initForm(){
-  document.getElementById("saveNameBtn").addEventListener("click", () => {
-    const pl = currentPlayer();
-    const name = (document.getElementById("playerName").value || "").trim();
-    if(name) pl.name = name;
-    saveState();
-    renderAll();
-  });
-
-  document.getElementById("resetPlayerBtn").addEventListener("click", () => {
-    if(!confirm("Reset totale giocatore selezionato? (dati e sessioni)")) return;
-    const id = state.selectedPlayerId;
-    state.players[id] = defaultState().players[id];
-    saveState();
-    renderAll();
-  });
-
-  document.getElementById("timerPreset").addEventListener("change", (e) => {
-    state.timerPreset = parseInt(e.target.value,10) || 45;
-    saveState();
-    if(!tRunning){
-      setTimerDisplay(state.timerPreset);
-    }
-  });
-
-  document.getElementById("sessionDate").addEventListener("change", (e) => {
-    const pl = currentPlayer();
-    pl.draft.date = e.target.value;
-    saveState();
-  });
-
-  document.getElementById("sessionNote").addEventListener("input", (e) => {
-    const pl = currentPlayer();
-    pl.draft.note = e.target.value;
-    saveState();
-  });
-
-  document.getElementById("clearEntryBtn").addEventListener("click", () => {
-    const pl = currentPlayer();
-    for(const p of POSITIONS) pl.draft.values[p.key]=0;
-    saveState();
-    renderAll();
-  });
-
-  document.getElementById("saveSessionBtn").addEventListener("click", () => {
-    const pl = currentPlayer();
-    const values = { ...pl.draft.values };
-    const totalMade = Object.values(values).reduce((a,b)=>a+b,0);
-    const totalShots = SHOTS_PER_POSITION * POSITIONS.length;
-
-    const session = {
-      id: "s_" + Date.now(),
-      date: pl.draft.date || todayISO(),
-      note: pl.draft.note || "",
-      values,
-      totalMade,
-      totalShots,
-      createdAt: new Date().toISOString()
-    };
-    pl.sessions.unshift(session);
-
-    // reset draft for next
-    pl.draft.note = "";
-    for(const p of POSITIONS) pl.draft.values[p.key]=0;
-
-    saveState();
-    renderAll();
-
-    flashPill("Sessione salvata ✅");
-  });
-
-  // Export / Share
-  document.getElementById("exportBtn").addEventListener("click", exportJSON);
-  document.getElementById("shareBtn").addEventListener("click", shareWhatsApp);
-
-  // Import JSON
-  document.getElementById("importFile").addEventListener("change", handleImportFile);
-
-  // Timer buttons
-  document.getElementById("startTimerBtn").addEventListener("click", startTimer);
-  document.getElementById("stopTimerBtn").addEventListener("click", stopTimer);
-  document.getElementById("resetTimerBtn").addEventListener("click", resetTimer);
-
-  // Defaults
-  document.getElementById("timerPreset").value = String(state.timerPreset || 45);
-  setTimerDisplay(state.timerPreset || 45);
-
-  // date default
-  const pl=currentPlayer();
-  if(!pl.draft.date) pl.draft.date = todayISO();
-  document.getElementById("sessionDate").value = pl.draft.date || todayISO();
-}
-
-function initShotInputs(){
-  const grid = document.getElementById("shotGrid");
-  grid.innerHTML = "";
-  for(const p of POSITIONS){
-    const row = document.createElement("div");
-    row.className="shotRow";
-
-    const left = document.createElement("div");
-    const name = document.createElement("div");
-    name.className="shotName";
-    name.textContent = p.label;
-    const meta = document.createElement("div");
-    meta.className="shotMeta";
-    meta.textContent = `(su ${SHOTS_PER_POSITION}) • Posizione ${p.idx}/${POSITIONS.length}`;
-    left.appendChild(name);
-    left.appendChild(meta);
-
-    const right = document.createElement("div");
-    right.className="counter";
-
-    const minus = document.createElement("button");
-    minus.textContent = "−";
-    minus.addEventListener("click", () => bumpValue(p.key, -1));
-
-    const val = document.createElement("div");
-    val.className="val";
-    val.id = `val_${p.key}`;
-    val.textContent = "0";
-
-    const plus = document.createElement("button");
-    plus.textContent = "+";
-    plus.addEventListener("click", () => bumpValue(p.key, +1));
-
-    right.appendChild(minus);
-    right.appendChild(val);
-    right.appendChild(plus);
-
-    row.appendChild(left);
-    row.appendChild(right);
-    grid.appendChild(row);
-  }
-}
-
-function initChart(){
-  const ctx = document.getElementById("shotChart");
-  chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: POSITIONS.map(p => p.label),
-      datasets: [{
-        label: "% realizzazione",
-        data: POSITIONS.map(() => 0),
-        borderWidth: 1,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 250 },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks:{
-            label: (c) => `${Math.round(c.parsed.y)}%`
-          }
+    function defaultPlayer(pid){
+      return {
+        id: pid,
+        name: `Giocatore ${pid}`,
+        photoDataUrl: null,
+        sessions: [], // {date, note, made:{...}, shotsPerPos:10, ts}
+        settings: {
+          timerSeconds: 45,
+          beepC: true,
+          beepB: false,
+          vibrateEnd: true,
+          autoSendWA: true
         }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          min: 0,
-          max: 100,
-          ticks: {
-            callback: (v) => v + "%"
-          }
-        },
-        x: {
-          ticks: { maxRotation: 0, minRotation: 0 }
-        }
+      };
+    }
+
+    function loadPlayer(pid){
+      const raw = localStorage.getItem(keyForPlayer(pid));
+      if(!raw) return defaultPlayer(pid);
+      try{
+        const obj = JSON.parse(raw);
+        // Migrazione minima
+        if(!obj || typeof obj !== 'object') return defaultPlayer(pid);
+        if(!obj.id) obj.id = pid;
+        if(!obj.name) obj.name = `Giocatore ${pid}`;
+        if(!Array.isArray(obj.sessions)) obj.sessions = [];
+        if(!obj.settings) obj.settings = defaultPlayer(pid).settings;
+        if(typeof obj.photoDataUrl === "undefined") obj.photoDataUrl = null;
+        return obj;
+      }catch(e){
+        return defaultPlayer(pid);
       }
     }
-  });
-}
 
-/* =========================
-   RENDER
-========================= */
-function renderAll(){
-  // tabs active + labels
-  const tabs = document.querySelectorAll(".tab");
-  tabs.forEach(t => {
-    const pid=t.dataset.pid;
-    t.classList.toggle("active", pid === state.selectedPlayerId);
-    const pl = state.players[pid];
-    // show short name on tab
-    if(pl && pl.name){
-      // keep "Giocatore i" label but if renamed show first word
-      const i = pid.replace("p","");
-      t.textContent = pl.name ? pl.name : ("Giocatore " + i);
+    function savePlayer(player){
+      localStorage.setItem(keyForPlayer(player.id), JSON.stringify(player));
     }
-  });
 
-  // form fields
-  const pl = currentPlayer();
-  document.getElementById("playerName").value = pl.name || "";
-  document.getElementById("sessionDate").value = pl.draft.date || todayISO();
-  document.getElementById("sessionNote").value = pl.draft.note || "";
-  document.getElementById("timerPreset").value = String(state.timerPreset || 45);
-
-  // shot values
-  for(const p of POSITIONS){
-    const el = document.getElementById(`val_${p.key}`);
-    if(el) el.textContent = String(pl.draft.values[p.key] ?? 0);
-  }
-
-  // watermark fallback (se icon-512.png non esiste)
-  const wm = document.getElementById("wmImg");
-  wm.onerror = () => { wm.src = "icon-192.png"; };
-
-  // chart update
-  updateChart();
-
-  // status pill
-  const pill = document.getElementById("statusPill");
-  pill.textContent = tRunning ? "Gara in corso" : "Pronto";
-}
-
-/* =========================
-   VALUE LOGIC (PER PLAYER!)
-========================= */
-function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
-
-function bumpValue(key, delta){
-  const pl = currentPlayer();
-  const cur = pl.draft.values[key] ?? 0;
-  const next = clamp(cur + delta, 0, SHOTS_PER_POSITION);
-  pl.draft.values[key] = next;
-  saveState();
-  const el = document.getElementById(`val_${key}`);
-  if(el) el.textContent = String(next);
-  updateChart();
-}
-
-/* =========================
-   CHART LOGIC
-========================= */
-function updateChart(){
-  const pl = currentPlayer();
-  const last = pl.sessions[0]; // last saved
-  // We plot last saved session if exists; otherwise plot draft
-  const sourceValues = last ? last.values : pl.draft.values;
-
-  const perc = POSITIONS.map(p => {
-    const made = sourceValues[p.key] ?? 0;
-    return Math.round((made / SHOTS_PER_POSITION) * 100);
-  });
-
-  chart.data.datasets[0].data = perc;
-  chart.update();
-}
-
-/* =========================
-   TIMER (gara)
-========================= */
-function setTimerDisplay(seconds){
-  const mm = String(Math.floor(seconds/60)).padStart(2,"0");
-  const ss = String(seconds%60).padStart(2,"0");
-  document.getElementById("timerDisplay").textContent = `${mm}:${ss}`;
-}
-
-function startTimer(){
-  if(tRunning) return;
-  const sec = parseInt(document.getElementById("timerPreset").value,10) || 45;
-  state.timerPreset = sec;
-  saveState();
-
-  tRunning = true;
-  tEndAt = Date.now() + sec*1000;
-  document.getElementById("timerNote").textContent = "Timer in corso…";
-  renderAll();
-
-  tTick = setInterval(() => {
-    const left = Math.max(0, Math.ceil((tEndAt - Date.now())/1000));
-    setTimerDisplay(left);
-
-    if(left <= 0){
-      finishTimer();
+    function resetPlayer(pid){
+      localStorage.removeItem(keyForPlayer(pid));
     }
-  }, 200);
-}
 
-function stopTimer(){
-  if(!tRunning) return;
-  tRunning = false;
-  clearInterval(tTick);
-  tTick = null;
-  document.getElementById("timerNote").textContent = "Timer fermato.";
-  setTimerDisplay(state.timerPreset || 45);
-  renderAll();
-}
+    /***********************
+     * UI HELPERS
+     ***********************/
+    const $ = (id)=>document.getElementById(id);
 
-function resetTimer(){
-  tRunning = false;
-  clearInterval(tTick);
-  tTick = null;
-  document.getElementById("timerNote").textContent = "Seleziona 45/40/35 e premi Start.";
-  setTimerDisplay(state.timerPreset || 45);
-  renderAll();
-}
-
-function finishTimer(){
-  if(!tRunning) return;
-  tRunning = false;
-  clearInterval(tTick);
-  tTick = null;
-
-  setTimerDisplay(0);
-  document.getElementById("timerNote").textContent = "Tempo finito ✅";
-
-  // beep + vibrazione
-  try{
-    if(navigator.vibrate) navigator.vibrate([200,80,200,80,260]);
-  }catch(e){}
-
-  try{
-    // Beep semplice via WebAudio (senza autostart, è attivato da click Start)
-    const now = Date.now();
-    if(now - lastBeepAt > 500){
-      lastBeepAt = now;
-      const AC = window.AudioContext || window.webkitAudioContext;
-      const ac = new AC();
-      const o = ac.createOscillator();
-      const g = ac.createGain();
-      o.type = "square";
-      o.frequency.value = 880;
-      g.gain.value = 0.08;
-      o.connect(g); g.connect(ac.destination);
-      o.start();
-      setTimeout(() => { o.stop(); ac.close(); }, 220);
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1400);
     }
-  }catch(e){}
 
-  renderAll();
-  flashPill("TEMPO FINITO 🔔");
-}
-
-/* =========================
-   EXPORT / IMPORT
-========================= */
-function exportJSON(){
-  const pl = currentPlayer();
-  const payload = {
-    app: "Virtus Shot Tracker",
-    version: state.version,
-    exportedAt: new Date().toISOString(),
-    player: {
-      id: pl.id,
-      name: pl.name,
-      sessions: pl.sessions
+    function pad2(n){ return String(n).padStart(2,'0'); }
+    function fmtTimer(sec){
+      const m = Math.floor(sec/60);
+      const s = sec%60;
+      return `${pad2(m)}:${pad2(s)}`;
     }
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `virtus_shot_${safeFileName(pl.name || pl.id)}.json`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+    function todayISO(){
+      const d = new Date();
+      const off = d.getTimezoneOffset();
+      const local = new Date(d.getTime() - off*60*1000);
+      return local.toISOString().slice(0,10);
+    }
 
-  setTimeout(()=>URL.revokeObjectURL(url), 1500);
-  flashPill("JSON esportato ✅");
-}
+    /***********************
+     * TABS
+     ***********************/
+    function renderTabs(){
+      const tabs = $("tabs");
+      tabs.innerHTML = "";
+      for(let i=1;i<=PLAYER_COUNT;i++){
+        const p = loadPlayer(i);
+        const btn = document.createElement("div");
+        btn.className = "tab" + (i===activePlayerId ? " active":"");
+        btn.innerHTML = `<span class="dot"></span><span>${escapeHtml(p.name)}</span>`;
+        btn.onclick = ()=>{ setActivePlayer(i); };
+        tabs.appendChild(btn);
+      }
+    }
 
-function handleImportFile(ev){
-  const file = ev.target.files && ev.target.files[0];
-  if(!file) return;
+    function setActivePlayer(pid){
+      activePlayerId = pid;
+      renderTabs();
+      renderPlayerPanel();
+      updateStats();
+    }
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    try{
-      const data = JSON.parse(reader.result);
+    /***********************
+     * PLAYER PANEL
+     ***********************/
+    function renderPlayerPanel(){
+      const p = loadPlayer(activePlayerId);
 
-      // Accept either full export payload or raw player object
-      let playerObj = null;
-      if(data && data.player && data.player.sessions){
-        playerObj = data.player;
-      }else if(data && data.sessions){
-        playerObj = data;
+      $("playerName").value = p.name || `Giocatore ${activePlayerId}`;
+
+      // Foto
+      renderAvatar(p.photoDataUrl);
+
+      // Settings -> UI
+      const t = Number(p.settings?.timerSeconds || 45);
+      setTimerSelect(t);
+
+      $("beepC").checked = !!(p.settings?.beepC);
+      $("beepB").checked = !!(p.settings?.beepB);
+      $("vibrateEnd").checked = !!(p.settings?.vibrateEnd);
+      $("autoSendWA").checked = !!(p.settings?.autoSendWA);
+
+      // Timer init
+      timerSeconds = t;
+      timerRemaining = t;
+      $("timerLabel").textContent = `${t} sec`;
+      $("timerBig").textContent = fmtTimer(timerRemaining);
+
+      // Session defaults
+      if(!$("sessionDate").value) $("sessionDate").value = todayISO();
+      $("sessionNote").value = "";
+
+      // Inputs list
+      renderScoreInputs();
+      // Watermark chart (logo se disponibile)
+      renderWatermark(p.photoDataUrl);
+    }
+
+    function renderAvatar(dataUrl){
+      const box = $("avatarBox");
+      box.innerHTML = "";
+      if(dataUrl){
+        const img = document.createElement("img");
+        img.src = dataUrl;
+        box.appendChild(img);
       }else{
-        throw new Error("Formato non valido");
+        const sp = document.createElement("span");
+        sp.textContent = "Foto";
+        box.appendChild(sp);
       }
+    }
 
-      // Find matching player tab by name (best effort), else use current
-      const incomingName = (playerObj.name || "").trim();
-      let targetId = state.selectedPlayerId;
+    function renderWatermark(dataUrl){
+      const wm = $("wmBox");
+      wm.innerHTML = "";
+      // Se hai un logo file nel repo, qui puoi usare icon-512.png come watermark base.
+      // Se invece vuoi la foto giocatore dietro, usiamo dataUrl.
+      const src = dataUrl || "icon-512.png";
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "watermark";
+      wm.appendChild(img);
+    }
 
-      if(incomingName){
-        const found = Object.values(state.players).find(p => (p.name||"").trim().toLowerCase() === incomingName.toLowerCase());
-        if(found) targetId = found.id;
+    function setTimerSelect(val){
+      const sel = $("timerSelect");
+      sel.value = String(val);
+      if(sel.value !== String(val)){
+        sel.value = "45";
       }
+    }
 
-      // Merge: replace sessions, keep draft reset
-      const tgt = state.players[targetId];
-      tgt.name = incomingName || tgt.name;
-      tgt.sessions = Array.isArray(playerObj.sessions) ? playerObj.sessions : [];
-      tgt.draft = {
-        date: todayISO(),
-        note:"",
-        values: Object.fromEntries(POSITIONS.map(p => [p.key, 0]))
+    /***********************
+     * SCORE INPUTS (NO SLIDER)
+     ***********************/
+    let currentMade = {}; // temp inputs for active player session
+
+    function renderScoreInputs(){
+      currentMade = {};
+      POSITIONS.forEach(p=> currentMade[p.key]=0);
+
+      const list = $("scoreList");
+      list.innerHTML = "";
+
+      POSITIONS.forEach((pos, idx)=>{
+        const item = document.createElement("div");
+        item.className = "scoreItem";
+        item.innerHTML = `
+          <div>
+            <div class="posTitle">${pos.label} <span style="font-size:14px; font-weight:800; color:rgba(234,255,243,.70);">(su ${SHOTS_PER_POS})</span></div>
+            <div class="posSub">Posizione ${idx+1}/${POSITIONS.length}</div>
+          </div>
+          <div class="counter">
+            <button class="cbtn" type="button" data-k="${pos.key}" data-d="-1">−</button>
+            <div class="cval" id="val_${pos.key}">0</div>
+            <button class="cbtn" type="button" data-k="${pos.key}" data-d="1">+</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+
+      // Bind +/-
+      list.querySelectorAll(".cbtn").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const k = btn.getAttribute("data-k");
+          const d = Number(btn.getAttribute("data-d"));
+          const next = clamp((currentMade[k]||0) + d, 0, SHOTS_PER_POS);
+          currentMade[k] = next;
+          $("val_"+k).textContent = String(next);
+        }, {passive:true});
+      });
+    }
+
+    function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+    /***********************
+     * SAVE SESSION
+     ***********************/
+    function saveSession(){
+      const p = loadPlayer(activePlayerId);
+
+      const date = $("sessionDate").value || todayISO();
+      const note = ($("sessionNote").value || "").trim();
+
+      const made = {};
+      POSITIONS.forEach(pos => made[pos.key] = clamp(Number(currentMade[pos.key]||0), 0, SHOTS_PER_POS));
+
+      const sess = {
+        date,
+        note,
+        made,
+        shotsPerPos: SHOTS_PER_POS,
+        ts: Date.now()
       };
 
-      state.selectedPlayerId = targetId;
-      saveState();
-      renderAll();
-      flashPill("Import OK ✅");
+      p.sessions.push(sess);
+      savePlayer(p);
 
-    }catch(e){
-      alert("Errore import JSON: " + (e.message || "file non valido"));
-    }finally{
-      ev.target.value = "";
+      toast("Sessione salvata ✅");
+      updateStats();
+
+      // WhatsApp auto
+      if($("autoSendWA").checked){
+        shareWhatsApp(true);
+      }
     }
-  };
-  reader.readAsText(file);
-}
 
-/* =========================
-   WHATSAPP SHARE (testo)
-========================= */
-function shareWhatsApp(){
-  const pl = currentPlayer();
-  const last = pl.sessions[0];
-  if(!last){
-    alert("Prima salva almeno una sessione.");
-    return;
-  }
+    function clearInputs(){
+      POSITIONS.forEach(pos=>{
+        currentMade[pos.key] = 0;
+        $("val_"+pos.key).textContent = "0";
+      });
+      $("sessionNote").value = "";
+      toast("Inserimento azzerato");
+    }
 
-  const lines = [];
-  lines.push(`🏀 Virtus Shot • ${pl.name}`);
-  lines.push(`📅 ${formatDateIT(last.date)} • Sessione: 10 tiri per posizione`);
-  lines.push("");
-  for(const p of POSITIONS){
-    const made = last.values[p.key] ?? 0;
-    const perc = Math.round((made/SHOTS_PER_POSITION)*100);
-    lines.push(`${p.label}: ${made}/${SHOTS_PER_POSITION} (${perc}%)`);
-  }
-  lines.push("");
-  const totPerc = Math.round((last.totalMade/last.totalShots)*100);
-  lines.push(`Totale: ${last.totalMade}/${last.totalShots} (${totPerc}%)`);
-  if(last.note){
-    lines.push(`Note: ${last.note}`);
-  }
+    /***********************
+     * STATS + CHART
+     ***********************/
+    function calcStats(player){
+      // Totali su tutte le sessioni
+      const totals = {};
+      POSITIONS.forEach(p=> totals[p.key] = { made:0, att:0 });
 
-  const text = encodeURIComponent(lines.join("\n"));
-  const url = `https://wa.me/?text=${text}`;
-  window.open(url, "_blank");
-}
+      for(const s of player.sessions){
+        const spp = Number(s.shotsPerPos || SHOTS_PER_POS);
+        for(const pos of POSITIONS){
+          const m = Number(s.made?.[pos.key] ?? 0);
+          totals[pos.key].made += clamp(m,0,spp);
+          totals[pos.key].att += spp;
+        }
+      }
 
-/* =========================
-   HELPERS
-========================= */
-function todayISO(){
-  const d = new Date();
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth()+1).padStart(2,"0");
-  const dd = String(d.getDate()).padStart(2,"0");
-  return `${yyyy}-${mm}-${dd}`;
-}
-function formatDateIT(iso){
-  if(!iso) return "";
-  const [y,m,d] = iso.split("-");
-  if(!y||!m||!d) return iso;
-  return `${d}/${m}/${y}`;
-}
-function safeFileName(s){
-  return (s||"player")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g,"_")
-    .replace(/^_+|_+$/g,"")
-    .slice(0,40) || "player";
-}
-function flashPill(msg){
-  const pill = document.getElementById("statusPill");
-  const prev = pill.textContent;
-  pill.textContent = msg;
-  setTimeout(()=>{ pill.textContent = tRunning ? "Gara in corso" : "Pronto"; }, 1400);
-}
-</script>
+      const perc = POSITIONS.map(pos=>{
+        const t = totals[pos.key];
+        const v = t.att>0 ? (t.made/t.att)*100 : 0;
+        return Math.round(v*10)/10;
+      });
+
+      const overallMade = POSITIONS.reduce((a,pos)=>a + totals[pos.key].made,0);
+      const overallAtt  = POSITIONS.reduce((a,pos)=>a + totals[pos.key].att,0);
+      const overallPerc = overallAtt>0 ? Math.round((overallMade/overallAtt)*1000)/10 : 0;
+
+      return { perc, overallPerc, totals, overallMade, overallAtt };
+    }
+
+    function updateStats(){
+      const p = loadPlayer(activePlayerId);
+      renderWatermark(p.photoDataUrl);
+
+      const { perc, overallPerc, overallMade, overallAtt } = calcStats(p);
+
+      $("statsText").textContent =
+        `Media totale: ${overallPerc}% (${overallMade} / ${overallAtt}) • Sessioni: ${p.sessions.length}`;
+
+      // Chart render (sempre 0–100)
+      const ctx = $("chart").getContext("2d");
+      const labels = POSITIONS.map(x=>x.label);
+
+      // Se Chart.js non è caricato, non rompiamo l’app
+      if(typeof Chart === "undefined"){
+        $("statsText").textContent += " • (Chart non disponibile offline)";
+        return;
+      }
+
+      if(chartInstance){
+        chartInstance.destroy();
+        chartInstance = null;
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Percentuale",
+            data: perc,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display:false },
+            tooltip: {
+              callbacks: {
+                label: (c)=> `${c.raw}%`
+              }
+            }
+          },
+          scales: {
+            y: {
+              min: 0,
+              max: 100,
+              ticks: { callback: (v)=> v + "%" },
+              grid: { color: "rgba(255,255,255,.08)" }
+            },
+            x: {
+              grid: { display:false }
+            }
+          }
+        }
+      });
+    }
+
+    /***********************
+     * EXPORT / IMPORT JSON
+     ***********************/
+    function exportJSON(){
+      const p = loadPlayer(activePlayerId);
+      const payload = {
+        app: "VirtusShotTracker",
+        version: 7,
+        exportedAt: new Date().toISOString(),
+        player: {
+          id: p.id,
+          name: p.name,
+          // NON esportiamo foto per privacy/peso: se vuoi esportarla, dimmelo e la metto.
+          sessions: p.sessions
+        }
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `virtus_${safeFile(p.name)}_backup.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast("JSON esportato");
+    }
+
+    function importJSON(file){
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        try{
+          const obj = JSON.parse(reader.result);
+          const pl = obj?.player;
+          if(!pl || !Array.isArray(pl.sessions)){
+            toast("JSON non valido");
+            return;
+          }
+
+          // Auto-detect giocatore:
+          // se id tra 1..12 -> usalo
+          // altrimenti prova a matchare per nome su tabs
+          let targetId = null;
+          if(Number(pl.id) >=1 && Number(pl.id) <= PLAYER_COUNT){
+            targetId = Number(pl.id);
+          }else if(pl.name){
+            for(let i=1;i<=PLAYER_COUNT;i++){
+              const p = loadPlayer(i);
+              if((p.name||"").trim().toLowerCase() === String(pl.name).trim().toLowerCase()){
+                targetId = i; break;
+              }
+            }
+          }
+          if(!targetId) targetId = activePlayerId;
+
+          const target = loadPlayer(targetId);
+          // Unione: aggiungiamo sessioni importate (evita duplicati per ts+date+made)
+          const existingKey = new Set(target.sessions.map(s=> sessionSig(s)));
+          let added = 0;
+          for(const s of pl.sessions){
+            const sig = sessionSig(s);
+            if(!existingKey.has(sig)){
+              target.sessions.push(s);
+              existingKey.add(sig);
+              added++;
+            }
+          }
+
+          // aggiorna nome se importato e diverso
+          if(pl.name && pl.name.trim()){
+            target.name = pl.name.trim();
+          }
+
+          savePlayer(target);
+          renderTabs();
+          setActivePlayer(targetId);
+          toast(`Import ok (+${added} sessioni)`);
+
+        }catch(e){
+          toast("Errore import JSON");
+        }finally{
+          $("importFile").value = "";
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function sessionSig(s){
+      // Firma robusta ma semplice
+      const m = s?.made || {};
+      return [
+        s?.ts || "",
+        s?.date || "",
+        m.fondo_sx ?? "",
+        m.angolo_sx ?? "",
+        m.frontale ?? "",
+        m.angolo_dx ?? "",
+        m.fondo_dx ?? ""
+      ].join("|");
+    }
+
+    function safeFile(name){
+      return String(name || "giocatore")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g,"")
+        .slice(0,40) || "giocatore";
+    }
+
+    /***********************
+     * WHATSAPP SHARE
+     ***********************/
+    function buildReportText(player){
+      const { perc, overallPerc } = calcStats(player);
+
+      // ultima sessione
+      const last = player.sessions[player.sessions.length-1];
+      let lastLine = "";
+      if(last){
+        const made = last.made || {};
+        lastLine =
+          `\nUltima sessione (${last.date}): ` +
+          `FSX ${made.fondo_sx||0}/10, 45SX ${made.angolo_sx||0}/10, FRO ${made.frontale||0}/10, 45DX ${made.angolo_dx||0}/10, FDX ${made.fondo_dx||0}/10` +
+          (last.note ? `\nNote: ${last.note}` : "");
+      }
+
+      const posLine =
+        `\nMedie posizioni: ` +
+        `FSX ${perc[0]}% • 45SX ${perc[1]}% • FRO ${perc[2]}% • 45DX ${perc[3]}% • FDX ${perc[4]}%`;
+
+      return (
+        `🏀 Virtus Shot Tracker\n` +
+        `Giocatore: ${player.name}\n` +
+        `Media totale: ${overallPerc}%\n` +
+        posLine +
+        lastLine
+      );
+    }
+
+    function shareWhatsApp(auto=false){
+      const p = loadPlayer(activePlayerId);
+      const text = buildReportText(p);
+
+      // Se c’è Web Share API -> apri share sheet (migliore)
+      if(navigator.share && !auto){
+        navigator.share({ text }).catch(()=>{});
+        return;
+      }
+
+      // WhatsApp deep link
+      const url = "https://wa.me/?text=" + encodeURIComponent(text);
+      window.open(url, "_blank");
+      if(!auto) toast("Aperto WhatsApp");
+    }
+
+    /***********************
+     * PHOTO HANDLING
+     ***********************/
+    function savePhoto(file){
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        const p = loadPlayer(activePlayerId);
+        p.photoDataUrl = reader.result;
+        savePlayer(p);
+        renderAvatar(p.photoDataUrl);
+        renderWatermark(p.photoDataUrl);
+        toast("Foto salvata");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removePhoto(){
+      const p = loadPlayer(activePlayerId);
+      p.photoDataUrl = null;
+      savePlayer(p);
+      renderAvatar(null);
+      renderWatermark(null);
+      toast("Foto rimossa");
+    }
+
+    /***********************
+     * TIMER (45/40/35 only)
+     ***********************/
+    function applyTimerFromUI(){
+      const p = loadPlayer(activePlayerId);
+      const v = Number($("timerSelect").value || 45);
+
+      timerSeconds = v;
+      timerRemaining = v;
+      $("timerLabel").textContent = `${v} sec`;
+      $("timerBig").textContent = fmtTimer(timerRemaining);
+
+      p.settings.timerSeconds = v;
+      p.settings.beepC = $("beepC").checked;
+      p.settings.beepB = $("beepB").checked;
+      p.settings.vibrateEnd = $("vibrateEnd").checked;
+      p.settings.autoSendWA = $("autoSendWA").checked;
+      savePlayer(p);
+    }
+
+    function timerStart(){
+      if(timerRunning) return;
+      timerRunning = true;
+
+      // Aggiorna settings su start (così restano)
+      applyTimerFromUI();
+
+      timerHandle = setInterval(()=>{
+        timerRemaining = Math.max(0, timerRemaining - 1);
+        $("timerBig").textContent = fmtTimer(timerRemaining);
+
+        if(timerRemaining <= 0){
+          timerStop(true);
+          onTimerEnd();
+        }
+      }, 1000);
+
+      toast("Timer avviato");
+    }
+
+    function timerStop(silent=false){
+      timerRunning = false;
+      if(timerHandle){ clearInterval(timerHandle); timerHandle = null; }
+      if(!silent) toast("Timer fermato");
+    }
+
+    function timerReset(){
+      timerStop(true);
+      applyTimerFromUI(); // ripristina a timerSeconds
+      toast("Timer resettato");
+    }
+
+    function onTimerEnd(){
+      // suono + vibrazione
+      const useC = $("beepC").checked;
+      const useB = $("beepB").checked;
+      const vib = $("vibrateEnd").checked;
+
+      if(vib && navigator.vibrate){
+        navigator.vibrate([140,60,140,60,220]);
+      }
+
+      // WebAudio beep (più affidabile di audio file)
+      try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g);
+        g.connect(ctx.destination);
+
+        // C o B (frequenze indicative)
+        const freq = useB ? 494 : 523; // B4 ~494, C5 ~523
+        if(!useC && !useB){
+          ctx.close();
+          return;
+        }
+
+        o.frequency.value = freq;
+        o.type = "sine";
+        g.gain.value = 0.0001;
+        o.start();
+
+        // attacco rapido
+        g.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.02);
+        // durata
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.45);
+
+        setTimeout(()=>{
+          o.stop();
+          ctx.close();
+        }, 520);
+      }catch(e){
+        // se audio non disponibile, pazienza
+      }
+
+      toast("Tempo finito ⏱️");
+    }
+
+    /***********************
+     * EVENTS
+     ***********************/
+    function escapeHtml(s){
+      return String(s||"").replace(/[&<>"']/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+    }
+
+    function bindEvents(){
+      $("saveNameBtn").addEventListener("click", ()=>{
+        const p = loadPlayer(activePlayerId);
+        const name = ($("playerName").value || "").trim();
+        if(!name){ toast("Inserisci un nome"); return; }
+        p.name = name;
+        // salva settings correnti
+        p.settings.beepC = $("beepC").checked;
+        p.settings.beepB = $("beepB").checked;
+        p.settings.vibrateEnd = $("vibrateEnd").checked;
+        p.settings.autoSendWA = $("autoSendWA").checked;
+        p.settings.timerSeconds = Number($("timerSelect").value || 45);
+
+        savePlayer(p);
+        renderTabs();
+        toast("Nome salvato");
+      }, {passive:true});
+
+      $("resetPlayerBtn").addEventListener("click", ()=>{
+        if(!confirm("Reset totale del giocatore selezionato? (sessioni e impostazioni)")) return;
+        resetPlayer(activePlayerId);
+        renderTabs();
+        renderPlayerPanel();
+        updateStats();
+        toast("Giocatore resettato");
+      });
+
+      $("photoInput").addEventListener("change", (e)=>{
+        const f = e.target.files && e.target.files[0];
+        if(!f) return;
+        savePhoto(f);
+        $("photoInput").value = "";
+      });
+
+      $("removePhotoBtn").addEventListener("click", ()=>{
+        removePhoto();
+      });
+
+      $("timerSelect").addEventListener("change", ()=>{
+        applyTimerFromUI();
+      });
+
+      $("beepC").addEventListener("change", ()=>applyTimerFromUI());
+      $("beepB").addEventListener("change", ()=>applyTimerFromUI());
+      $("vibrateEnd").addEventListener("change", ()=>applyTimerFromUI());
+      $("autoSendWA").addEventListener("change", ()=>applyTimerFromUI());
+
+      $("startTimerBtn").addEventListener("click", timerStart);
+      $("stopTimerBtn").addEventListener("click", ()=>timerStop(false));
+      $("resetTimerBtn").addEventListener("click", timerReset);
+
+      $("clearInputsBtn").addEventListener("click", clearInputs);
+      $("saveSessionBtn").addEventListener("click", saveSession);
+
+      $("exportBtn").addEventListener("click", exportJSON);
+      $("shareBtn").addEventListener("click", ()=>shareWhatsApp(false));
+
+      $("importFile").addEventListener("change", (e)=>{
+        const f = e.target.files && e.target.files[0];
+        if(!f) return;
+        importJSON(f);
+      });
+    }
+
+    /***********************
+     * INIT
+     ***********************/
+    function init(){
+      // Set default date
+      $("sessionDate").value = todayISO();
+
+      renderTabs();
+      renderPlayerPanel();
+      bindEvents();
+
+      // Primo render chart
+      updateStats();
+    }
+
+    // Start
+    init();
+  </script>
 </body>
 </html>
