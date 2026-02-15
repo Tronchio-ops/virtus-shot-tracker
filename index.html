@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="it">
+<!DOCTYPE html><html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="manifest" href="/virtus-shot-tracker/manifest.webmanifest">
-<meta name="theme-color" content="#062714">
-
+<link rel="manifest" href="manifest.webmanifest">
 <title>Virtus Shot Tracker</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -14,93 +10,106 @@ body {
   margin:0;
   font-family: Arial, sans-serif;
   color:white;
-  background: radial-gradient(circle at center, #0a4d2b, #000);
+  background: radial-gradient(circle at center, #0a3d1f, #001a0d);
 }
-.container {
-  padding:20px;
-}
-h1 {
-  text-align:center;
-}
+.container { padding:20px; }
+h1 { text-align:center; }
 .card {
   background:rgba(0,0,0,0.4);
   padding:15px;
   border-radius:10px;
   margin-bottom:20px;
 }
-input {
-  width:60px;
-  padding:5px;
+input, select, button {
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+  border-radius:5px;
+  border:none;
 }
 button {
-  padding:10px;
-  margin-top:10px;
-  width:100%;
-  background:#0a4d2b;
+  background:#1e8239;
   color:white;
-  border:none;
-  border-radius:8px;
-  font-size:16px;
+  font-weight:bold;
+}
+canvas {
+  background:white;
+  border-radius:10px;
 }
 </style>
 </head>
 <body>
 <div class="container">
-<h1>Virtus Shot Tracker</h1>
+<h1>Virtus Shot Tracker</h1><div class="card">
+<label>Data:</label>
+<input type="date" id="date"><label>Fondo sx:</label>
+<input id="fsx" type="number">
 
-<div class="card">
-<h3>Inserisci canestri segnati</h3>
-<div>Fondo sx: <input id="p1" type="number"></div>
-<div>45° sx: <input id="p2" type="number"></div>
-<div>Frontale: <input id="p3" type="number"></div>
-<div>45° dx: <input id="p4" type="number"></div>
-<div>Fondo dx: <input id="p5" type="number"></div>
+<label>45° sx:</label>
+<input id="45sx" type="number">
+
+<label>Frontale:</label>
+<input id="front" type="number">
+
+<label>45° dx:</label>
+<input id="45dx" type="number">
+
+<label>Fondo dx:</label>
+<input id="fdx" type="number">
+
 <button onclick="addSession()">Aggiungi sessione</button>
-</div>
 
-<div class="card">
+</div><div class="card">
+<h3>Statistiche totali</h3>
+<p id="stats"></p>
+</div><div class="card">
 <canvas id="chart"></canvas>
 </div>
-</div>
-
-<script>
-let data = JSON.parse(localStorage.getItem("virtusData")) || [];
-
-function save() {
-  localStorage.setItem("virtusData", JSON.stringify(data));
-}
+</div><script>
+let sessions = JSON.parse(localStorage.getItem("sessions")) || [];
 
 function addSession() {
-  let total = 0;
-  for (let i=1;i<=5;i++) {
-    total += Number(document.getElementById("p"+i).value || 0);
-  }
-  let percent = total;
-  data.push(percent);
-  save();
+  let data = {
+    date: document.getElementById("date").value,
+    fsx: +document.getElementById("fsx").value,
+    s45: +document.getElementById("45sx").value,
+    front: +document.getElementById("front").value,
+    d45: +document.getElementById("45dx").value,
+    fdx: +document.getElementById("fdx").value
+  };
+  sessions.push(data);
+  localStorage.setItem("sessions", JSON.stringify(sessions));
+  updateStats();
   drawChart();
 }
 
+function updateStats() {
+  let total = 0;
+  sessions.forEach(s => {
+    total += s.fsx + s.s45 + s.front + s.d45 + s.fdx;
+  });
+  document.getElementById("stats").innerText =
+    "Sessioni: " + sessions.length + " | Canestri totali: " + total;
+}
+
 function drawChart() {
+  let labels = sessions.map(s => s.date);
+  let values = sessions.map(s => s.fsx + s.s45 + s.front + s.d45 + s.fdx);
+
   let ctx = document.getElementById("chart");
   new Chart(ctx, {
-    type: 'line',
+    type: "line",
     data: {
-      labels: data.map((_,i)=>"Test "+(i+1)),
+      labels: labels,
       datasets: [{
-        label: '% Media distanza',
-        data: data,
-        borderColor: 'lime',
-        tension: 0.3
+        label: "Canestri per sessione",
+        data: values
       }]
-    },
-    options: {
-      scales: {
-        y: {min:0, max:100}
-      }
     }
   });
 }
 
+updateStats();
 drawChart();
-</
+</script></body>
+</html>
