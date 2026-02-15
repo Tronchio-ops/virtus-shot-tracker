@@ -1,1844 +1,1350 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#062b1a" />
   <title>Virtus Shot Tracker</title>
-
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#061a11" />
 
   <style>
     :root{
-      --bg0:#020905;
+      --bg0:#020403;
       --bg1:#04140d;
-      --bg2:#062114;
-      --green:#0aa85a;
-      --green2:#0f7a3a;
-      --text:#eafff3;
-      --muted:rgba(234,255,243,.72);
-      --stroke:rgba(255,255,255,.10);
-      --card:rgba(0,0,0,.42);
-      --card2:rgba(0,0,0,.28);
-      --shadow:0 18px 50px rgba(0,0,0,.40);
-      --radius:22px;
-      --radius2:18px;
+      --bg2:#062b1a;
+      --card:rgba(8, 20, 14, .78);
+      --card2:rgba(10, 26, 18, .86);
+      --stroke:rgba(255,255,255,.08);
+      --stroke2:rgba(255,255,255,.12);
+      --txt:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.58);
+      --green:#12c46a;
+      --green2:#0a7a43;
+      --shadow: 0 12px 28px rgba(0,0,0,.45);
+      --r:22px;
+      --r2:18px;
     }
 
-    *{box-sizing:border-box;}
-    html,body{
-      height:100%;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
       margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--txt);
       background:
-        radial-gradient(1200px 700px at 15% 0%, rgba(10,168,90,.22), transparent 60%),
-        radial-gradient(900px 600px at 85% 20%, rgba(10,168,90,.14), transparent 55%),
-        linear-gradient(160deg, var(--bg2), var(--bg0));
+        radial-gradient(1200px 800px at 20% -10%, rgba(18,196,106,.20), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(18,196,106,.14), transparent 55%),
+        linear-gradient(180deg, var(--bg2), var(--bg0) 60%);
+      min-height:100%;
     }
 
-    .wrap{max-width:960px; margin:0 auto; padding:18px 14px 36px;}
-
-    /* Header */
-    .topbar{
-      display:flex; align-items:center; gap:14px;
-      padding:16px 16px;
-      border-radius:28px;
-      background:
-        radial-gradient(700px 300px at 30% 0%, rgba(10,168,90,.25), transparent 60%),
-        linear-gradient(135deg, rgba(0,0,0,.30), rgba(0,0,0,.08));
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      position:relative;
-      overflow:hidden;
-    }
-    .topbar::after{
-      content:"";
-      position:absolute;
-      inset:-200px -220px auto auto;
-      width:520px; height:520px;
-      background: radial-gradient(circle at 35% 35%, rgba(10,168,90,.20), rgba(10,168,90,0) 70%);
-      transform:rotate(15deg);
-      pointer-events:none;
-    }
-
-    .brand{
-      display:flex; align-items:center; gap:12px;
-      min-width:0;
-    }
-    .brandLogo{
-      width:54px; height:54px;
-      border-radius:18px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      display:flex; align-items:center; justify-content:center;
-      flex:0 0 auto;
-    }
-    .brandLogo img{width:100%; height:100%; object-fit:cover;}
-    .brandLogo span{font-weight:900; color:rgba(255,255,255,.35); font-size:12px;}
-
-    .brandText{min-width:0;}
-    .brandTitle{
-      margin:0;
-      font-size:28px;
-      font-weight:1000;
-      letter-spacing:.2px;
-      line-height:1.05;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .brandSub{
-      margin-top:4px;
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.25;
-    }
-
-    .rightBox{
-      margin-left:auto;
-      display:flex; align-items:center; gap:10px;
-      flex:0 0 auto;
-      position:relative;
-    }
-
-    .activePlayerBadge{
-      display:flex; align-items:center; gap:10px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      max-width: 56vw;
-    }
-    .apAvatar{
-      width:38px; height:38px;
-      border-radius:999px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      display:flex; align-items:center; justify-content:center;
-      flex:0 0 auto;
-    }
-    .apAvatar img{width:100%; height:100%; object-fit:cover;}
-    .apAvatar span{font-weight:1000; font-size:12px; color:rgba(255,255,255,.55);}
-    .apName{
-      font-weight:900;
-      font-size:13px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .menuBtn{
-      width:44px; height:44px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      color: var(--text);
-      cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      font-size:22px; font-weight:1000;
-      user-select:none;
-    }
-
-    .dropdown{
-      position:absolute;
-      right:0;
-      top:52px;
-      min-width: 240px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.78);
-      box-shadow: 0 18px 50px rgba(0,0,0,.55);
-      overflow:hidden;
-      display:none;
-      z-index: 1000;
-      backdrop-filter: blur(8px);
-    }
-    .dropdown.show{display:block;}
-    .ddItem{
-      padding:12px 14px;
-      cursor:pointer;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      display:flex; gap:10px; align-items:center;
-      user-select:none;
-    }
-    .ddItem:last-child{border-bottom:none;}
-    .ddItem:hover{background: rgba(10,168,90,.14);}
-    .ddIcon{
-      width:26px; height:26px;
-      border-radius: 10px;
-      background: rgba(10,168,90,.18);
-      display:flex; align-items:center; justify-content:center;
-      border:1px solid rgba(10,168,90,.20);
-      flex:0 0 auto;
-      font-size:14px;
-    }
-    .ddText{font-weight:900;}
-    .ddHint{font-weight:700; color:rgba(234,255,243,.70); font-size:12px; margin-left:auto;}
-
-    /* Layout */
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-      margin-top:14px;
-    }
-    @media(min-width:900px){
-      .grid{grid-template-columns: 1.18fr .82fr;}
+    .wrap{
+      width:min(980px, 94vw);
+      margin: 18px auto 40px;
+      padding-bottom: 24px;
     }
 
     .card{
-      background: linear-gradient(180deg, rgba(0,0,0,.40), rgba(0,0,0,.26));
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(18,196,106,.08), transparent 55%), var(--card);
+      border:1px solid var(--stroke);
+      border-radius: var(--r);
       box-shadow: var(--shadow);
-      padding:16px;
-      position:relative;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       overflow:hidden;
     }
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:-80px -80px auto auto;
-      width:220px; height:220px;
-      background: radial-gradient(circle at 35% 35%, rgba(10,168,90,.18), rgba(10,168,90,0) 70%);
-      pointer-events:none;
-    }
+    .card.pad{ padding: 16px; }
+    .row{display:flex; gap:12px; align-items:center}
+    .col{display:flex; flex-direction:column; gap:10px}
+    .spacer{flex:1}
+    .muted{color:var(--muted)}
+    .divider{height:1px; background:var(--stroke); margin:12px 0}
 
-    h2{margin:0 0 10px 0; font-size:24px; font-weight:1000;}
-    .hint{color:var(--muted); font-size:13px; line-height:1.35;}
-    .small{color:var(--muted); font-size:12px; line-height:1.35; margin-top:8px;}
-
-    label{display:block; margin:8px 0 6px; font-size:13px; color:var(--muted);}
-    input[type="date"], input[type="text"], select, input[type="file"]{
-      width:100%;
-      padding:12px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      color: var(--text);
-      outline:none;
-      font-size:16px;
-    }
-
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
-    .row > *{flex:1;}
-    .row .tight{flex:0 0 auto;}
-
-    .btn{
-      padding:12px 14px;
-      border-radius: 16px;
-      border:1px solid rgba(10,168,90,.22);
-      background: linear-gradient(135deg, rgba(10,168,90,.40), rgba(0,0,0,.18));
-      color: var(--text);
-      font-weight:1000;
-      cursor:pointer;
-      user-select:none;
-      box-shadow: 0 10px 26px rgba(0,0,0,.25);
-      transition:.15s transform ease, .15s filter ease;
-    }
-    .btn:hover{transform: translateY(-1px); filter: brightness(1.05);}
-    .btn.secondary{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      font-weight:900;
-    }
-    .btn.danger{
-      border:1px solid rgba(255,120,120,.20);
-      background: linear-gradient(135deg, rgba(139,43,43,.92), rgba(84,18,18,.92));
-    }
-
-    /* Tabs for selected players */
-    .tabs{
+    /* HEADER */
+    .header{
+      padding:16px 16px;
       display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
+      align-items:center;
+      gap:14px;
+      background:
+        radial-gradient(700px 300px at 10% 0%, rgba(18,196,106,.20), transparent 60%),
+        linear-gradient(135deg, rgba(0,0,0,.30), rgba(0,0,0,.08));
     }
-    .ptab{
-      display:flex; align-items:center; gap:10px;
-      padding:10px 12px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      cursor:pointer;
-      user-select:none;
-      max-width: 100%;
-    }
-    .ptab.active{
-      border-color: rgba(10,168,90,.35);
-      background: linear-gradient(135deg, rgba(10,168,90,.24), rgba(0,0,0,.18));
-    }
-    .ptabAva{
-      width:34px; height:34px;
-      border-radius:999px;
+    .logo{
+      width:64px; height:64px; border-radius:16px;
+      background: rgba(0,0,0,.35);
+      border:1px solid var(--stroke2);
+      display:grid; place-items:center;
       overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      display:flex; align-items:center; justify-content:center;
       flex:0 0 auto;
     }
-    .ptabAva img{width:100%; height:100%; object-fit:cover;}
-    .ptabAva span{font-size:12px; font-weight:1000; color:rgba(255,255,255,.55);}
-    .ptabName{
-      font-weight:1000;
-      font-size:13px;
+    .logo img{width:100%; height:100%; object-fit:cover}
+    .titleBox{display:flex; flex-direction:column; gap:2px}
+    .title{
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing:.2px;
+      line-height:1.05;
+      margin:0;
+      text-shadow: 0 2px 16px rgba(0,0,0,.35);
+      word-break: break-word;
+    }
+
+    /* TOP BAR: player + menu */
+    .topbar{
+      margin-top:14px;
+      padding: 14px 14px;
+      display:flex; align-items:center; gap:12px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.30);
+      border:1px solid var(--stroke2);
+      max-width: 70%;
+    }
+    .badge{
+      width:34px; height:34px; border-radius:999px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      font-weight:800;
+      color:rgba(255,255,255,.85);
+      flex:0 0 auto;
+    }
+    .pname{
+      font-weight:800;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 220px;
+    }
+    .pmini{
+      width:34px; height:34px; border-radius:12px;
+      overflow:hidden;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      flex:0 0 auto;
+    }
+    .pmini img{width:100%; height:100%; object-fit:cover}
+
+    .iconBtn{
+      width:44px; height:44px; border-radius:14px;
+      display:grid; place-items:center;
+      background: rgba(0,0,0,.28);
+      border:1px solid var(--stroke2);
+      color:var(--txt);
+      cursor:pointer;
+      user-select:none;
+    }
+    .iconBtn:active{transform: scale(.98)}
+    .dots{font-size:22px; line-height:0}
+
+    /* SECTION TITLES */
+    .sectionTitle{
+      margin: 10px 2px 8px;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing:.2px;
     }
 
-    /* Timer */
+    /* INPUTS */
+    input[type="text"], input[type="date"], select{
+      width:100%;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.22);
+      color: var(--txt);
+      outline:none;
+      font-size: 16px;
+    }
+    input[type="date"]{color-scheme: dark}
+    select{appearance:none}
+
+    .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+    .grid3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px}
+
+    /* TIMER */
     .timerBox{
-      padding:12px;
-      border-radius: var(--radius2);
-      border:1px solid rgba(255,255,255,.10);
-      background:
-        radial-gradient(600px 180px at 20% 0%, rgba(10,168,90,.18), transparent 65%),
-        rgba(0,0,0,.18);
+      border-radius: var(--r);
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(18,196,106,.10), rgba(0,0,0,.22));
+      padding: 14px;
     }
-    .timerTop{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
-    .timerBig{
-      font-size:38px;
-      font-weight:1100;
-      letter-spacing:.5px;
-    }
-    .startBig{
-      padding:14px 18px;
-      border-radius: 18px;
-      border:1px solid rgba(10,168,90,.28);
-      background: linear-gradient(135deg, rgba(10,168,90,.60), rgba(0,0,0,.18));
-      color: var(--text);
-      font-weight:1100;
-      cursor:pointer;
-      min-width: 160px;
+    .time{
+      font-size: 66px;
+      font-weight: 1000;
+      letter-spacing: 1px;
       text-align:center;
-      box-shadow: 0 14px 32px rgba(0,0,0,.32);
-      user-select:none;
+      margin: 6px 0 12px;
+      text-shadow: 0 2px 20px rgba(0,0,0,.35);
     }
-    .miniBtn{
-      padding:10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      color: var(--text);
-      font-weight:1000;
+    .btnRow{display:flex; gap:10px; align-items:center; justify-content:center}
+    .btn{
+      border:1px solid var(--stroke2);
+      background: rgba(0,0,0,.28);
+      color: var(--txt);
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-weight: 900;
       cursor:pointer;
       user-select:none;
+      min-width: 92px;
+    }
+    .btn:active{transform: scale(.98)}
+    .btnPrimary{
+      background: linear-gradient(180deg, rgba(18,196,106,.22), rgba(18,196,106,.10));
+      border-color: rgba(18,196,106,.35);
+    }
+    .btnStartBig{
+      min-width: 190px;
+      font-size: 18px;
+      padding: 16px 18px;
+      border-radius: 18px;
     }
 
-    /* Inputs +/− */
-    .scoreList{display:flex; flex-direction:column; gap:10px; margin-top:10px;}
-    .scoreItem{
+    /* SHOOT INPUT */
+    .shotRow{
       display:grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 1fr auto auto auto;
       gap:10px;
-      padding:12px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(0,0,0,.18);
       align-items:center;
+      padding: 12px 12px;
+      border-radius: var(--r);
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.22);
     }
-    .posTitle{font-size:20px; font-weight:1100; line-height:1.1;}
-    .posSub{font-size:12px; color:var(--muted); margin-top:2px;}
-    .counter{display:flex; align-items:center; gap:10px;}
-    .cbtn{
-      width:52px; height:52px;
+    .shotName{
+      font-weight: 950;
+      font-size: 18px;
+      line-height:1.05;
+    }
+    .shotSub{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .pmBtn{
+      width:46px; height:46px;
       border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      color:var(--text);
-      font-size:26px;
-      font-weight:1100;
+      border:1px solid var(--stroke2);
+      background: rgba(0,0,0,.26);
+      color: var(--txt);
+      font-size: 26px;
+      font-weight: 900;
+      display:grid; place-items:center;
       cursor:pointer;
       user-select:none;
     }
-    .cval{
-      width:64px; height:52px;
+    .pmBtn:active{transform: scale(.98)}
+    .val{
+      width:64px;
+      text-align:center;
+      font-size: 22px;
+      font-weight: 1000;
+      padding: 10px 0;
       border-radius: 16px;
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(0,0,0,.12);
-      display:flex; align-items:center; justify-content:center;
-      font-size:22px; font-weight:1100;
+      border:1px solid var(--stroke2);
+      background: rgba(0,0,0,.18);
     }
 
-    .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:14px;}
-    .actions .btn{flex:1; min-width:160px;}
+    .actions2{display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top: 12px}
 
-    /* Stats */
-    .chartWrap{
-      margin-top:10px;
-      padding:12px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.08);
-      background:
-        radial-gradient(700px 240px at 30% 0%, rgba(10,168,90,.12), transparent 65%),
-        rgba(0,0,0,.12);
+    /* STATS */
+    .statsBox{
       position:relative;
+      border-radius: var(--r);
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+      padding: 12px;
       overflow:hidden;
     }
-    .watermark{
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      opacity:.09;
+    .statsLogo{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      opacity:.14;
       pointer-events:none;
-      z-index:1;
       transform: translateY(10px);
     }
-    .watermark img{
-      width:min(520px, 85%);
-      height:auto;
-      filter: saturate(1.05) contrast(1.05);
+    .statsLogo img{
+      width:min(420px, 80%);
+      filter: saturate(1.1) contrast(1.05);
     }
-    canvas{position:relative; z-index:2; width:100%; height:320px; display:block; border-radius:14px; background: rgba(255,255,255,.02);}
+    canvas{
+      width:100% !important;
+      height: 260px !important;
+    }
 
-    /* Pages */
-    .page{display:none;}
-    .page.show{display:block;}
-
-    /* Modal */
-    .modalOverlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.65);
+    /* OVERLAY / MODALS */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.62);
       display:none;
+      z-index: 9999;
+      padding: 14px;
       align-items:center;
       justify-content:center;
-      padding:18px;
-      z-index:2000;
-      backdrop-filter: blur(6px);
     }
-    .modalOverlay.show{display:flex;}
+    .overlay.show{display:flex}
     .modal{
-      width:min(720px, 100%);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.80);
-      box-shadow: 0 24px 70px rgba(0,0,0,.55);
+      width:min(720px, 96vw);
+      max-height: 86vh;
       overflow:hidden;
+      border-radius: 22px;
+      border:1px solid var(--stroke2);
+      background: rgba(6, 18, 12, .94);
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
     }
     .modalHead{
-      padding:14px 16px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      display:flex; align-items:center; gap:12px;
+      padding: 14px 14px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      border-bottom:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(18,196,106,.10), transparent 70%);
     }
-    .modalHead h3{margin:0; font-size:18px; font-weight:1100;}
-    .modalBody{padding:14px 16px;}
+    .modalTitle{font-weight:1000; font-size: 18px}
+    .modalBody{
+      padding: 12px;
+      overflow:auto;           /* <-- SCROLL QUI */
+      -webkit-overflow-scrolling: touch;
+      flex:1 1 auto;
+    }
     .modalFoot{
-      padding:14px 16px;
-      border-top:1px solid rgba(255,255,255,.08);
-      display:flex; gap:10px; flex-wrap:wrap;
+      padding: 12px;
+      border-top:1px solid var(--stroke);
+      background: rgba(0,0,0,.22);
+      display:flex;
+      gap:10px;
       justify-content:flex-end;
     }
 
-    .pickList{display:flex; flex-direction:column; gap:10px;}
-    .pickRow{
-      display:flex; align-items:center; gap:12px;
-      padding:10px 10px;
+    .listItem{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding: 12px;
       border-radius: 18px;
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(0,0,0,.18);
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.20);
+      margin-bottom: 10px;
     }
-    .pickRow input{transform: scale(1.25);}
-    .pickAva{
-      width:44px; height:44px;
-      border-radius: 999px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      display:flex; align-items:center; justify-content:center;
-      flex:0 0 auto;
-    }
-    .pickAva img{width:100%; height:100%; object-fit:cover;}
-    .pickAva span{font-weight:1100; font-size:12px; color:rgba(255,255,255,.55);}
-    .pickName{font-weight:1100;}
+    .listItem input{width:22px; height:22px}
+    .liText{display:flex; flex-direction:column}
+    .liMain{font-weight: 950}
+    .liSub{font-size:12px; color:var(--muted)}
 
-    /* Toast */
-    .toast{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:18px;
-      padding:12px 14px;
-      background: rgba(0,0,0,.78);
-      border:1px solid rgba(255,255,255,.10);
-      color: var(--text);
-      border-radius: 14px;
-      box-shadow: 0 18px 50px rgba(0,0,0,.35);
-      font-weight:1100;
-      opacity:0;
-      pointer-events:none;
-      transition:.18s opacity ease, .18s transform ease;
-      z-index:9999;
-      max-width: 92vw;
-      text-align:center;
-    }
-    .toast.show{opacity:1; transform:translateX(-50%) translateY(-2px);}
-
-    /* Ranking */
-    .rankList{display:flex; flex-direction:column; gap:10px; margin-top:10px;}
-    .rankItem{
-      display:flex; align-items:center; gap:12px;
-      padding:12px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.08);
+    .menuItem{
+      width:100%;
+      text-align:left;
+      padding: 14px 12px;
+      border-radius: 16px;
+      border:1px solid var(--stroke);
       background: rgba(0,0,0,.18);
-    }
-    .rankNum{
-      width:32px; height:32px;
-      border-radius: 12px;
-      border:1px solid rgba(10,168,90,.22);
-      background: rgba(10,168,90,.14);
-      display:flex; align-items:center; justify-content:center;
-      font-weight:1100;
-    }
-    .rankName{font-weight:1100; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-    .rankPct{font-weight:1100;}
-    .seg{
-      display:inline-flex;
-      border-radius: 14px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-    }
-    .seg button{
-      padding:10px 12px;
-      border:none;
-      background: transparent;
-      color: var(--muted);
-      font-weight:1100;
+      color: var(--txt);
+      font-weight: 950;
       cursor:pointer;
+      margin-bottom: 10px;
     }
-    .seg button.active{
-      color: var(--text);
-      background: rgba(10,168,90,.18);
+    .menuItem:active{transform: scale(.99)}
+
+    /* Responsive */
+    @media (max-width:520px){
+      .title{font-size:30px}
+      .time{font-size:58px}
+      .shotRow{grid-template-columns: 1fr auto auto auto}
+      canvas{height:240px !important}
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="brandLogo" id="brandLogo">
-          <img id="brandImg" src="icon-192.png" alt="Virtus" />
+    <!-- HEADER BOX -->
+    <div class="card">
+      <div class="header">
+        <div class="logo" id="logoBox">
+          <img id="logoImg" alt="Virtus logo" src="icon-512.png" />
         </div>
-        <div class="brandText">
-          <div class="brandTitle">Virtus Shot Tracker</div>
-          <div class="brandSub">Sessione: 10 tiri per posizione • Timer 45/40/35 • Statistiche 0–100%</div>
+        <div class="titleBox">
+          <h1 class="title">Virtus Shot Tracker</h1>
         </div>
       </div>
 
-      <div class="rightBox">
-        <div class="activePlayerBadge" id="activePlayerBadge" title="Giocatore attivo">
-          <div class="apAvatar" id="apAvatar"><span>VS</span></div>
-          <div class="apName" id="apName">—</div>
+      <!-- PLAYER + MENU -->
+      <div class="topbar">
+        <div class="pill" id="playerPill" title="Giocatore selezionato">
+          <div class="badge" id="playerBadge">G1</div>
+          <div class="pmini" id="playerPhotoMini" style="display:none">
+            <img id="playerPhotoMiniImg" alt="foto giocatore" />
+          </div>
+          <div class="pname" id="playerNameTop">Giocatore 1</div>
         </div>
-
-        <div class="menuBtn" id="menuBtn" aria-label="Menu">⋮</div>
-        <div class="dropdown" id="dropdown">
-          <div class="ddItem" id="ddNewSession">
-            <div class="ddIcon">⟳</div>
-            <div class="ddText">Nuova sessione</div>
-            <div class="ddHint">reset</div>
-          </div>
-          <div class="ddItem" id="ddPickPlayers">
-            <div class="ddIcon">☑</div>
-            <div class="ddText">Seleziona giocatori</div>
-            <div class="ddHint">presenti</div>
-          </div>
-          <div class="ddItem" id="ddPlayerPage">
-            <div class="ddIcon">👤</div>
-            <div class="ddText">Giocatore</div>
-            <div class="ddHint">nome/foto</div>
-          </div>
-          <div class="ddItem" id="ddRanking">
-            <div class="ddIcon">🏆</div>
-            <div class="ddText">Classifica</div>
-            <div class="ddHint">squadra</div>
-          </div>
-          <div class="ddItem" id="ddBackupPage">
-            <div class="ddIcon">⛁</div>
-            <div class="ddText">Backup</div>
-            <div class="ddHint">json</div>
-          </div>
-          <div class="ddItem" id="ddShareWA">
-            <div class="ddIcon">🟢</div>
-            <div class="ddText">Condividi WhatsApp</div>
-            <div class="ddHint">giocatore</div>
-          </div>
-          <div class="ddItem" id="ddGoHome">
-            <div class="ddIcon">⌂</div>
-            <div class="ddText">Home</div>
-            <div class="ddHint">dash</div>
-          </div>
-        </div>
+        <div class="spacer"></div>
+        <button class="iconBtn" id="menuBtn" aria-label="Menu">
+          <span class="dots">⋮</span>
+        </button>
       </div>
     </div>
 
-    <!-- HOME -->
-    <div class="page show" id="pageHome">
-      <div class="grid">
-        <div class="card">
-          <h2>Sessione</h2>
-
-          <!-- 1) DATA -->
-          <label>Data sessione</label>
+    <!-- SESSION -->
+    <div class="card pad" style="margin-top:14px;">
+      <div class="sectionTitle">Sessione</div>
+      <div class="grid2">
+        <div class="col">
+          <label class="muted" for="sessionDate">Data sessione</label>
           <input id="sessionDate" type="date" />
-
-          <!-- 2) TAB GIOCATORI PRESENTI -->
-          <div style="margin-top:10px;">
-            <div class="hint">Giocatori presenti (se vuoto: ⋮ → Seleziona giocatori)</div>
-            <div class="tabs" id="playerTabs"></div>
-          </div>
-
-          <!-- 3) TIMER -->
-          <div style="margin-top:14px;">
-            <h2 style="margin:0 0 10px 0;">Timer</h2>
-
-            <label>Durata (solo 45 / 40 / 35)</label>
-            <select id="timerSelect">
-              <option value="45">45 sec</option>
-              <option value="40">40 sec</option>
-              <option value="35">35 sec</option>
-            </select>
-
-            <div class="timerBox">
-              <div class="timerTop">
-                <div class="timerBig" id="timerBig">00:45</div>
-                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                  <div class="startBig" id="startTimerBtn">START</div>
-                  <button class="miniBtn" id="stopTimerBtn" type="button">Stop</button>
-                  <button class="miniBtn" id="resetTimerBtn" type="button">Reset</button>
-                </div>
-              </div>
-              <div class="small">Suono + vibrazione: attivi di default. Fine tempo: 5 beep (~5s).</div>
-            </div>
-          </div>
-
-          <!-- 4) INSERIMENTO -->
-          <div style="margin-top:14px;">
-            <h2 style="margin:0 0 10px 0;">Inserimento tiri</h2>
-            <div class="hint">Solo + / −. Ogni posizione è su 10 tiri.</div>
-            <div class="scoreList" id="scoreList"></div>
-          </div>
-
-          <!-- 5) SALVA -->
-          <div class="actions">
-            <button class="btn secondary" id="clearInputsBtn" type="button">Azzera inserimento</button>
-            <button class="btn" id="saveSessionBtn" type="button">Salva sessione</button>
-          </div>
         </div>
+        <div class="col">
+          <label class="muted" for="timerPreset">Timer</label>
+          <select id="timerPreset">
+            <option value="45">45 sec</option>
+            <option value="40">40 sec</option>
+            <option value="35">35 sec</option>
+          </select>
+        </div>
+      </div>
 
-        <div class="card">
-          <!-- 6) STATISTICHE -->
-          <h2>Statistiche</h2>
-          <div class="hint">Grafico sempre 0% → 100% (offline, senza librerie esterne).</div>
+      <div class="divider"></div>
 
-          <div class="chartWrap">
-            <div class="watermark" id="wmBox"></div>
-            <canvas id="chart" width="900" height="320"></canvas>
-          </div>
+      <div class="row" style="gap:10px;">
+        <div class="col" style="flex:1;">
+          <div class="muted">Giocatori presenti</div>
+          <div id="presentSummary" style="font-weight:900;">Nessuno selezionato</div>
+        </div>
+        <button class="btn btnPrimary" id="openSelectPlayers">Seleziona</button>
+      </div>
+    </div>
 
-          <div class="small" id="statsText">—</div>
-
-          <div class="actions" style="margin-top:14px;">
-            <button class="btn secondary" id="shareBtn" type="button">Condividi su WhatsApp</button>
-          </div>
+    <!-- TIMER -->
+    <div class="card pad" style="margin-top:14px;">
+      <div class="sectionTitle">Timer</div>
+      <div class="timerBox">
+        <div class="time" id="timeDisplay">00:45</div>
+        <div class="btnRow">
+          <button class="btn btnPrimary btnStartBig" id="startBtn">START</button>
+          <button class="btn" id="stopBtn">Stop</button>
+          <button class="btn" id="resetBtn">Reset</button>
         </div>
       </div>
     </div>
 
-    <!-- PLAYER PAGE -->
-    <div class="page" id="pagePlayer">
-      <div class="card">
-        <h2>Giocatore</h2>
-        <div class="hint">Qui gestisci nome e foto (fotocamera). In Home rimane pulito.</div>
+    <!-- INPUT SHOTS -->
+    <div class="card pad" style="margin-top:14px;">
+      <div class="sectionTitle">Inserimento tiri</div>
 
-        <div class="row" style="margin-top:12px;">
-          <div class="tight" style="flex:0 0 auto;">
-            <div class="apAvatar" style="width:84px;height:84px;border-radius:24px;" id="playerPageAvatar">
-              <span>VS</span>
-            </div>
-          </div>
+      <div class="col" style="gap:12px;">
+        <div class="shotRow">
           <div>
-            <label>Nome giocatore</label>
-            <input id="playerName" type="text" placeholder="Es. Marco" />
+            <div class="shotName">Fondo sx</div>
+            <div class="shotSub">su 10</div>
           </div>
+          <button class="pmBtn" data-k="fsx" data-d="-1">−</button>
+          <div class="val" id="val-fsx">0</div>
+          <button class="pmBtn" data-k="fsx" data-d="1">+</button>
         </div>
 
-        <label>Foto giocatore (apre la fotocamera)</label>
-        <input id="photoInput" type="file" accept="image/*" capture="environment" />
-
-        <div class="actions" style="margin-top:14px;">
-          <button class="btn" id="savePlayerBtn" type="button">Salva nome e foto</button>
-          <button class="btn secondary" id="removePhotoBtn" type="button">Rimuovi foto</button>
-          <button class="btn danger" id="resetPlayerBtn" type="button">Reset giocatore</button>
+        <div class="shotRow">
+          <div>
+            <div class="shotName">45° sx</div>
+            <div class="shotSub">su 10</div>
+          </div>
+          <button class="pmBtn" data-k="45sx" data-d="-1">−</button>
+          <div class="val" id="val-45sx">0</div>
+          <button class="pmBtn" data-k="45sx" data-d="1">+</button>
         </div>
 
-        <div class="small">Nota: la foto è salvata solo sul telefono di chi la imposta.</div>
+        <div class="shotRow">
+          <div>
+            <div class="shotName">Frontale</div>
+            <div class="shotSub">su 10</div>
+          </div>
+          <button class="pmBtn" data-k="fr" data-d="-1">−</button>
+          <div class="val" id="val-fr">0</div>
+          <button class="pmBtn" data-k="fr" data-d="1">+</button>
+        </div>
+
+        <div class="shotRow">
+          <div>
+            <div class="shotName">45° dx</div>
+            <div class="shotSub">su 10</div>
+          </div>
+          <button class="pmBtn" data-k="45dx" data-d="-1">−</button>
+          <div class="val" id="val-45dx">0</div>
+          <button class="pmBtn" data-k="45dx" data-d="1">+</button>
+        </div>
+
+        <div class="shotRow">
+          <div>
+            <div class="shotName">Fondo dx</div>
+            <div class="shotSub">su 10</div>
+          </div>
+          <button class="pmBtn" data-k="fdx" data-d="-1">−</button>
+          <div class="val" id="val-fdx">0</div>
+          <button class="pmBtn" data-k="fdx" data-d="1">+</button>
+        </div>
+      </div>
+
+      <div class="actions2">
+        <button class="btn" id="clearBtn">Azzera</button>
+        <button class="btn btnPrimary" id="saveBtn">Salva</button>
       </div>
     </div>
 
-    <!-- BACKUP PAGE -->
-    <div class="page" id="pageBackup">
-      <div class="card">
-        <h2>Backup (JSON)</h2>
-        <div class="hint">Import/Export dei dati del giocatore attivo. Utile per inviare al coach o spostare dati.</div>
-
-        <label>Import JSON</label>
-        <input id="importFile" type="file" accept="application/json" />
-
-        <div class="actions" style="margin-top:14px;">
-          <button class="btn secondary" id="exportBtn" type="button">Esporta JSON</button>
-          <button class="btn" id="backHomeFromBackup" type="button">Torna Home</button>
+    <!-- STATS -->
+    <div class="card pad" style="margin-top:14px;">
+      <div class="sectionTitle">Statistiche</div>
+      <div class="statsBox">
+        <div class="statsLogo">
+          <img alt="logo" src="icon-512.png">
         </div>
+        <canvas id="chart"></canvas>
+      </div>
 
-        <div class="small">L’import riconosce il giocatore se nel file c’è id/nome; altrimenti usa quello attivo.</div>
+      <div class="row" style="margin-top:10px;">
+        <div style="font-weight:950;" id="avgLine">Media: 0% • Sessioni: 0</div>
+        <div class="spacer"></div>
+        <button class="btn btnPrimary" id="shareBtn">Condividi WhatsApp</button>
       </div>
     </div>
-
-    <!-- RANKING PAGE -->
-    <div class="page" id="pageRanking">
-      <div class="card">
-        <h2>Classifica (presenti)</h2>
-        <div class="hint">Riassunto squadra senza conflitti: legge i dati già salvati, non modifica niente.</div>
-
-        <div class="row" style="margin-top:10px;">
-          <div class="tight" style="flex:0 0 auto;">
-            <div class="seg" id="rankMode">
-              <button type="button" data-mode="total" class="active">Totale</button>
-              <button type="button" data-mode="last">Ultima</button>
-            </div>
-          </div>
-          <div class="tight" style="flex:0 0 auto;">
-            <button class="btn secondary" id="backHomeFromRanking" type="button">Torna Home</button>
-          </div>
-        </div>
-
-        <div class="rankList" id="rankList"></div>
-        <div class="small" id="rankHint"></div>
-      </div>
-    </div>
-
   </div>
 
-  <!-- MODAL: PICK PLAYERS -->
-  <div class="modalOverlay" id="modalOverlay">
-    <div class="modal">
+  <!-- MENU MODAL -->
+  <div class="overlay" id="menuOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
       <div class="modalHead">
-        <h3>Seleziona giocatori presenti</h3>
-        <div style="margin-left:auto; color:rgba(234,255,243,.7); font-weight:900; font-size:12px;">checkbox</div>
+        <div class="modalTitle">Menu</div>
+        <div class="spacer"></div>
+        <button class="iconBtn" id="menuClose" aria-label="Chiudi"><span class="dots">✕</span></button>
       </div>
       <div class="modalBody">
-        <div class="pickList" id="pickList"></div>
+        <button class="menuItem" id="menuNewSession">Nuova sessione (reset presenti)</button>
+        <button class="menuItem" id="menuSelectPlayers">Seleziona giocatori</button>
+        <button class="menuItem" id="menuPlayerSettings">Giocatore (nome + foto)</button>
+        <button class="menuItem" id="menuBackup">Backup / Import</button>
       </div>
       <div class="modalFoot">
-        <button class="btn secondary" id="modalCancel" type="button">Annulla</button>
-        <button class="btn" id="modalConfirm" type="button">Conferma</button>
+        <button class="btn" id="menuClose2">Chiudi</button>
       </div>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <!-- SELECT PLAYERS MODAL -->
+  <div class="overlay" id="selectOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modalHead">
+        <div class="modalTitle">Seleziona giocatori presenti</div>
+        <div class="spacer"></div>
+        <button class="iconBtn" id="selectClose" aria-label="Chiudi"><span class="dots">✕</span></button>
+      </div>
+      <div class="modalBody" id="selectList"></div>
+      <div class="modalFoot">
+        <button class="btn" id="selectCancel">Annulla</button>
+        <button class="btn btnPrimary" id="selectOk">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAYER SETTINGS MODAL -->
+  <div class="overlay" id="playerOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modalHead">
+        <div class="modalTitle">Giocatore</div>
+        <div class="spacer"></div>
+        <button class="iconBtn" id="playerClose" aria-label="Chiudi"><span class="dots">✕</span></button>
+      </div>
+      <div class="modalBody">
+        <div class="grid2">
+          <div class="col">
+            <label class="muted" for="playerNameInput">Nome</label>
+            <input id="playerNameInput" type="text" placeholder="Es. Marco" />
+          </div>
+          <div class="col">
+            <label class="muted">Foto</label>
+            <!-- camera directly -->
+            <input id="playerPhotoInput" type="file" accept="image/*" capture="environment" />
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="row" style="gap:12px; align-items:flex-start;">
+          <div class="pmini" style="width:92px; height:92px; border-radius:22px;" id="playerPhotoPreviewWrap">
+            <img id="playerPhotoPreview" alt="preview" style="width:100%; height:100%; object-fit:cover; display:none;">
+          </div>
+          <div class="col" style="flex:1;">
+            <button class="btn btnPrimary" id="playerSave">Salva</button>
+            <button class="btn" id="playerRemovePhoto">Rimuovi foto</button>
+            <button class="btn" id="playerReset">Reset giocatore</button>
+          </div>
+        </div>
+      </div>
+      <div class="modalFoot">
+        <button class="btn" id="playerClose2">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACKUP MODAL -->
+  <div class="overlay" id="backupOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modalHead">
+        <div class="modalTitle">Backup / Import</div>
+        <div class="spacer"></div>
+        <button class="iconBtn" id="backupClose" aria-label="Chiudi"><span class="dots">✕</span></button>
+      </div>
+      <div class="modalBody">
+        <div class="row" style="gap:10px;">
+          <input id="importJson" type="file" accept="application/json" />
+        </div>
+        <div class="divider"></div>
+        <div class="row" style="gap:10px;">
+          <button class="btn btnPrimary" id="exportJson">Esporta JSON</button>
+        </div>
+      </div>
+      <div class="modalFoot">
+        <button class="btn" id="backupClose2">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <script>
-    /***********************
-     * CONFIG
-     ***********************/
-    const POSITIONS = [
-      { key: "fondo_sx", label: "Fondo sx" },
-      { key: "angolo_sx", label: "45° sx" },
-      { key: "frontale", label: "Frontale" },
-      { key: "angolo_dx", label: "45° dx" },
-      { key: "fondo_dx", label: "Fondo dx" },
+    /* =========================
+       STORAGE / STATE
+    ========================= */
+    const LS_KEY = "virtus_shot_tracker_v9";
+
+    const POS = [
+      { key:"fsx",  label:"Fondo sx" },
+      { key:"45sx", label:"45° sx" },
+      { key:"fr",   label:"Frontale" },
+      { key:"45dx", label:"45° dx" },
+      { key:"fdx",  label:"Fondo dx" },
     ];
-    const SHOTS_PER_POS = 10;
-    const PLAYER_COUNT = 12;
 
-    /***********************
-     * GLOBAL STATE (UI)
-     ***********************/
-    let activePlayerId = 1;              // player currently shown/used
-    let selectedPlayers = [];            // "presenti" on dashboard
-    let rankMode = "total";              // total | last
+    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
-    // Timer
-    let timerSeconds = 45;
-    let timerRemaining = 45;
-    let timerRunning = false;
-    let timerHandle = null;
-
-    // Inputs (+/−) for current session entry
-    let currentMade = {};
-
-    /***********************
-     * STORAGE KEYS
-     ***********************/
-    const UI_KEY = "virtus_ui_v1";              // session date + selectedPlayers + activePlayerId + timerSeconds
-    const playerKey = (pid) => `virtus_player_${pid}_v1`;
-
-    function defaultPlayer(pid){
-      return {
-        id: pid,
-        name: `Giocatore ${pid}`,
-        photoDataUrl: null,
-        sessions: [] // {date, made:{...}, shotsPerPos, ts}
-      };
-    }
-
-    function loadPlayer(pid){
-      const raw = localStorage.getItem(playerKey(pid));
-      if(!raw) return defaultPlayer(pid);
-      try{
-        const p = JSON.parse(raw);
-        if(!p || typeof p !== "object") return defaultPlayer(pid);
-        if(!p.id) p.id = pid;
-        if(!p.name) p.name = `Giocatore ${pid}`;
-        if(!Array.isArray(p.sessions)) p.sessions = [];
-        if(typeof p.photoDataUrl === "undefined") p.photoDataUrl = null;
-        return p;
-      }catch(e){
-        return defaultPlayer(pid);
-      }
-    }
-
-    function savePlayer(p){
-      localStorage.setItem(playerKey(p.id), JSON.stringify(p));
-    }
-
-    function resetPlayer(pid){
-      localStorage.removeItem(playerKey(pid));
-    }
-
-    function loadUI(){
-      try{
-        const raw = localStorage.getItem(UI_KEY);
-        if(!raw) return null;
-        const o = JSON.parse(raw);
-        if(!o || typeof o !== "object") return null;
-        return o;
-      }catch(e){
-        return null;
-      }
-    }
-
-    function saveUI(){
-      const o = {
-        activePlayerId,
-        selectedPlayers,
-        timerSeconds,
-        sessionDate: $("sessionDate").value || todayISO()
-      };
-      localStorage.setItem(UI_KEY, JSON.stringify(o));
-    }
-
-    /***********************
-     * HELPERS
-     ***********************/
-    function $(id){ return document.getElementById(id); }
-
-    function toast(msg){
-      const t = $("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1400);
-    }
-
-    function todayISO(){
-      const d = new Date();
-      const off = d.getTimezoneOffset();
-      const local = new Date(d.getTime() - off*60*1000);
-      return local.toISOString().slice(0,10);
-    }
-
-    function pad2(n){ return String(n).padStart(2,'0'); }
-    function fmtTimer(sec){
-      const m = Math.floor(sec/60);
-      const s = sec%60;
-      return `${pad2(m)}:${pad2(s)}`;
-    }
-
-    function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
-
-    function initials(name){
-      const parts = String(name||"").trim().split(/\s+/).filter(Boolean);
-      if(parts.length === 0) return "VS";
-      const a = parts[0][0] || "";
-      const b = parts.length > 1 ? (parts[parts.length-1][0] || "") : "";
-      return (a + b).toUpperCase();
-    }
-
-    /***********************
-     * ROUTER (PAGES)
-     ***********************/
-    function showPage(pageId){
-      const pages = ["pageHome","pagePlayer","pageBackup","pageRanking"];
-      pages.forEach(id => $(id).classList.remove("show"));
-      $(pageId).classList.add("show");
-      closeDropdown();
-      // keep UI saved
-      saveUI();
-
-      // refresh page-specific views
-      if(pageId === "pageHome"){
-        renderHomeHeader();
-        renderTabs();
-        renderScoreInputs();
-        updateStats();
-      }
-      if(pageId === "pagePlayer"){
-        renderPlayerPage();
-      }
-      if(pageId === "pageBackup"){
-        // nothing special
-      }
-      if(pageId === "pageRanking"){
-        renderRanking();
-      }
-    }
-
-    /***********************
-     * DROPDOWN MENU
-     ***********************/
-    function toggleDropdown(){
-      $("dropdown").classList.toggle("show");
-    }
-    function closeDropdown(){
-      $("dropdown").classList.remove("show");
-    }
-
-    /***********************
-     * BRAND LOGO FALLBACK
-     ***********************/
-    function initBrandLogo(){
-      const img = $("brandImg");
-      img.onerror = () => {
-        $("brandLogo").innerHTML = "<span>Virtus</span>";
-      };
-    }
-
-    /***********************
-     * HOME HEADER (ACTIVE PLAYER BADGE)
-     ***********************/
-    function renderHomeHeader(){
-      const p = loadPlayer(activePlayerId);
-      $("apName").textContent = p.name || "—";
-
-      const ava = $("apAvatar");
-      ava.innerHTML = "";
-      if(p.photoDataUrl){
-        const img = document.createElement("img");
-        img.src = p.photoDataUrl;
-        ava.appendChild(img);
-      }else{
-        const sp = document.createElement("span");
-        sp.textContent = initials(p.name);
-        ava.appendChild(sp);
-      }
-    }
-
-    /***********************
-     * SELECTED PLAYER TABS (ONLY PRESENTI)
-     ***********************/
-    function ensureActivePlayerValid(){
-      if(selectedPlayers.length === 0){
-        activePlayerId = 1;
-        return;
-      }
-      if(!selectedPlayers.includes(activePlayerId)){
-        activePlayerId = selectedPlayers[0];
-      }
-    }
-
-    function renderTabs(){
-      ensureActivePlayerValid();
-      const tabs = $("playerTabs");
-      tabs.innerHTML = "";
-
-      if(selectedPlayers.length === 0){
-        tabs.innerHTML = `<div class="hint">Nessun giocatore selezionato. Apri ⋮ → Seleziona giocatori.</div>`;
-        renderHomeHeader();
-        return;
-      }
-
-      selectedPlayers.forEach(pid=>{
-        const p = loadPlayer(pid);
-        const tab = document.createElement("div");
-        tab.className = "ptab" + (pid === activePlayerId ? " active" : "");
-        const ava = document.createElement("div");
-        ava.className = "ptabAva";
-
-        if(p.photoDataUrl){
-          const img = document.createElement("img");
-          img.src = p.photoDataUrl;
-          ava.appendChild(img);
-        }else{
-          const sp = document.createElement("span");
-          sp.textContent = initials(p.name);
-          ava.appendChild(sp);
-        }
-
-        const nm = document.createElement("div");
-        nm.className = "ptabName";
-        nm.textContent = p.name;
-
-        tab.appendChild(ava);
-        tab.appendChild(nm);
-
-        tab.onclick = ()=>{
-          activePlayerId = pid;
-          renderHomeHeader();
-          renderTabs();
-          renderScoreInputs();
-          updateStats();
-          saveUI();
+    function defaultState(){
+      const players = Array.from({length:12}, (_,i)=>{
+        const id = "G"+(i+1);
+        return {
+          id,
+          name: "Giocatore " + (i+1),
+          photo: null,          // dataURL
+          sessions: []          // {date, made:{}, totalMade, totalAtt, percByPos:{}}
         };
-
-        tabs.appendChild(tab);
       });
-
-      renderHomeHeader();
+      return {
+        version: 9,
+        sessionDate: new Date().toISOString().slice(0,10),
+        presentIds: [],          // players selected for today
+        currentPlayerId: "G1",
+        timerSec: 45,
+        // current input per player (separate!)
+        currentInputs: Object.fromEntries(players.map(p => [p.id, Object.fromEntries(POS.map(x=>[x.key,0]))])),
+        players
+      };
     }
 
-    /***********************
-     * INPUTS (+/−)
-     ***********************/
-    function resetEntry(){
-      currentMade = {};
-      POSITIONS.forEach(p=> currentMade[p.key] = 0);
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        if(!raw) return defaultState();
+        const st = JSON.parse(raw);
+
+        // minimal migrations / safety
+        if(!st.players || !Array.isArray(st.players)) return defaultState();
+        if(!st.currentInputs) st.currentInputs = {};
+        for(const p of st.players){
+          if(!st.currentInputs[p.id]){
+            st.currentInputs[p.id] = Object.fromEntries(POS.map(x=>[x.key,0]));
+          }else{
+            for(const x of POS){
+              if(typeof st.currentInputs[p.id][x.key] !== "number") st.currentInputs[p.id][x.key] = 0;
+            }
+          }
+          if(!Array.isArray(p.sessions)) p.sessions = [];
+          if(typeof p.name !== "string") p.name = p.id;
+          if(typeof p.photo !== "string") p.photo = null;
+        }
+        if(!st.presentIds) st.presentIds = [];
+        if(!st.sessionDate) st.sessionDate = new Date().toISOString().slice(0,10);
+        if(!st.currentPlayerId) st.currentPlayerId = st.players[0].id;
+        if(!st.timerSec) st.timerSec = 45;
+        return st;
+      }catch(e){
+        return defaultState();
+      }
     }
 
-    function renderScoreInputs(){
-      resetEntry();
-      const list = $("scoreList");
-      list.innerHTML = "";
+    function saveState(){
+      localStorage.setItem(LS_KEY, JSON.stringify(state));
+    }
 
-      POSITIONS.forEach((pos, idx)=>{
-        const item = document.createElement("div");
-        item.className = "scoreItem";
-        item.innerHTML = `
-          <div>
-            <div class="posTitle">${pos.label} <span style="font-size:13px; font-weight:1100; color:rgba(234,255,243,.70);">(su ${SHOTS_PER_POS})</span></div>
-            <div class="posSub">Posizione ${idx+1}/${POSITIONS.length}</div>
-          </div>
-          <div class="counter">
-            <button class="cbtn" type="button" data-k="${pos.key}" data-d="-1">−</button>
-            <div class="cval" id="val_${pos.key}">0</div>
-            <button class="cbtn" type="button" data-k="${pos.key}" data-d="1">+</button>
+    let state = loadState();
+
+    function getPlayer(id){ return state.players.find(p=>p.id===id); }
+
+    function ensureCurrentPlayerValid(){
+      const validIds = state.presentIds.length ? state.presentIds : state.players.map(p=>p.id);
+      if(!validIds.includes(state.currentPlayerId)){
+        state.currentPlayerId = validIds[0];
+      }
+    }
+
+    /* =========================
+       DOM
+    ========================= */
+    const sessionDateEl = document.getElementById("sessionDate");
+    const timerPresetEl = document.getElementById("timerPreset");
+
+    const playerBadge = document.getElementById("playerBadge");
+    const playerNameTop = document.getElementById("playerNameTop");
+    const playerPhotoMini = document.getElementById("playerPhotoMini");
+    const playerPhotoMiniImg = document.getElementById("playerPhotoMiniImg");
+
+    const presentSummary = document.getElementById("presentSummary");
+
+    const timeDisplay = document.getElementById("timeDisplay");
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn  = document.getElementById("stopBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const clearBtn = document.getElementById("clearBtn");
+    const saveBtn  = document.getElementById("saveBtn");
+    const shareBtn = document.getElementById("shareBtn");
+
+    const avgLine  = document.getElementById("avgLine");
+
+    const openSelectPlayers = document.getElementById("openSelectPlayers");
+
+    /* Menu overlays */
+    const menuBtn = document.getElementById("menuBtn");
+    const menuOverlay = document.getElementById("menuOverlay");
+    const menuClose = document.getElementById("menuClose");
+    const menuClose2 = document.getElementById("menuClose2");
+    const menuNewSession = document.getElementById("menuNewSession");
+    const menuSelectPlayers = document.getElementById("menuSelectPlayers");
+    const menuPlayerSettings = document.getElementById("menuPlayerSettings");
+    const menuBackup = document.getElementById("menuBackup");
+
+    const selectOverlay = document.getElementById("selectOverlay");
+    const selectList = document.getElementById("selectList");
+    const selectClose = document.getElementById("selectClose");
+    const selectCancel = document.getElementById("selectCancel");
+    const selectOk = document.getElementById("selectOk");
+
+    const playerOverlay = document.getElementById("playerOverlay");
+    const playerClose = document.getElementById("playerClose");
+    const playerClose2 = document.getElementById("playerClose2");
+    const playerNameInput = document.getElementById("playerNameInput");
+    const playerPhotoInput = document.getElementById("playerPhotoInput");
+    const playerPhotoPreview = document.getElementById("playerPhotoPreview");
+    const playerSave = document.getElementById("playerSave");
+    const playerRemovePhoto = document.getElementById("playerRemovePhoto");
+    const playerReset = document.getElementById("playerReset");
+
+    const backupOverlay = document.getElementById("backupOverlay");
+    const backupClose = document.getElementById("backupClose");
+    const backupClose2 = document.getElementById("backupClose2");
+    const exportJsonBtn = document.getElementById("exportJson");
+    const importJson = document.getElementById("importJson");
+
+    /* =========================
+       MODAL HELPERS
+    ========================= */
+    function openOverlay(el){
+      el.classList.add("show");
+      el.setAttribute("aria-hidden","false");
+      // prevent background scroll
+      document.body.style.overflow = "hidden";
+    }
+    function closeOverlay(el){
+      el.classList.remove("show");
+      el.setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+    }
+    function closeAllOverlays(){
+      [menuOverlay, selectOverlay, playerOverlay, backupOverlay].forEach(closeOverlay);
+    }
+    function bindOverlayClose(overlay){
+      overlay.addEventListener("click", (e)=>{
+        if(e.target === overlay) closeOverlay(overlay);
+      });
+    }
+    [menuOverlay, selectOverlay, playerOverlay, backupOverlay].forEach(bindOverlayClose);
+
+    /* =========================
+       PLAYER PRESENT SELECTION
+    ========================= */
+    function renderPresentSummary(){
+      const ids = state.presentIds;
+      if(!ids.length){
+        presentSummary.textContent = "Nessuno selezionato";
+        return;
+      }
+      const names = ids.map(id => getPlayer(id)?.name || id);
+      presentSummary.textContent = names.join(", ");
+    }
+
+    function openSelectModal(){
+      // build list
+      selectList.innerHTML = "";
+      const ids = new Set(state.presentIds);
+
+      state.players.forEach(p=>{
+        const div = document.createElement("div");
+        div.className = "listItem";
+        div.innerHTML = `
+          <input type="checkbox" ${ids.has(p.id) ? "checked" : ""} data-id="${p.id}">
+          <div class="badge" style="width:38px;height:38px;border-radius:14px;">${p.id}</div>
+          <div class="liText">
+            <div class="liMain">${escapeHtml(p.name)}</div>
+            <div class="liSub">${p.id}</div>
           </div>
         `;
-        list.appendChild(item);
+        selectList.appendChild(div);
       });
 
-      list.querySelectorAll(".cbtn").forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          const k = btn.getAttribute("data-k");
-          const d = Number(btn.getAttribute("data-d"));
-          const next = clamp((currentMade[k]||0) + d, 0, SHOTS_PER_POS);
-          currentMade[k] = next;
-          $("val_"+k).textContent = String(next);
-        }, {passive:true});
+      openOverlay(selectOverlay);
+    }
+
+    function applySelectedPlayers(){
+      const checks = selectList.querySelectorAll('input[type="checkbox"][data-id]');
+      const selected = [];
+      checks.forEach(ch=>{
+        if(ch.checked) selected.push(ch.getAttribute("data-id"));
       });
+      state.presentIds = selected;
+      ensureCurrentPlayerValid();
+      saveState();
+      updateUI();
     }
 
-    function clearInputs(){
-      POSITIONS.forEach(pos=>{
-        currentMade[pos.key] = 0;
-        $("val_"+pos.key).textContent = "0";
-      });
-      toast("Inserimento azzerato");
-    }
+    /* =========================
+       PLAYER UI + SETTINGS
+    ========================= */
+    function updatePlayerPill(){
+      ensureCurrentPlayerValid();
+      const p = getPlayer(state.currentPlayerId);
+      if(!p) return;
 
-    /***********************
-     * SAVE SESSION (PLAYER DATA ONLY)
-     ***********************/
-    function saveSession(){
-      if(selectedPlayers.length === 0){
-        toast("Seleziona prima i giocatori (⋮)");
-        return;
-      }
+      playerBadge.textContent = p.id;
+      playerNameTop.textContent = p.name;
 
-      const p = loadPlayer(activePlayerId);
-      const date = $("sessionDate").value || todayISO();
-
-      const made = {};
-      POSITIONS.forEach(pos => made[pos.key] = clamp(Number(currentMade[pos.key]||0), 0, SHOTS_PER_POS));
-
-      p.sessions.push({
-        date,
-        made,
-        shotsPerPos: SHOTS_PER_POS,
-        ts: Date.now()
-      });
-
-      savePlayer(p);
-      toast("Sessione salvata ✅");
-      updateStats();
-      clearInputs();
-    }
-
-    /***********************
-     * STATS CALC
-     ***********************/
-    function calcStats(player){
-      const totals = {};
-      POSITIONS.forEach(p=> totals[p.key] = { made:0, att:0 });
-
-      for(const s of player.sessions){
-        const spp = Number(s.shotsPerPos || SHOTS_PER_POS);
-        for(const pos of POSITIONS){
-          const m = Number(s.made?.[pos.key] ?? 0);
-          totals[pos.key].made += clamp(m,0,spp);
-          totals[pos.key].att += spp;
-        }
-      }
-
-      const perc = POSITIONS.map(pos=>{
-        const t = totals[pos.key];
-        const v = t.att>0 ? (t.made/t.att)*100 : 0;
-        return Math.round(v*10)/10;
-      });
-
-      const overallMade = POSITIONS.reduce((a,pos)=>a + totals[pos.key].made,0);
-      const overallAtt  = POSITIONS.reduce((a,pos)=>a + totals[pos.key].att,0);
-      const overallPerc = overallAtt>0 ? Math.round((overallMade/overallAtt)*1000)/10 : 0;
-
-      return { perc, overallPerc, overallMade, overallAtt };
-    }
-
-    function lastSessionOverall(player){
-      const s = player.sessions[player.sessions.length - 1];
-      if(!s) return 0;
-      const spp = Number(s.shotsPerPos || SHOTS_PER_POS);
-      let made = 0;
-      let att = 0;
-      for(const pos of POSITIONS){
-        made += clamp(Number(s.made?.[pos.key] ?? 0), 0, spp);
-        att += spp;
-      }
-      return att>0 ? Math.round((made/att)*1000)/10 : 0;
-    }
-
-    /***********************
-     * CUSTOM CANVAS BAR CHART (OFFLINE, STABLE)
-     ***********************/
-    function drawBarChart(canvas, labels, values){
-      const ratio = window.devicePixelRatio || 1;
-
-      // Resize to container width (retina)
-      const cssH = 320;
-      const cssW = canvas.parentElement ? canvas.parentElement.clientWidth : 900;
-
-      if(canvas._cssW !== cssW || canvas._ratio !== ratio){
-        canvas._cssW = cssW;
-        canvas._ratio = ratio;
-        canvas.style.width = "100%";
-        canvas.style.height = cssH + "px";
-        canvas.width = Math.floor(cssW * ratio);
-        canvas.height = Math.floor(cssH * ratio);
-      }
-
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width;
-      const h = canvas.height;
-
-      ctx.clearRect(0,0,w,h);
-
-      // soft bg
-      ctx.fillStyle = "rgba(255,255,255,0.02)";
-      ctx.fillRect(0,0,w,h);
-
-      const padL = 68*ratio, padR = 16*ratio, padT = 16*ratio, padB = 56*ratio;
-      const plotW = w - padL - padR;
-      const plotH = h - padT - padB;
-
-      // grid 0..100
-      ctx.strokeStyle = "rgba(255,255,255,0.10)";
-      ctx.lineWidth = 1*ratio;
-      ctx.fillStyle = "rgba(234,255,243,0.72)";
-      ctx.font = `${12*ratio}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-
-      for(let p=0;p<=100;p+=20){
-        const y = padT + plotH - (p/100)*plotH;
-        ctx.beginPath();
-        ctx.moveTo(padL, y);
-        ctx.lineTo(padL+plotW, y);
-        ctx.stroke();
-        ctx.fillText(p+"%", 12*ratio, y + 4*ratio);
-      }
-
-      // axes
-      ctx.strokeStyle = "rgba(255,255,255,0.18)";
-      ctx.beginPath();
-      ctx.moveTo(padL, padT);
-      ctx.lineTo(padL, padT+plotH);
-      ctx.lineTo(padL+plotW, padT+plotH);
-      ctx.stroke();
-
-      const n = values.length;
-      const gap = 14*ratio;
-      const barW = (plotW - gap*(n+1)) / n;
-
-      for(let i=0;i<n;i++){
-        const v = Math.max(0, Math.min(100, Number(values[i])||0));
-        const barH = (v/100)*plotH;
-
-        const x = padL + gap + i*(barW+gap);
-        const y = padT + plotH - barH;
-
-        // bar gradient
-        const grad = ctx.createLinearGradient(0, y, 0, y+barH);
-        grad.addColorStop(0, "rgba(10,168,90,0.95)");
-        grad.addColorStop(1, "rgba(10,168,90,0.45)");
-        ctx.fillStyle = grad;
-        roundRect(ctx, x, y, barW, barH, 12*ratio);
-        ctx.fill();
-
-        // value label
-        ctx.fillStyle = "rgba(234,255,243,0.92)";
-        ctx.font = `${13*ratio}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-        const txt = (Math.round(v*10)/10).toString() + "%";
-        const tw = ctx.measureText(txt).width;
-        ctx.fillText(txt, x + (barW - tw)/2, y - 8*ratio);
-
-        // x label (wrap)
-        ctx.fillStyle = "rgba(234,255,243,0.72)";
-        ctx.font = `${12*ratio}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-        drawWrapCenter(ctx, labels[i] || "", x + barW/2, padT+plotH + 18*ratio, barW+gap, 2, 12*ratio);
+      if(p.photo){
+        playerPhotoMini.style.display = "";
+        playerPhotoMiniImg.src = p.photo;
+      }else{
+        playerPhotoMini.style.display = "none";
+        playerPhotoMiniImg.src = "";
       }
     }
 
-    function roundRect(ctx, x, y, w, h, r){
-      const rr = Math.min(r, w/2, h/2);
-      ctx.beginPath();
-      ctx.moveTo(x+rr, y);
-      ctx.arcTo(x+w, y, x+w, y+h, rr);
-      ctx.arcTo(x+w, y+h, x, y+h, rr);
-      ctx.arcTo(x, y+h, x, y, rr);
-      ctx.arcTo(x, y, x+w, y, rr);
-      ctx.closePath();
-    }
-
-    function drawWrapCenter(ctx, text, cx, y, maxW, maxLines, fontSize){
-      const words = String(text).split(" ");
-      const lines = [];
-      let line = "";
-      for(const w of words){
-        const test = line ? (line + " " + w) : w;
-        if(ctx.measureText(test).width <= maxW || !line){
-          line = test;
-        }else{
-          lines.push(line);
-          line = w;
-        }
+    function openPlayerSettings(){
+      const p = getPlayer(state.currentPlayerId);
+      if(!p) return;
+      playerNameInput.value = p.name || "";
+      if(p.photo){
+        playerPhotoPreview.style.display = "";
+        playerPhotoPreview.src = p.photo;
+      }else{
+        playerPhotoPreview.style.display = "none";
+        playerPhotoPreview.src = "";
       }
-      if(line) lines.push(line);
-      const used = lines.slice(0, maxLines);
-      for(let i=0;i<used.length;i++){
-        const t = used[i];
-        const tw = ctx.measureText(t).width;
-        ctx.fillText(t, cx - tw/2, y + i*(fontSize+4));
+      // reset file input so camera can be used again
+      playerPhotoInput.value = "";
+      openOverlay(playerOverlay);
+    }
+
+    playerPhotoInput.addEventListener("change", async ()=>{
+      const file = playerPhotoInput.files && playerPhotoInput.files[0];
+      if(!file) return;
+      const dataUrl = await fileToDataURL(file, 720); // compress
+      playerPhotoPreview.style.display = "";
+      playerPhotoPreview.src = dataUrl;
+    });
+
+    playerSave.addEventListener("click", ()=>{
+      const p = getPlayer(state.currentPlayerId);
+      if(!p) return;
+      const name = (playerNameInput.value || "").trim();
+      if(name) p.name = name;
+
+      if(playerPhotoPreview.src && playerPhotoPreview.style.display !== "none"){
+        p.photo = playerPhotoPreview.src;
       }
+      saveState();
+      updateUI();
+      closeOverlay(playerOverlay);
+    });
+
+    playerRemovePhoto.addEventListener("click", ()=>{
+      const p = getPlayer(state.currentPlayerId);
+      if(!p) return;
+      p.photo = null;
+      playerPhotoPreview.style.display = "none";
+      playerPhotoPreview.src = "";
+      saveState();
+      updateUI();
+    });
+
+    playerReset.addEventListener("click", ()=>{
+      const p = getPlayer(state.currentPlayerId);
+      if(!p) return;
+      // reset only this player
+      p.sessions = [];
+      p.photo = null;
+      // keep name? reset to default label
+      p.name = "Giocatore " + p.id.replace("G","");
+      state.currentInputs[p.id] = Object.fromEntries(POS.map(x=>[x.key,0]));
+      saveState();
+      updateUI();
+      closeOverlay(playerOverlay);
+    });
+
+    /* =========================
+       TIMER
+    ========================= */
+    let timer = {
+      running:false,
+      remaining: state.timerSec,
+      t:null
+    };
+
+    function fmt(sec){
+      const s = Math.max(0, sec|0);
+      const mm = String(Math.floor(s/60)).padStart(2,"0");
+      const ss = String(s%60).padStart(2,"0");
+      return `${mm}:${ss}`;
     }
 
-    function renderWatermark(){
-      const wm = $("wmBox");
-      wm.innerHTML = "";
-      const p = loadPlayer(activePlayerId);
-      const src = p.photoDataUrl || "icon-512.png";
-
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = "watermark";
-      img.onerror = () => { img.style.display = "none"; };
-      wm.appendChild(img);
+    function setTimer(sec){
+      timer.remaining = sec;
+      timeDisplay.textContent = fmt(timer.remaining);
     }
 
-    function updateStats(){
-      if(selectedPlayers.length === 0){
-        $("statsText").textContent = "Seleziona i giocatori presenti (⋮).";
-        renderWatermark();
-        drawBarChart($("chart"), POSITIONS.map(x=>x.label), POSITIONS.map(()=>0));
-        return;
+    function stopTimer(){
+      timer.running=false;
+      if(timer.t) clearInterval(timer.t);
+      timer.t=null;
+    }
+
+    function startTimer(){
+      if(timer.running) return;
+      timer.running=true;
+
+      // If timer is at 0, restart from preset
+      if(timer.remaining <= 0){
+        timer.remaining = state.timerSec;
+        timeDisplay.textContent = fmt(timer.remaining);
       }
 
-      const p = loadPlayer(activePlayerId);
-      renderWatermark();
-
-      const { perc, overallPerc, overallMade, overallAtt } = calcStats(p);
-      $("statsText").textContent = `Media totale: ${overallPerc}% (${overallMade}/${overallAtt}) • Sessioni: ${p.sessions.length}`;
-
-      drawBarChart($("chart"), POSITIONS.map(x=>x.label), perc);
-    }
-
-    /***********************
-     * WHATSAPP SHARE (MANUAL)
-     ***********************/
-    function buildReportText(player){
-      const { perc, overallPerc } = calcStats(player);
-      const last = player.sessions[player.sessions.length-1];
-
-      let lastLine = "";
-      if(last){
-        const m = last.made || {};
-        lastLine =
-          `\nUltima sessione (${last.date}): FSX ${m.fondo_sx||0}/10, 45SX ${m.angolo_sx||0}/10, FRO ${m.frontale||0}/10, 45DX ${m.angolo_dx||0}/10, FDX ${m.fondo_dx||0}/10`;
-      }
-
-      const posLine =
-        `\nMedie posizioni: FSX ${perc[0]}% • 45SX ${perc[1]}% • FRO ${perc[2]}% • 45DX ${perc[3]}% • FDX ${perc[4]}%`;
-
-      return (
-        `🏀 Virtus Shot Tracker\n` +
-        `Giocatore: ${player.name}\n` +
-        `Media totale: ${overallPerc}%\n` +
-        posLine +
-        lastLine
-      );
-    }
-
-    function shareWhatsApp(){
-      if(selectedPlayers.length === 0){
-        toast("Seleziona i giocatori (⋮)");
-        return;
-      }
-      const p = loadPlayer(activePlayerId);
-      const text = buildReportText(p);
-      const url = "https://wa.me/?text=" + encodeURIComponent(text);
-      window.open(url, "_blank");
-    }
-
-    /***********************
-     * TIMER (45/40/35, 5 BEEPS + VIBRATION)
-     ***********************/
-    function setTimerUIFromSelect(){
-      timerSeconds = Number($("timerSelect").value || 45);
-      timerRemaining = timerSeconds;
-      $("timerBig").textContent = fmtTimer(timerRemaining);
-      saveUI();
-    }
-
-    function timerStart(){
-      if(timerRunning) return;
-      timerRunning = true;
-
-      // ensure select applied
-      setTimerUIFromSelect();
-
-      timerHandle = setInterval(()=>{
-        timerRemaining = Math.max(0, timerRemaining - 1);
-        $("timerBig").textContent = fmtTimer(timerRemaining);
-        if(timerRemaining <= 0){
-          timerStop(true);
-          onTimerEnd();
+      timer.t = setInterval(()=>{
+        timer.remaining -= 1;
+        timeDisplay.textContent = fmt(timer.remaining);
+        if(timer.remaining <= 0){
+          stopTimer();
+          timeDisplay.textContent = "00:00";
+          finishSignal(); // 10 beeps + vib
         }
       }, 1000);
-
-      toast("Timer avviato");
     }
 
-    function timerStop(silent=false){
-      timerRunning = false;
-      if(timerHandle){ clearInterval(timerHandle); timerHandle = null; }
-      if(!silent) toast("Timer fermato");
+    startBtn.addEventListener("click", startTimer);
+    stopBtn.addEventListener("click", stopTimer);
+    resetBtn.addEventListener("click", ()=>{
+      stopTimer();
+      timer.remaining = state.timerSec;
+      timeDisplay.textContent = fmt(timer.remaining);
+    });
+
+    timerPresetEl.addEventListener("change", ()=>{
+      const v = parseInt(timerPresetEl.value,10) || 45;
+      state.timerSec = v;
+      saveState();
+      stopTimer();
+      setTimer(state.timerSec);
+    });
+
+    /* =========================
+       SOUND + VIB
+    ========================= */
+    let audioCtx = null;
+
+    function getAudioCtx(){
+      if(!audioCtx){
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioCtx;
     }
 
-    function timerReset(){
-      timerStop(true);
-      setTimerUIFromSelect();
-      toast("Timer resettato");
+    function beepOnce(freq=880, dur=0.08, gainVal=0.55){
+      // gainVal higher = louder (phone still limits)
+      const ctx = getAudioCtx();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "square";
+      o.frequency.value = freq;
+      g.gain.value = gainVal;
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.start();
+      o.stop(ctx.currentTime + dur);
     }
 
-    function beep(freq, durationMs){
-      try{
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.connect(g);
-        g.connect(ctx.destination);
-
-        o.frequency.value = freq;
-        o.type = "sine";
-        g.gain.value = 0.0001;
-
-        o.start();
-        g.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + (durationMs/1000));
-
-        setTimeout(()=>{
-          o.stop();
-          ctx.close();
-        }, durationMs + 60);
-      }catch(e){}
-    }
-
-    function onTimerEnd(){
-      // vibration pattern ~5s (best effort)
+    async function finishSignal(){
+      // vibration (if allowed)
       if(navigator.vibrate){
-        navigator.vibrate([200,100,200,100,200,100,200,100,200]);
+        navigator.vibrate([120,80,120,80,120,80,120,80,120]);
       }
 
-      // 5 beeps in ~5 seconds (A-ish)
-      const freqA = 440; // A4
-      for(let i=0;i<5;i++){
-        setTimeout(()=>beep(freqA, 450), i*1000);
+      // 10 beeps (~5s total spacing)
+      const pattern = [
+        880, 880, 988, 988, 1047, 1047, 1175, 1175, 1319, 1319
+      ];
+      for(let i=0;i<pattern.length;i++){
+        try{ beepOnce(pattern[i], 0.09, 0.70); }catch(e){}
+        await sleep(450);
       }
-
-      toast("Tempo finito ⏱️");
     }
 
-    /***********************
-     * PICK PLAYERS MODAL (CHECKBOX)
-     ***********************/
-    function openPickModal(){
-      const list = $("pickList");
-      list.innerHTML = "";
+    /* =========================
+       INPUT PER PLAYER (NO SLIDER)
+    ========================= */
+    function currentInput(){
+      return state.currentInputs[state.currentPlayerId];
+    }
 
-      // show all 12 players
-      for(let i=1;i<=PLAYER_COUNT;i++){
-        const p = loadPlayer(i);
-        const row = document.createElement("label");
-        row.className = "pickRow";
+    function updateInputUI(){
+      const inp = currentInput();
+      for(const x of POS){
+        document.getElementById("val-"+x.key).textContent = String(inp[x.key] || 0);
+      }
+    }
 
-        const cb = document.createElement("input");
-        cb.type = "checkbox";
-        cb.value = String(i);
-        cb.checked = selectedPlayers.includes(i);
+    document.querySelectorAll(".pmBtn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const k = btn.getAttribute("data-k");
+        const d = parseInt(btn.getAttribute("data-d"),10) || 0;
+        const inp = currentInput();
+        inp[k] = clamp((inp[k]||0) + d, 0, 10);
+        saveState();
+        updateInputUI();
+      });
+    });
 
-        const ava = document.createElement("div");
-        ava.className = "pickAva";
-        if(p.photoDataUrl){
-          const img = document.createElement("img");
-          img.src = p.photoDataUrl;
-          ava.appendChild(img);
-        }else{
-          const sp = document.createElement("span");
-          sp.textContent = initials(p.name);
-          ava.appendChild(sp);
+    clearBtn.addEventListener("click", ()=>{
+      state.currentInputs[state.currentPlayerId] = Object.fromEntries(POS.map(x=>[x.key,0]));
+      saveState();
+      updateInputUI();
+    });
+
+    saveBtn.addEventListener("click", ()=>{
+      const p = getPlayer(state.currentPlayerId);
+      if(!p) return;
+
+      const inp = currentInput();
+      const made = {};
+      let totalMade = 0;
+      let totalAtt = 0;
+
+      POS.forEach(x=>{
+        const v = clamp(inp[x.key]||0, 0, 10);
+        made[x.key] = v;
+        totalMade += v;
+        totalAtt += 10;
+      });
+
+      const percByPos = {};
+      POS.forEach(x=>{
+        percByPos[x.key] = Math.round((made[x.key]/10)*100);
+      });
+
+      const entry = {
+        date: state.sessionDate,
+        made,
+        totalMade,
+        totalAtt,
+        percByPos
+      };
+
+      p.sessions.push(entry);
+
+      // after save: reset inputs for that player
+      state.currentInputs[p.id] = Object.fromEntries(POS.map(x=>[x.key,0]));
+
+      saveState();
+      updateUI();
+    });
+
+    /* =========================
+       STATS CHART
+    ========================= */
+    let chart = null;
+
+    function computeStats(player){
+      const sessions = player.sessions || [];
+      if(!sessions.length){
+        return { labels: POS.map(x=>x.label), values: POS.map(_=>0), avg:0, n:0 };
+      }
+      // average percentage per position across sessions
+      const sums = Object.fromEntries(POS.map(x=>[x.key,0]));
+      sessions.forEach(s=>{
+        POS.forEach(x=>{
+          const pv = (s.percByPos && typeof s.percByPos[x.key]==="number") ? s.percByPos[x.key] : Math.round(((s.made?.[x.key]||0)/10)*100);
+          sums[x.key] += pv;
+        });
+      });
+      const n = sessions.length;
+      const values = POS.map(x=>Math.round(sums[x.key]/n));
+      const avg = Math.round(values.reduce((a,b)=>a+b,0)/values.length);
+      return { labels: POS.map(x=>x.label), values, avg, n };
+    }
+
+    function renderChart(){
+      const p = getPlayer(state.currentPlayerId);
+      const st = computeStats(p);
+
+      avgLine.textContent = `Media: ${st.avg}% • Sessioni: ${st.n}`;
+
+      const ctx = document.getElementById("chart").getContext("2d");
+      const data = {
+        labels: st.labels,
+        datasets: [{
+          label: "Percentuale",
+          data: st.values,
+          borderWidth: 3,
+          pointRadius: 4,
+          tension: 0.35,
+        }]
+      };
+
+      const opts = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+            ticks: { color: "rgba(255,255,255,.75)", stepSize: 20 },
+            grid: { color: "rgba(255,255,255,.10)" }
+          },
+          x: {
+            ticks: { color: "rgba(255,255,255,.75)" },
+            grid: { color: "rgba(255,255,255,.08)" }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx)=> `${ctx.parsed.y}%`
+            }
+          }
         }
+      };
 
-        const nm = document.createElement("div");
-        nm.className = "pickName";
-        nm.textContent = p.name;
-
-        row.appendChild(cb);
-        row.appendChild(ava);
-        row.appendChild(nm);
-
-        list.appendChild(row);
-      }
-
-      $("modalOverlay").classList.add("show");
-      closeDropdown();
-    }
-
-    function closePickModal(){
-      $("modalOverlay").classList.remove("show");
-    }
-
-    function confirmPickModal(){
-      const checks = Array.from($("pickList").querySelectorAll("input[type=checkbox]:checked"));
-      const ids = checks.map(x=>Number(x.value)).filter(n=>n>=1 && n<=PLAYER_COUNT);
-
-      selectedPlayers = ids;
-      ensureActivePlayerValid();
-      renderTabs();
-      renderScoreInputs();
-      updateStats();
-      renderHomeHeader();
-      saveUI();
-
-      closePickModal();
-      toast(selectedPlayers.length ? "Giocatori selezionati ✅" : "Nessun giocatore selezionato");
-    }
-
-    /***********************
-     * NEW SESSION (RESET PRESENTI ONLY)
-     ***********************/
-    function newSession(){
-      selectedPlayers = [];
-      activePlayerId = 1;
-      renderTabs();
-      renderScoreInputs();
-      updateStats();
-      renderHomeHeader();
-      saveUI();
-      toast("Nuova sessione: seleziona i presenti");
-      openPickModal();
-    }
-
-    /***********************
-     * PLAYER PAGE (CAMERA)
-     ***********************/
-    function renderPlayerPage(){
-      const p = loadPlayer(activePlayerId);
-
-      $("playerName").value = p.name;
-
-      const box = $("playerPageAvatar");
-      box.innerHTML = "";
-      if(p.photoDataUrl){
-        const img = document.createElement("img");
-        img.src = p.photoDataUrl;
-        box.appendChild(img);
+      if(chart){
+        chart.data = data;
+        chart.options = opts;
+        chart.update();
       }else{
-        const sp = document.createElement("span");
-        sp.textContent = initials(p.name);
-        box.appendChild(sp);
+        chart = new Chart(ctx, {
+          type: "line",
+          data,
+          options: opts
+        });
       }
     }
 
-    function savePlayerNameAndPhoto(){
-      const p = loadPlayer(activePlayerId);
-      const name = ($("playerName").value || "").trim();
-      if(name) p.name = name;
-      savePlayer(p);
+    /* =========================
+       SHARE WHATSAPP
+    ========================= */
+    shareBtn.addEventListener("click", ()=>{
+      const p = getPlayer(state.currentPlayerId);
+      if(!p) return;
 
-      // update UI elements
-      renderTabs();
-      renderHomeHeader();
-      renderPlayerPage();
-      updateStats();
+      const st = computeStats(p);
+      const msg =
+`Virtus Shot Tracker
+Giocatore: ${p.name}
+Sessioni: ${st.n}
+Media: ${st.avg}%
 
-      toast("Giocatore salvato ✅");
-    }
+Fondo sx: ${st.values[0]}%
+45° sx: ${st.values[1]}%
+Frontale: ${st.values[2]}%
+45° dx: ${st.values[3]}%
+Fondo dx: ${st.values[4]}%`;
 
-    function removePhoto(){
-      const p = loadPlayer(activePlayerId);
-      p.photoDataUrl = null;
-      savePlayer(p);
-      renderTabs();
-      renderHomeHeader();
-      renderPlayerPage();
-      updateStats();
-      toast("Foto rimossa");
-    }
+      const url = "https://wa.me/?text=" + encodeURIComponent(msg);
+      window.open(url, "_blank");
+    });
 
-    function handlePhotoFile(file){
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = ()=>{
-        const p = loadPlayer(activePlayerId);
-        p.photoDataUrl = reader.result;
-        savePlayer(p);
-        renderTabs();
-        renderHomeHeader();
-        renderPlayerPage();
-        updateStats();
-        toast("Foto salvata ✅");
-      };
-      reader.readAsDataURL(file);
-    }
+    /* =========================
+       MENU ACTIONS
+    ========================= */
+    function openMenu(){ openOverlay(menuOverlay); }
+    function closeMenu(){ closeOverlay(menuOverlay); }
 
-    function doResetPlayer(){
-      if(!confirm("Reset totale giocatore? (sessioni + foto + nome)")) return;
-      resetPlayer(activePlayerId);
-      renderTabs();
-      renderHomeHeader();
-      renderPlayerPage();
-      updateStats();
-      toast("Giocatore resettato");
-    }
+    menuBtn.addEventListener("click", openMenu);
+    menuClose.addEventListener("click", closeMenu);
+    menuClose2.addEventListener("click", closeMenu);
 
-    /***********************
-     * BACKUP (IMPORT/EXPORT JSON)
-     ***********************/
-    function safeFile(name){
-      return String(name || "giocatore")
-        .trim().toLowerCase()
-        .replace(/[^a-z0-9]+/g, "_")
-        .replace(/^_+|_+$/g,"")
-        .slice(0,40) || "giocatore";
-    }
+    menuNewSession.addEventListener("click", ()=>{
+      state.presentIds = [];
+      state.sessionDate = new Date().toISOString().slice(0,10);
+      saveState();
+      updateUI();
+      closeMenu();
+    });
 
-    function exportJSON(){
-      const p = loadPlayer(activePlayerId);
-      const payload = {
-        app: "VirtusShotTracker",
-        version: 9,
-        exportedAt: new Date().toISOString(),
-        player: { id: p.id, name: p.name, sessions: p.sessions }
-      };
-      const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
-      const url = URL.createObjectURL(blob);
+    menuSelectPlayers.addEventListener("click", ()=>{
+      closeMenu();
+      openSelectModal();
+    });
+
+    menuPlayerSettings.addEventListener("click", ()=>{
+      closeMenu();
+      openPlayerSettings();
+    });
+
+    menuBackup.addEventListener("click", ()=>{
+      closeMenu();
+      openOverlay(backupOverlay);
+    });
+
+    openSelectPlayers.addEventListener("click", openSelectModal);
+
+    selectClose.addEventListener("click", ()=>closeOverlay(selectOverlay));
+    selectCancel.addEventListener("click", ()=>closeOverlay(selectOverlay));
+    selectOk.addEventListener("click", ()=>{
+      applySelectedPlayers();
+      closeOverlay(selectOverlay);
+    });
+
+    playerClose.addEventListener("click", ()=>closeOverlay(playerOverlay));
+    playerClose2.addEventListener("click", ()=>closeOverlay(playerOverlay));
+
+    backupClose.addEventListener("click", ()=>closeOverlay(backupOverlay));
+    backupClose2.addEventListener("click", ()=>closeOverlay(backupOverlay));
+
+    /* =========================
+       BACKUP / IMPORT
+    ========================= */
+    exportJsonBtn.addEventListener("click", ()=>{
+      const data = JSON.stringify(state, null, 2);
+      const blob = new Blob([data], {type:"application/json"});
       const a = document.createElement("a");
-      a.href = url;
-      a.download = `virtus_${safeFile(p.name)}_backup.json`;
+      a.href = URL.createObjectURL(blob);
+      a.download = `virtus-shot-tracker-backup-${new Date().toISOString().slice(0,10)}.json`;
       document.body.appendChild(a);
       a.click();
       a.remove();
-      URL.revokeObjectURL(url);
-      toast("JSON esportato");
-    }
+      URL.revokeObjectURL(a.href);
+    });
 
-    function sessionSig(s){
-      const m = s?.made || {};
-      return [
-        s?.ts || "",
-        s?.date || "",
-        m.fondo_sx ?? "",
-        m.angolo_sx ?? "",
-        m.frontale ?? "",
-        m.angolo_dx ?? "",
-        m.fondo_dx ?? ""
-      ].join("|");
-    }
-
-    function importJSON(file){
-      const reader = new FileReader();
-      reader.onload = ()=>{
-        try{
-          const obj = JSON.parse(reader.result);
-          const pl = obj?.player;
-          if(!pl || !Array.isArray(pl.sessions)){
-            toast("JSON non valido");
-            return;
-          }
-
-          // target detection
-          let targetId = null;
-          if(Number(pl.id) >= 1 && Number(pl.id) <= PLAYER_COUNT){
-            targetId = Number(pl.id);
-          }else if(pl.name){
-            for(let i=1;i<=PLAYER_COUNT;i++){
-              const p = loadPlayer(i);
-              if((p.name||"").trim().toLowerCase() === String(pl.name).trim().toLowerCase()){
-                targetId = i; break;
-              }
-            }
-          }
-          if(!targetId) targetId = activePlayerId;
-
-          const target = loadPlayer(targetId);
-
-          const existing = new Set(target.sessions.map(s=>sessionSig(s)));
-          let added = 0;
-          for(const s of pl.sessions){
-            const sig = sessionSig(s);
-            if(!existing.has(sig)){
-              target.sessions.push(s);
-              existing.add(sig);
-              added++;
-            }
-          }
-          if(pl.name && pl.name.trim()){
-            target.name = pl.name.trim();
-          }
-
-          savePlayer(target);
-          activePlayerId = targetId;
-          ensureActivePlayerValid();
-          renderTabs();
-          renderHomeHeader();
-          updateStats();
-
-          toast(`Import OK (+${added})`);
-        }catch(e){
-          toast("Errore import JSON");
-        }finally{
-          $("importFile").value = "";
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    /***********************
-     * RANKING (PRESENTI)
-     ***********************/
-    function renderRanking(){
-      const list = $("rankList");
-      list.innerHTML = "";
-
-      if(selectedPlayers.length === 0){
-        $("rankHint").textContent = "Seleziona prima i giocatori presenti (⋮ → Seleziona giocatori).";
-        return;
+    importJson.addEventListener("change", async ()=>{
+      const file = importJson.files && importJson.files[0];
+      if(!file) return;
+      try{
+        const txt = await file.text();
+        const obj = JSON.parse(txt);
+        if(!obj || !obj.players) throw new Error("JSON non valido");
+        localStorage.setItem(LS_KEY, JSON.stringify(obj));
+        state = loadState();
+        updateUI();
+        closeOverlay(backupOverlay);
+      }catch(e){
+        alert("Import fallito: " + (e.message || e));
+      }finally{
+        importJson.value = "";
       }
+    });
 
-      // build rows
-      const rows = selectedPlayers.map(pid=>{
-        const p = loadPlayer(pid);
-        const total = calcStats(p).overallPerc;
-        const last = lastSessionOverall(p);
-        const value = (rankMode === "last") ? last : total;
-        return { pid, name: p.name, value };
-      });
+    /* =========================
+       SESSION DATE
+    ========================= */
+    sessionDateEl.addEventListener("change", ()=>{
+      state.sessionDate = sessionDateEl.value || new Date().toISOString().slice(0,10);
+      saveState();
+    });
 
-      rows.sort((a,b)=> b.value - a.value);
+    /* =========================
+       PLAYER SWITCH (tap pill)
+       - cycles through present players (or all)
+    ========================= */
+    document.getElementById("playerPill").addEventListener("click", ()=>{
+      const ids = state.presentIds.length ? state.presentIds : state.players.map(p=>p.id);
+      const i = ids.indexOf(state.currentPlayerId);
+      const next = ids[(i+1) % ids.length];
+      state.currentPlayerId = next;
+      saveState();
+      updateUI();
+    });
 
-      rows.forEach((r, idx)=>{
-        const p = loadPlayer(r.pid);
+    /* =========================
+       MAIN UPDATE
+    ========================= */
+    function updateUI(){
+      ensureCurrentPlayerValid();
 
-        const item = document.createElement("div");
-        item.className = "rankItem";
+      // session
+      sessionDateEl.value = state.sessionDate || new Date().toISOString().slice(0,10);
+      timerPresetEl.value = String(state.timerSec || 45);
 
-        const num = document.createElement("div");
-        num.className = "rankNum";
-        num.textContent = String(idx+1);
+      renderPresentSummary();
+      updatePlayerPill();
 
-        const ava = document.createElement("div");
-        ava.className = "pickAva";
-        ava.style.width = "44px";
-        ava.style.height = "44px";
-        if(p.photoDataUrl){
-          const img = document.createElement("img");
-          img.src = p.photoDataUrl;
-          ava.appendChild(img);
-        }else{
-          const sp = document.createElement("span");
-          sp.textContent = initials(p.name);
-          ava.appendChild(sp);
-        }
+      // timer
+      stopTimer();
+      timer.remaining = state.timerSec || 45;
+      timeDisplay.textContent = fmt(timer.remaining);
 
-        const nm = document.createElement("div");
-        nm.className = "rankName";
-        nm.textContent = r.name;
+      // inputs
+      updateInputUI();
 
-        const pct = document.createElement("div");
-        pct.className = "rankPct";
-        pct.textContent = `${r.value}%`;
-
-        item.appendChild(num);
-        item.appendChild(ava);
-        item.appendChild(nm);
-        item.appendChild(pct);
-
-        item.onclick = ()=>{
-          // jump to that player on home
-          activePlayerId = r.pid;
-          showPage("pageHome");
-        };
-
-        list.appendChild(item);
-      });
-
-      $("rankHint").textContent = rankMode === "last"
-        ? "Ordinata per % dell’ultima sessione salvata."
-        : "Ordinata per % media totale (tutte le sessioni).";
+      // stats
+      renderChart();
     }
 
-    /***********************
-     * INIT EVENTS
-     ***********************/
-    function bindEvents(){
-      // Dropdown
-      $("menuBtn").addEventListener("click", (e)=>{
-        e.stopPropagation();
-        toggleDropdown();
-      });
-      document.addEventListener("click", ()=>{
-        closeDropdown();
-      });
+    /* =========================
+       UTIL
+    ========================= */
+    function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
 
-      // Menu items
-      $("ddNewSession").addEventListener("click", newSession);
-      $("ddPickPlayers").addEventListener("click", openPickModal);
-      $("ddPlayerPage").addEventListener("click", ()=>showPage("pagePlayer"));
-      $("ddBackupPage").addEventListener("click", ()=>showPage("pageBackup"));
-      $("ddRanking").addEventListener("click", ()=>showPage("pageRanking"));
-      $("ddShareWA").addEventListener("click", shareWhatsApp);
-      $("ddGoHome").addEventListener("click", ()=>showPage("pageHome"));
-
-      // Modal
-      $("modalCancel").addEventListener("click", closePickModal);
-      $("modalConfirm").addEventListener("click", confirmPickModal);
-      $("modalOverlay").addEventListener("click", (e)=>{
-        if(e.target === $("modalOverlay")) closePickModal();
-      });
-
-      // Home
-      $("sessionDate").addEventListener("change", saveUI);
-      $("timerSelect").addEventListener("change", ()=>{
-        setTimerUIFromSelect();
-        saveUI();
-      });
-
-      $("startTimerBtn").addEventListener("click", timerStart);
-      $("stopTimerBtn").addEventListener("click", ()=>timerStop(false));
-      $("resetTimerBtn").addEventListener("click", timerReset);
-
-      $("clearInputsBtn").addEventListener("click", clearInputs);
-      $("saveSessionBtn").addEventListener("click", saveSession);
-      $("shareBtn").addEventListener("click", shareWhatsApp);
-
-      // Player page
-      $("savePlayerBtn").addEventListener("click", savePlayerNameAndPhoto);
-      $("removePhotoBtn").addEventListener("click", removePhoto);
-      $("resetPlayerBtn").addEventListener("click", doResetPlayer);
-      $("photoInput").addEventListener("change", (e)=>{
-        const f = e.target.files && e.target.files[0];
-        if(!f) return;
-        handlePhotoFile(f);
-        $("photoInput").value = "";
-      });
-
-      // Backup
-      $("exportBtn").addEventListener("click", exportJSON);
-      $("importFile").addEventListener("change", (e)=>{
-        const f = e.target.files && e.target.files[0];
-        if(!f) return;
-        importJSON(f);
-      });
-      $("backHomeFromBackup").addEventListener("click", ()=>showPage("pageHome"));
-
-      // Ranking
-      $("backHomeFromRanking").addEventListener("click", ()=>showPage("pageHome"));
-      $("rankMode").querySelectorAll("button").forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          $("rankMode").querySelectorAll("button").forEach(b=>b.classList.remove("active"));
-          btn.classList.add("active");
-          rankMode = btn.getAttribute("data-mode");
-          renderRanking();
-        });
-      });
-
-      // Resize
-      window.addEventListener("resize", ()=>{
-        if($("pageHome").classList.contains("show")){
-          updateStats();
-        }
-      }, {passive:true});
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
 
-    /***********************
-     * BOOT
-     ***********************/
-    function boot(){
-      initBrandLogo();
+    async function fileToDataURL(file, maxSize=720){
+      const img = await createImageBitmap(file);
+      const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
 
-      // date
-      $("sessionDate").value = todayISO();
-
-      // load UI if exists
-      const ui = loadUI();
-      if(ui){
-        if(ui.sessionDate) $("sessionDate").value = ui.sessionDate;
-        if(Array.isArray(ui.selectedPlayers)) selectedPlayers = ui.selectedPlayers.filter(n=>Number.isFinite(n));
-        if(Number(ui.activePlayerId)) activePlayerId = Number(ui.activePlayerId);
-        if(Number(ui.timerSeconds)) timerSeconds = Number(ui.timerSeconds);
-      }
-
-      // normalize timer select
-      if(![35,40,45].includes(timerSeconds)) timerSeconds = 45;
-      $("timerSelect").value = String(timerSeconds);
-      timerRemaining = timerSeconds;
-      $("timerBig").textContent = fmtTimer(timerRemaining);
-
-      // ensure active valid
-      ensureActivePlayerValid();
-
-      bindEvents();
-      renderHomeHeader();
-      renderTabs();
-      renderScoreInputs();
-      updateStats();
-      saveUI();
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      const g = c.getContext("2d");
+      g.drawImage(img, 0, 0, w, h);
+      return c.toDataURL("image/jpeg", 0.85);
     }
 
-    boot();
+    // init
+    ensureCurrentPlayerValid();
+    updateUI();
   </script>
 </body>
 </html>
