@@ -1,115 +1,427 @@
-<!DOCTYPE html><html lang="it">
+<!DOCTYPE html>
+<html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="manifest.webmanifest">
-<title>Virtus Shot Tracker</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  color:white;
-  background: radial-gradient(circle at center, #0a3d1f, #001a0d);
-}
-.container { padding:20px; }
-h1 { text-align:center; }
-.card {
-  background:rgba(0,0,0,0.4);
-  padding:15px;
-  border-radius:10px;
-  margin-bottom:20px;
-}
-input, select, button {
-  width:100%;
-  padding:8px;
-  margin:5px 0;
-  border-radius:5px;
-  border:none;
-}
-button {
-  background:#1e8239;
-  color:white;
-  font-weight:bold;
-}
-canvas {
-  background:white;
-  border-radius:10px;
-}
-</style>
-</head>
-<body>
-<div class="container">
-<h1>Virtus Shot Tracker</h1><div class="card">
-<label>Data:</label>
-<input type="date" id="date"><label>Fondo sx:</label>
-<input id="fsx" type="number">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>Virtus Shot Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<label>45° sx:</label>
-<input id="45sx" type="number">
-
-<label>Frontale:</label>
-<input id="front" type="number">
-
-<label>45° dx:</label>
-<input id="45dx" type="number">
-
-<label>Fondo dx:</label>
-<input id="fdx" type="number">
-
-<button onclick="addSession()">Aggiungi sessione</button>
-
-</div><div class="card">
-<h3>Statistiche totali</h3>
-<p id="stats"></p>
-</div><div class="card">
-<canvas id="chart"></canvas>
-</div>
-</div><script>
-let sessions = JSON.parse(localStorage.getItem("sessions")) || [];
-
-function addSession() {
-  let data = {
-    date: document.getElementById("date").value,
-    fsx: +document.getElementById("fsx").value,
-    s45: +document.getElementById("45sx").value,
-    front: +document.getElementById("front").value,
-    d45: +document.getElementById("45dx").value,
-    fdx: +document.getElementById("fdx").value
-  };
-  sessions.push(data);
-  localStorage.setItem("sessions", JSON.stringify(sessions));
-  updateStats();
-  drawChart();
-}
-
-function updateStats() {
-  let total = 0;
-  sessions.forEach(s => {
-    total += s.fsx + s.s45 + s.front + s.d45 + s.fdx;
-  });
-  document.getElementById("stats").innerText =
-    "Sessioni: " + sessions.length + " | Canestri totali: " + total;
-}
-
-function drawChart() {
-  let labels = sessions.map(s => s.date);
-  let values = sessions.map(s => s.fsx + s.s45 + s.front + s.d45 + s.fdx);
-
-  let ctx = document.getElementById("chart");
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Canestri per sessione",
-        data: values
-      }]
+  <style>
+    :root{
+      --bg1:#062714;      /* verde scuro */
+      --bg2:#00130a;      /* quasi nero */
+      --card: rgba(0,0,0,0.42);
+      --accent:#1e8239;
+      --text:#ffffff;
     }
-  });
-}
 
-updateStats();
-drawChart();
-</script></body>
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      color:var(--text);
+      background: radial-gradient(circle at center, var(--bg1), var(--bg2));
+      min-height:100vh;
+    }
+
+    .container{ padding:16px; max-width:900px; margin:0 auto; }
+
+    h1{ text-align:center; margin:10px 0 14px; font-size:28px; }
+
+    .tabs{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      padding-bottom:8px;
+      margin-bottom:12px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tab{
+      flex: 0 0 auto;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .tab.active{
+      background: rgba(30,130,57,0.35);
+      border-color: rgba(30,130,57,0.55);
+    }
+
+    .card{
+      background:var(--card);
+      padding:14px;
+      border-radius:14px;
+      margin-bottom:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .row > * { flex: 1 1 160px; }
+
+    label{ font-weight:700; display:block; margin-top:8px; }
+    input, button{
+      width:100%;
+      padding:10px;
+      margin-top:6px;
+      border-radius:10px;
+      border:none;
+      outline:none;
+      font-size:16px;
+    }
+
+    input{ background: rgba(255,255,255,0.92); color:#111; }
+
+    .btn{
+      background:var(--accent);
+      color:white;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .btn.secondary{
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .hint{
+      opacity:0.9;
+      font-size:13px;
+      margin-top:8px;
+      line-height:1.35;
+    }
+
+    .stats{
+      font-size:16px;
+      line-height:1.45;
+    }
+
+    /* Chart container con watermark */
+    .chartWrap{
+      position:relative;
+      border-radius:14px;
+      overflow:hidden;
+      background: rgba(255,255,255,0.92); /* base chiara per leggibilità grafico */
+    }
+    .chartWrap::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image: url("icon-512.png"); /* watermark */
+      background-repeat:no-repeat;
+      background-position:center;
+      background-size: 320px;
+      opacity:0.10; /* trasparenza logo */
+      pointer-events:none;
+      transform: translateZ(0);
+    }
+    canvas{
+      position:relative;
+      z-index:1;
+      display:block;
+      width:100% !important;
+      height: 320px !important;
+    }
+
+    .danger{
+      background: rgba(255,60,60,0.18);
+      border: 1px solid rgba(255,60,60,0.35);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Virtus Shot Tracker</h1>
+
+    <!-- TAB GIOCATORI -->
+    <div class="tabs" id="tabs"></div>
+
+    <!-- NOME GIOCATORE + RESET -->
+    <div class="card">
+      <div class="row">
+        <div>
+          <label>Nome giocatore (pagina)</label>
+          <input id="playerName" type="text" placeholder="Nome giocatore" />
+          <div class="hint">Cambialo e viene salvato solo per questa pagina giocatore.</div>
+        </div>
+
+        <div>
+          <label>&nbsp;</label>
+          <button class="btn secondary" onclick="resetPlayer()">Reset dati giocatore</button>
+          <div class="hint">Azzera sessioni e statistiche del giocatore selezionato (nuovo punto zero).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSERIMENTO SESSIONE -->
+    <div class="card">
+      <label>Data</label>
+      <input type="date" id="date">
+
+      <div class="hint">
+        Sessione = <b>10 tiri per posizione</b>. Inserisci solo i canestri (0–10).  
+        La % sessione viene calcolata su <b>50 tiri totali</b>.
+      </div>
+
+      <label>Fondo sx (0–10)</label>
+      <input id="fsx" type="number" min="0" max="10" inputmode="numeric">
+
+      <label>45° sx (0–10)</label>
+      <input id="s45" type="number" min="0" max="10" inputmode="numeric">
+
+      <label>Frontale (0–10)</label>
+      <input id="front" type="number" min="0" max="10" inputmode="numeric">
+
+      <label>45° dx (0–10)</label>
+      <input id="d45" type="number" min="0" max="10" inputmode="numeric">
+
+      <label>Fondo dx (0–10)</label>
+      <input id="fdx" type="number" min="0" max="10" inputmode="numeric">
+
+      <button class="btn" onclick="addSession()">Aggiungi sessione</button>
+    </div>
+
+    <!-- STATS -->
+    <div class="card">
+      <h3 style="margin:0 0 8px;">Statistiche giocatore</h3>
+      <div class="stats" id="stats"></div>
+    </div>
+
+    <!-- CHART -->
+    <div class="card">
+      <h3 style="margin:0 0 10px;">Andamento % per sessione</h3>
+      <div class="chartWrap">
+        <canvas id="chart"></canvas>
+      </div>
+      <div class="hint">
+        Scala fissa: <b>0% → 100%</b>.
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ======== CONFIG ========
+  const PLAYER_SLOTS = 8;
+  const DEFAULT_NAMES = ["Giocatore 1","Giocatore 2","Giocatore 3","Giocatore 4","Giocatore 5","Giocatore 6","Giocatore 7","Giocatore 8"];
+  const ATTEMPTS_PER_SPOT = 10;
+  const SPOTS = ["fsx","s45","front","d45","fdx"]; // 5 posizioni -> 50 tiri/sessione
+
+  // ======== STATE ========
+  let selectedPlayerIndex = 0;
+  let chartInstance = null;
+
+  // ======== STORAGE HELPERS ========
+  const keyNames = () => "virtus_players_names_v1";
+  const keySessions = (idx) => `virtus_player_${idx}_sessions_v1`;
+
+  function loadPlayerNames(){
+    const raw = localStorage.getItem(keyNames());
+    if(!raw) return [...DEFAULT_NAMES];
+    try{
+      const arr = JSON.parse(raw);
+      if(Array.isArray(arr) && arr.length === PLAYER_SLOTS) return arr;
+      return [...DEFAULT_NAMES];
+    }catch{ return [...DEFAULT_NAMES]; }
+  }
+
+  function savePlayerNames(names){
+    localStorage.setItem(keyNames(), JSON.stringify(names));
+  }
+
+  function loadSessions(idx){
+    const raw = localStorage.getItem(keySessions(idx));
+    if(!raw) return [];
+    try{
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    }catch{ return []; }
+  }
+
+  function saveSessions(idx, sessions){
+    localStorage.setItem(keySessions(idx), JSON.stringify(sessions));
+  }
+
+  // ======== UI ========
+  function buildTabs(){
+    const tabs = document.getElementById("tabs");
+    tabs.innerHTML = "";
+    const names = loadPlayerNames();
+
+    for(let i=0;i<PLAYER_SLOTS;i++){
+      const btn = document.createElement("div");
+      btn.className = "tab" + (i===selectedPlayerIndex ? " active" : "");
+      btn.textContent = names[i];
+      btn.onclick = () => selectPlayer(i);
+      tabs.appendChild(btn);
+    }
+  }
+
+  function selectPlayer(idx){
+    selectedPlayerIndex = idx;
+    buildTabs();
+
+    // carica nome
+    const names = loadPlayerNames();
+    document.getElementById("playerName").value = names[idx];
+
+    // aggiorna stats + chart
+    updateStats();
+    drawChart();
+  }
+
+  function clamp10(n){
+    if(Number.isNaN(n)) return 0;
+    if(n < 0) return 0;
+    if(n > 10) return 10;
+    return Math.round(n);
+  }
+
+  // ======== ACTIONS ========
+  function addSession(){
+    const date = document.getElementById("date").value || new Date().toISOString().slice(0,10);
+
+    const fsx   = clamp10(+document.getElementById("fsx").value);
+    const s45   = clamp10(+document.getElementById("s45").value);
+    const front = clamp10(+document.getElementById("front").value);
+    const d45   = clamp10(+document.getElementById("d45").value);
+    const fdx   = clamp10(+document.getElementById("fdx").value);
+
+    // sessione su 50 tiri totali
+    const madeTotal = fsx + s45 + front + d45 + fdx;
+    const pct = Math.round((madeTotal / (ATTEMPTS_PER_SPOT * SPOTS.length)) * 100);
+
+    const session = { date, fsx, s45, front, d45, fdx, pct };
+
+    const sessions = loadSessions(selectedPlayerIndex);
+    sessions.push(session);
+    saveSessions(selectedPlayerIndex, sessions);
+
+    // pulisci campi
+    document.getElementById("fsx").value = "";
+    document.getElementById("s45").value = "";
+    document.getElementById("front").value = "";
+    document.getElementById("d45").value = "";
+    document.getElementById("fdx").value = "";
+
+    updateStats();
+    drawChart();
+  }
+
+  function resetPlayer(){
+    const names = loadPlayerNames();
+    const player = names[selectedPlayerIndex] || "questo giocatore";
+    const ok = confirm(`Sicuro di voler azzerare TUTTI i dati di "${player}"?`);
+    if(!ok) return;
+
+    saveSessions(selectedPlayerIndex, []);
+    updateStats();
+    drawChart();
+  }
+
+  // ======== STATS ========
+  function updateStats(){
+    const sessions = loadSessions(selectedPlayerIndex);
+    if(sessions.length === 0){
+      document.getElementById("stats").innerHTML = "Nessuna sessione salvata.";
+      return;
+    }
+
+    const totalSessions = sessions.length;
+
+    // Totali canestri su 50 per sessione
+    let madeAll = 0;
+    let maxPct = 0;
+    let minPct = 100;
+    sessions.forEach(s => {
+      const made = (s.fsx||0)+(s.s45||0)+(s.front||0)+(s.d45||0)+(s.fdx||0);
+      madeAll += made;
+      maxPct = Math.max(maxPct, s.pct ?? 0);
+      minPct = Math.min(minPct, s.pct ?? 100);
+    });
+
+    const attemptsAll = totalSessions * ATTEMPTS_PER_SPOT * SPOTS.length; // 50 * N
+    const avgPct = Math.round((madeAll / attemptsAll) * 100);
+
+    document.getElementById("stats").innerHTML =
+      `Sessioni: <b>${totalSessions}</b><br>` +
+      `Media % (totale): <b>${avgPct}%</b><br>` +
+      `Migliore sessione: <b>${maxPct}%</b><br>` +
+      `Peggiore sessione: <b>${minPct}%</b>`;
+  }
+
+  // ======== CHART ========
+  function drawChart(){
+    const sessions = loadSessions(selectedPlayerIndex);
+
+    const labels = sessions.map(s => s.date);
+    const values = sessions.map(s => s.pct ?? 0);
+
+    const ctx = document.getElementById("chart").getContext("2d");
+
+    if(chartInstance){
+      chartInstance.destroy();
+      chartInstance = null;
+    }
+
+    chartInstance = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "% sessione (50 tiri)",
+          data: values,
+          tension: 0.25,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+            ticks: {
+              callback: (v) => v + "%"
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // ======== PLAYER NAME EDIT ========
+  document.getElementById("playerName").addEventListener("input", (e) => {
+    const names = loadPlayerNames();
+    names[selectedPlayerIndex] = (e.target.value || DEFAULT_NAMES[selectedPlayerIndex]).trim();
+    savePlayerNames(names);
+    buildTabs();
+  });
+
+  // ======== INIT ========
+  (function init(){
+    // data oggi
+    document.getElementById("date").value = new Date().toISOString().slice(0,10);
+
+    // crea names se manca
+    const names = loadPlayerNames();
+    if(!localStorage.getItem(keyNames())) savePlayerNames(names);
+
+    buildTabs();
+    selectPlayer(0);
+  })();
+</script>
+</body>
 </html>
